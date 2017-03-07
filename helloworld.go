@@ -1,7 +1,7 @@
 package main
 
 import (
-	"archive/zip"
+//	"archive/zip"
 	"bytes"
 	"compress/zlib"
 	"encoding/base64"
@@ -23,52 +23,25 @@ qb6tJRiWEtUfBwsMyMCk1z1d/F2v556x9yNYuDLkmwPyUQXXpOrDuVIVgVIDHRpXgoedDAx3AeNl
 	base64Text := make([]byte, base64.StdEncoding.DecodedLen(len(encoded)))
 	base64.StdEncoding.Decode(base64Text, []byte(encoded))
 
-	//	encodedHex := hex.EncodeToString(base64Text)
+	hexdumper(base64Text)
 
-	stdoutDumper := hex.Dumper(os.Stdout)
-	defer stdoutDumper.Close()
-	stdoutDumper.Write(base64Text)
+//	Cmd(base64Text)
+	zlibbing(base64Text)
+}
 
-	err := ioutil.WriteFile("/tmp/test.zip", base64Text, 0644)
-	if err != nil {
-		panic(err)
-	}
-	Cmd(base64Text)
-	ExampleReader()
-
-	b := bytes.NewReader(base64Text)
+func zlibbing(source []byte) {
+	b := bytes.NewReader(source)
 	r, err := zlib.NewReader(b)
 	if err != nil {
 		panic(err)
 	}
-	io.Copy(os.Stdout, r)
-	r.Close()
-
-}
-func ExampleReader() {
-	// Open a zip archive for reading.
-	r, err := zip.OpenReader("/tmp/test.zip")
+	enflated, err := ioutil.ReadAll(r)
 	if err != nil {
 		panic(err)
 	}
-	defer r.Close()
-
-	// Iterate through the files in the archive,
-	// printing some of their contents.
-	for _, f := range r.File {
-		fmt.Printf("Contents of %s:\n", f.Name)
-		rc, err := f.Open()
-		if err != nil {
-			panic(err)
-		}
-		_, err = io.CopyN(os.Stdout, rc, 68)
-		if err != nil {
-			panic(err)
-		}
-		rc.Close()
-		fmt.Println()
-	}
+	fmt.Println(string(enflated))
 }
+
 func Cmd(text []byte) {
 	cmd := exec.Command("gunzip")
 	stdin, err := cmd.StdinPipe()
@@ -78,7 +51,7 @@ func Cmd(text []byte) {
 
 	go func() {
 		defer stdin.Close()
-		io.WriteString(stdin,text)
+		io.WriteString(stdin, string(text))
 	}()
 
 	out, err := cmd.CombinedOutput()
@@ -87,4 +60,10 @@ func Cmd(text []byte) {
 	}
 
 	fmt.Printf("%s\n", out)
+}
+
+func hexdumper(source []byte) {
+	stdoutDumper := hex.Dumper(os.Stdout)
+	defer stdoutDumper.Close()
+	stdoutDumper.Write(source)
 }
