@@ -7,7 +7,7 @@ import (
 	"encoding/base64"
 	"encoding/hex"
 	"fmt"
-	"io"
+//	"io"
 	"io/ioutil"
 	"os"
 	"os/exec"
@@ -25,8 +25,8 @@ qb6tJRiWEtUfBwsMyMCk1z1d/F2v556x9yNYuDLkmwPyUQXXpOrDuVIVgVIDHRpXgoedDAx3AeNl
 
 	hexdumper(base64Text)
 
-//	Cmd(base64Text)
-	zlibbing(base64Text)
+	Cmd(base64Text)
+//	zlibbing(base64Text)
 }
 
 func zlibbing(source []byte) {
@@ -43,20 +43,20 @@ func zlibbing(source []byte) {
 }
 
 func Cmd(text []byte) {
-	cmd := exec.Command("gunzip")
+	cmd := exec.Command("date")
 	stdin, err := cmd.StdinPipe()
 	if err != nil {
 		panic(err)
 	}
-
+//	r := bytes.NewReader(text)
 	go func() {
 		defer stdin.Close()
-		io.WriteString(stdin, string(text))
+		stdin.Write([]byte("HAHAHAHAHAHAHA!!!"))
 	}()
 
 	out, err := cmd.CombinedOutput()
 	if err != nil {
-		panic(err)
+//		panic(err)
 	}
 
 	fmt.Printf("%s\n", out)
