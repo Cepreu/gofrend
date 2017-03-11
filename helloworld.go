@@ -1,13 +1,13 @@
 package main
 
 import (
-//	"archive/zip"
+	//	"archive/zip"
 	"bytes"
 	"compress/zlib"
 	"encoding/base64"
 	"encoding/hex"
 	"fmt"
-	"io"
+	//	"io"
 	"io/ioutil"
 	"os"
 	"os/exec"
@@ -25,8 +25,8 @@ qb6tJRiWEtUfBwsMyMCk1z1d/F2v556x9yNYuDLkmwPyUQXXpOrDuVIVgVIDHRpXgoedDAx3AeNl
 
 	hexdumper(base64Text)
 
-//	Cmd(base64Text)
-	zlibbing(base64Text)
+	Cmd(base64Text)
+	//	zlibbing(base64Text)
 }
 
 func zlibbing(source []byte) {
@@ -43,23 +43,31 @@ func zlibbing(source []byte) {
 }
 
 func Cmd(text []byte) {
-	cmd := exec.Command("gunzip")
-	stdin, err := cmd.StdinPipe()
-	if err != nil {
-		panic(err)
-	}
+	/*	cmd := exec.Command("date")
+		stdin, err := cmd.StdinPipe()
+		if err != nil {
+			panic(err)
+		}
+		go func() {
+			defer stdin.Close()
+			stdin.Write([]byte("HAHAHAHAHAHAHA!!!"))
+		}()
+		out, err := cmd.CombinedOutput()
+		if err != nil {
+			panic(err)
+		}
+		fmt.Printf("%s\n", out)*/
 
-	go func() {
-		defer stdin.Close()
-		io.WriteString(stdin, string(text))
-	}()
-
-	out, err := cmd.CombinedOutput()
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Printf("%s\n", out)
+	grepCmd := exec.Command("gunzip")
+	grepIn, _ := grepCmd.StdinPipe()
+	grepOut, _ := grepCmd.StdoutPipe()
+	grepCmd.Start()
+	grepIn.Write(text)
+	grepIn.Close()
+	grepBytes, _ := ioutil.ReadAll(grepOut)
+	grepCmd.Wait()
+	fmt.Println("> grep hello")
+	fmt.Println(string(grepBytes))
 }
 
 func hexdumper(source []byte) {
