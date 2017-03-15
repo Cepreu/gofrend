@@ -24,7 +24,7 @@ qb6tJRiWEtUfBwsMyMCk1z1d/F2v556x9yNYuDLkmwPyUQXXpOrDuVIVgVIDHRpXgoedDAx3AeNl
 	base64Text := make([]byte, base64.StdEncoding.DecodedLen(len(encoded)))
 	base64.StdEncoding.Decode(base64Text, []byte(encoded))
 
-	hexdumper(base64Text)
+	// hexdumper(base64Text)
 
 	// Cmd(base64Text)
 	//	zlibbing(base64Text)

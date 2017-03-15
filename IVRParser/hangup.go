@@ -2,7 +2,7 @@ package IVRParser
 
 import "encoding/xml"
 
-type Hangup struct {
+type HangupModule struct {
 	XMLName   xml.Name   `xml:"hangup"`
 	Ascendant string     `xml:"ascendants"`
 	Name      string     `xml:"moduleName"`

@@ -1,6 +1,6 @@
 package IVRParser
 
-type IncomingCall struct {
+type IncomingCallModule struct {
 	Descendant string `xml:"singleDescendant"`
 	Name       string `xml:"moduleName"`
 	X          int32  `xml:"locationX"`
