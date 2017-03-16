@@ -1,3 +1,23 @@
+package IVRParser
+
+import (
+	"strings"
+	"testing"
+)
+
+func TestParseIVR(t *testing.T) {
+
+	_, err := ParseIVR(strings.NewReader(xmlData))
+
+	if err != nil {
+		panic(err)
+	}
+
+	// more sanity checking...
+
+}
+
+var xmlData = `
 <?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
 <ivrScript>
     <domainId>1</domainId>
@@ -407,3 +427,4 @@ BujB7kB/cHfD98e6a/xX8+2KHOm94E/oteYzCQQAAA==</xml>
     <timeoutInMilliseconds>3600000</timeoutInMilliseconds>
     <version>950014</version>
 </ivrScript>
+`

@@ -6,6 +6,7 @@ import (
 	"encoding/base64"
 	"encoding/hex"
 	"fmt"
+	"strings"
 	//	"io"
 	"io/ioutil"
 	"os"
@@ -28,7 +29,7 @@ qb6tJRiWEtUfBwsMyMCk1z1d/F2v556x9yNYuDLkmwPyUQXXpOrDuVIVgVIDHRpXgoedDAx3AeNl
 
 	// Cmd(base64Text)
 	//	zlibbing(base64Text)
-	IVRParser.Test()
+	IVRParser.ParseIVR(strings.NewReader("<test/>"))
 }
 
 func zlibbing(source []byte) {
@@ -45,29 +46,6 @@ func zlibbing(source []byte) {
 }
 
 func Cmd(text []byte) {
-	/*	cmd := exec.Command("date")
-				stdin, err := cmd.StdinPipe()
-				if err != nil {
-					panic(err)
-				}
-				go func() {
-					defer stdin.Close()
-					stdin.Write([]byte("HAHAHAHAHAHAHA!!!"))
-				}()
-		<<<<<<< HEAD
-		=======
-
-		>>>>>>> 2be9e22fa14a76a4f1209be25acfd3cc64c417fd
-				out, err := cmd.CombinedOutput()
-				if err != nil {
-					panic(err)
-				}
-		<<<<<<< HEAD
-		=======
-
-		>>>>>>> 2be9e22fa14a76a4f1209be25acfd3cc64c417fd
-				fmt.Printf("%s\n", out)*/
-
 	grepCmd := exec.Command("gunzip")
 	grepIn, _ := grepCmd.StdinPipe()
 	grepOut, _ := grepCmd.StdoutPipe()
