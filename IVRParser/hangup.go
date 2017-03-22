@@ -3,13 +3,13 @@ package IVRParser
 import "encoding/xml"
 
 type HangupModule struct {
-	XMLName   xml.Name   `xml:"hangup"`
-	Ascendant string     `xml:"ascendants"`
-	Name      string     `xml:"moduleName"`
-	X         int32      `xml:"locationX"`
-	Y         int32      `xml:"locationY"`
-	Id        string     `xml:"moduleId"`
-	Data      DataHangup `xml:"data"`
+	XMLName    xml.Name   `xml:"hangup"`
+	Ascendant  string     `xml:"ascendants"`
+	Name       string     `xml:"moduleName"`
+	X          int32      `xml:"locationX"`
+	Y          int32      `xml:"locationY"`
+	Id         string     `xml:"moduleId"`
+	ModuleData DataHangup `xml:"data"`
 }
 type DataHangup struct {
 	DispoName        string `xml:"dispo>name"`

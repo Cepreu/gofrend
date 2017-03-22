@@ -19,6 +19,7 @@ type Modules struct {
 	HModules  []HangupModule       `xml:"hangup"`
 	ICModules []IncomingCallModule `xml:"incomingCall"`
 	PModules  []PlayModule         `xml:"play"`
+	IModules  []InputModule        `xml:"input"`
 }
 
 /*

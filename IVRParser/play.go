@@ -7,7 +7,7 @@ type PlayModule struct {
 	X          int32    `xml:"locationX"`
 	Y          int32    `xml:"locationY"`
 	Id         string   `xml:"moduleId"`
-	Data       DataPlay `xml:"data"`
+	ModuleData DataPlay `xml:"data"`
 }
 
 type DataPlay struct {

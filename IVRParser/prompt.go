@@ -15,18 +15,18 @@ type TTSPrompt struct {
 
 type VivrPrompts struct {
 	VPrompt                      []VivrPrompt `xml:"vivrPrompt"`
-	Interruptible                bool `xml:"interruptible"`
-	CanChangeInterruptableOption bool `xml:"canChangeInterruptableOption"`
-	TtsEnumed                    bool `xml:"ttsEnumed"`
-	ExitModuleOnException        bool `xml:"exitModuleOnException"`
+	Interruptible                bool         `xml:"interruptible"`
+	CanChangeInterruptableOption bool         `xml:"canChangeInterruptableOption"`
+	TtsEnumed                    bool         `xml:"ttsEnumed"`
+	ExitModuleOnException        bool         `xml:"exitModuleOnException"`
 }
 
 type VivrHeader struct {
 	VPrompt                      VivrPrompt `xml:"vivrPrompt"`
-	Interruptible                bool `xml:"interruptible"`
-	CanChangeInterruptableOption bool `xml:"canChangeInterruptableOption"`
-	TtsEnumed                    bool `xml:"ttsEnumed"`
-	ExitModuleOnException        bool `xml:"exitModuleOnException"`
+	Interruptible                bool       `xml:"interruptible"`
+	CanChangeInterruptableOption bool       `xml:"canChangeInterruptableOption"`
+	TtsEnumed                    bool       `xml:"ttsEnumed"`
+	ExitModuleOnException        bool       `xml:"exitModuleOnException"`
 }
 
 type VivrPrompt struct {
