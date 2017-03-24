@@ -8,20 +8,26 @@ import (
 	"golang.org/x/net/html/charset"
 )
 
-type Script struct {
-	XMLName    xml.Name            `xml:"ivrScript"`
-	Domain     int32               `xml:"domainId"`
-	Properties string              `xml:"properties"`
-	Modules    Modules             `xml:"modules"`
-	MLPrompts  multilingualPrompts `xml:"multiLanguagesPrompts"`
-	Variables  []xUserVariable     `xml:"userVariables>entry"`
+type xScript struct {
+	XMLName         xml.Name             `xml:"ivrScript"`
+	Domain          int32                `xml:"domainId"`
+	Properties      string               `xml:"properties"`
+	Modules         xModules             `xml:"modules"`
+	ModulesOnHangup xModulesOnHangup     `xml:"modulesOnHangup"`
+	MLPrompts       xMultilingualPrompts `xml:"multiLanguagesPrompts"`
+	Variables       []xUserVariable      `xml:"userVariables>entry"`
 }
-type Modules struct {
-	XMLName   xml.Name             `xml:"modules"`
-	HModules  []HangupModule       `xml:"hangup"`
-	ICModules []IncomingCallModule `xml:"incomingCall"`
-	PModules  []PlayModule         `xml:"play"`
-	IModules  []InputModule        `xml:"input"`
+type xModules struct {
+	XMLName       xml.Name            `xml:"modules"`
+	IncomingCall  xIncomingCallModule `xml:"incomingCall"`
+	HangupModules []xHangupModule     `xml:"hangup"`
+	PlayModules   []xPlayModule       `xml:"play"`
+	InputModules  []xInputModule      `xml:"input"`
+}
+type xModulesOnHangup struct {
+	XMLName       xml.Name            `xml:"modulesOnHangup"`
+	StartOnHangup xIncomingCallModule `xml:"startOnHangup"`
+	HangupModules []xHangupModule     `xml:"hangup"`
 }
 
 type xUserVariable struct {
@@ -29,7 +35,7 @@ type xUserVariable struct {
 	Name          string `xml:"value>name"`
 	Description   string `xml:"value>description"`
 	StringValue   string `xml:"value>stringValue>value"`
-	StringValueId int32  `xml:"value>stringValue>id"`
+	StringValueID int32  `xml:"value>stringValue>id"`
 	Attributes    int32  `xml:"value>attributes"`
 	IsNullValue   bool   `xml:"isNullValue"`
 }
@@ -47,8 +53,8 @@ func toMap(vars ...Module) map[string]interface{} {
 	return m
 }
 */
-func ParseIVR(src io.Reader) (*Script, error) {
-	s := &Script{}
+func ParseIVR(src io.Reader) (*xScript, error) {
+	s := &xScript{}
 	decoder := xml.NewDecoder(src)
 	decoder.CharsetReader = charset.NewReaderLabel
 

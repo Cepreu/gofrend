@@ -1,23 +1,23 @@
 package IVRParser
 
-type PlayModule struct {
-	Ascendant  string   `xml:"ascendants"`
-	Descendant string   `xml:"singleDescendant"`
-	Name       string   `xml:"moduleName"`
-	X          int32    `xml:"locationX"`
-	Y          int32    `xml:"locationY"`
-	Id         string   `xml:"moduleId"`
-	ModuleData DataPlay `xml:"data"`
+type xPlayModule struct {
+	Ascendant  string    `xml:"ascendants"`
+	Descendant string    `xml:"singleDescendant"`
+	Name       string    `xml:"moduleName"`
+	X          int32     `xml:"locationX"`
+	Y          int32     `xml:"locationY"`
+	ID         string    `xml:"moduleId"`
+	ModuleData xDataPlay `xml:"data"`
 }
 
-type DataPlay struct {
-	VoicePrompts     Prompts     `xml:"prompt"`
-	VivrPrompts      VivrPrompts `xml:"vivrPrompts"`
-	VivrHeader       VivrHeader  `xml:"vivrHeader"`
-	DispoName        string      `xml:"dispo>name"`
-	DispoId          int32       `xml:"dispo>id"`
-	NumberOfDigits   int32       `xml:"numberOfDigits"`
-	TerminateDigit   string      `xml:"terminateDigit"`
-	ClearDigitBuffer bool        `xml:"clearDigitBuffer"`
-	Collapsible      bool        `xml:"collapsible"`
+type xDataPlay struct {
+	VoicePrompts     xPrompts     `xml:"prompt"`
+	VivrPrompts      xVivrPrompts `xml:"vivrPrompts"`
+	VivrHeader       xVivrHeader  `xml:"vivrHeader"`
+	DispoName        string       `xml:"dispo>name"`
+	DispoID          int32        `xml:"dispo>id"`
+	NumberOfDigits   int32        `xml:"numberOfDigits"`
+	TerminateDigit   string       `xml:"terminateDigit"`
+	ClearDigitBuffer bool         `xml:"clearDigitBuffer"`
+	Collapsible      bool         `xml:"collapsible"`
 }

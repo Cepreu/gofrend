@@ -2,16 +2,16 @@ package IVRParser
 
 import "encoding/xml"
 
-type HangupModule struct {
-	XMLName    xml.Name   `xml:"hangup"`
-	Ascendant  string     `xml:"ascendants"`
-	Name       string     `xml:"moduleName"`
-	X          int32      `xml:"locationX"`
-	Y          int32      `xml:"locationY"`
-	Id         string     `xml:"moduleId"`
-	ModuleData DataHangup `xml:"data"`
+type xHangupModule struct {
+	XMLName    xml.Name    `xml:"hangup"`
+	Ascendant  string      `xml:"ascendants"`
+	Name       string      `xml:"moduleName"`
+	X          int32       `xml:"locationX"`
+	Y          int32       `xml:"locationY"`
+	Id         string      `xml:"moduleId"`
+	ModuleData xDataHangup `xml:"data"`
 }
-type DataHangup struct {
+type xDataHangup struct {
 	DispoName        string `xml:"dispo>name"`
 	DispoId          int32  `xml:"dispo>id"`
 	Return2Caller    bool   `xml:"returnToCallingModule"`
