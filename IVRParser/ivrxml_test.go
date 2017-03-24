@@ -24,50 +24,112 @@ var xmlData = `
     <properties/>
     <modules>
         <incomingCall>
-            <singleDescendant>D0009CF178F84C41B2495B7534771518</singleDescendant>
+            <singleDescendant>8BA7208C924845ADAA5193480808B192</singleDescendant>
             <moduleName>IncomingCall1</moduleName>
-            <locationX>53</locationX>
-            <locationY>99</locationY>
-            <moduleId>5C8BADD9D6944D1395E9B4876AEB030D</moduleId>
+            <locationX>109</locationX>
+            <locationY>140</locationY>
+            <moduleId>19A00093C1294682BA698D2C5AF2E3D8</moduleId>
             <data/>
         </incomingCall>
-        <hangup>
-            <ascendants>702E95609FF5429E8E9E3DEED30934AB</ascendants>
-            <moduleName>Hangup5</moduleName>
-            <locationX>386</locationX>
-            <locationY>99</locationY>
-            <moduleId>96A0B72AC33844A98D82F286B605F103</moduleId>
+        <query>
+            <ascendants>19A00093C1294682BA698D2C5AF2E3D8</ascendants>
+            <exceptionalDescendant>0A1982A4334549D790B4DA73DED0023C</exceptionalDescendant>
+            <singleDescendant>78CDAD9B0303485FBDDF1E6BD2E244A1</singleDescendant>
+            <moduleName>Query2</moduleName>
+            <locationX>212</locationX>
+            <locationY>140</locationY>
+            <moduleId>8BA7208C924845ADAA5193480808B192</moduleId>
             <data>
-                <dispo>
-                    <id>0</id>
-                    <name>No Disposition</name>
-                </dispo>
-                <returnToCallingModule>true</returnToCallingModule>
-                <errCode>
-                    <isVarSelected>false</isVarSelected>
-                    <integerValue>
-                        <value>0</value>
-                    </integerValue>
-                </errCode>
-                <overwriteDisposition>true</overwriteDisposition>
+                <prompt>
+                    <interruptible>false</interruptible>
+                    <canChangeInterruptableOption>true</canChangeInterruptableOption>
+                    <ttsEnumed>false</ttsEnumed>
+                    <exitModuleOnException>false</exitModuleOnException>
+                </prompt>
+                <vivrPrompts>
+                    <interruptible>false</interruptible>
+                    <canChangeInterruptableOption>true</canChangeInterruptableOption>
+                    <ttsEnumed>false</ttsEnumed>
+                    <exitModuleOnException>false</exitModuleOnException>
+                </vivrPrompts>
+                <vivrHeader>
+                    <interruptible>false</interruptible>
+                    <canChangeInterruptableOption>true</canChangeInterruptableOption>
+                    <ttsEnumed>false</ttsEnumed>
+                    <exitModuleOnException>false</exitModuleOnException>
+                </vivrHeader>
+                <url>https://api.five9.com/wsadmin/v3/AdminWebService</url>
+                <method>POST</method>
+                <fetchTimeout>5</fetchTimeout>
+                <parameters/>
+                <returnValues>
+                    <entry>
+                        <key>__BUFFER__</key>
+                        <value>__BUFFER__</value>
+                    </entry>
+                </returnValues>
+                <storeNumberOfArrayElementsInVariable>false</storeNumberOfArrayElementsInVariable>
+                <scriptType>PERL</scriptType>
+                <requestInfo>
+                    <template>
+                        <base64>H4sIAAAAAAAAAGXQywrCMBAF0H2/InQrZNaGmoUguBLBLwjttQbzKEmI+vfaRyjFXXIudwamiV4N
+cFmcXIbxA9jbGhfFwof6kdIgiGL7gFWR/9Ix4j70ND4IS4/q0kRYWwhZt+Cqs9rxV+R3nbHnrbdU
+y4ox1pT1Z6gOgbZ49N1nkgkRRI90e2pjomRs8Tkb8aIsriolBCf5rqE/LJNoO6qabbNz/Ze7yC/U
+3lfkKgEAAA==</base64>
+                    </template>
+                </requestInfo>
+                <headers>
+                    <entry>
+                        <key>Content-Type</key>
+                        <value>
+                            <isVarSelected>false</isVarSelected>
+                            <stringValue>
+                                <value>text/xml;charset=UTF-8 </value>
+                                <id>0</id>
+                            </stringValue>
+                        </value>
+                    </entry>
+                    <entry>
+                        <key>Authorization</key>
+                        <value>
+                            <isVarSelected>false</isVarSelected>
+                            <stringValue>
+                                <value> Basic c2VyZ2VpQDAwNy5jb206Zml2ZTlkZW1v </value>
+                                <id>0</id>
+                            </stringValue>
+                        </value>
+                    </entry>
+                </headers>
+                <responseParseRegexpInfo>
+                    <regexp>&lt;id&gt;(\d+)&lt;/id&gt;&lt;name&gt;([^&lt;]+)&lt;/name&gt;</regexp>
+                    <regexpParameters>
+                        <groupIndex>0</groupIndex>
+                    </regexpParameters>
+                    <regexpParameters>
+                        <groupIndex>1</groupIndex>
+                        <variable>__BUFFER__</variable>
+                    </regexpParameters>
+                    <regexpFlags>0</regexpFlags>
+                </responseParseRegexpInfo>
+                <responseParsingMethod>REG_EXP</responseParsingMethod>
+                <requestBodyType>XML_JSON</requestBodyType>
             </data>
-        </hangup>
+        </query>
         <play>
-            <ascendants>5C8BADD9D6944D1395E9B4876AEB030D</ascendants>
-            <singleDescendant>702E95609FF5429E8E9E3DEED30934AB</singleDescendant>
+            <ascendants>78CDAD9B0303485FBDDF1E6BD2E244A1</ascendants>
+            <singleDescendant>BF553F6C0E064B09AFBFD7066CA05E5A</singleDescendant>
             <moduleName>Play2</moduleName>
-            <locationX>158</locationX>
-            <locationY>99</locationY>
-            <moduleId>D0009CF178F84C41B2495B7534771518</moduleId>
+            <locationX>432</locationX>
+            <locationY>140</locationY>
+            <moduleId>503CA41490AC4093824A918616931560</moduleId>
             <data>
                 <prompt>
                     <ttsPrompt>
-                        <xml>H4sIAAAAAAAAAMWUTU+DQBCG7/0V697r6s2YhaYmGk9eavU87U6RuB+G3ZLy7+XDQrfA0vQiBwIz
-w7zPvEyWLw5Kkhwzmxod0fvbO0pQb41IdRLR9fvL/IES60ALkEZjRAu0dBHPuP1B+H6WqFC7eEbK
-i4NzWbrZO7RNoA5K0MmyTHShOqxBYVxKP1Z5zupXv6Lt9gFyj09gkeTVU0RRz9cryk5EWF/lX4Q5
-O/eApw7VqR+5Sbfo+dYXtn4iMM7lY10zXsjfNpegFphNoTVVQbCuUYd3RNuhAonDbCGAxu63UnQK
-sLpd6dsKFGj3BcN4AYL+urSZs7Vp4xaKpR1cnz6oHeAJNW/zDg8uqHG5lq85VbQxoohfUUpDPk0m
-xQ1ndWgclU2ycjbmJRs3s/fR33/0D7xjUdnJOw1/AW4p0G1VBQAA</xml>
+                        <xml>H4sIAAAAAAAAAO1TQWrDMBC85xVC92TTWylrhwTiYw9tnatZ10sQldfFkk3y+9ouuJYTU3qvLpJm
+xMzsgHB3Ka1quXamkkg/bLZasbxXhZFzpNO3ZP2olfMkBdlKONJXdnoXr9B9Mn0cLZcsPl6pbiF5
+X5u88ey+gQG0JOd9R/xAAyxUctxZP/U8wnANX4xqJ7INH8ixavtTpFnW6auGiQmELgjzKGg8l9NY
+LdWGcsvBBLfeDmbMTGfEPV/8Xa3fNUPtJTKvimuMMGy39rDoj3An8jj+c997lh3SJDm+ZBlCQEwK
+Xuzrv8lJYY3j+o8djqoI4Zf6An73hcSaAwAA</xml>
                         <promptTTSEnumed>false</promptTTSEnumed>
                     </ttsPrompt>
                     <interruptible>false</interruptible>
@@ -80,13 +142,6 @@ xQ1ndWgclU2ycjbmJRs3s/fR33/0D7xjUdnJOw1/AW4p0G1VBQAA</xml>
                     <name>Caller Disconnected</name>
                 </dispo>
                 <vivrPrompts>
-                    <vivrPrompt>
-                        <xml>H4sIAAAAAAAAALWSsW4CMQyGd54izQ4pG0Pu2Kp2RZTdcIZG8sVq4kPw9oUcAu4C1XVoJsefY/+R
-fzs/1KT2GKJjX+jp5FUr9BuunN8V+nP5Np5pFQV8BcQeC33EqOflyAZmKUfqdCyIBLduBKO5ZJxg
-Hds43b8Qzg1vmd67LujCnCXuocby0teadHtcuAdqTpVTa9ooH2V+mTVMx4aJwwAV8N3Af+oQPMgY
-yO38ADGEW/m7mDvQW1t/69f8WdUTJZl1sorU9Blcc3Us35GI1TZwrVYuNkDqY7V4sSbBBx/L5VjT
-N6zpOPbKrWlt/wPx/+hdNgMAAA==</xml>
-                    </vivrPrompt>
                     <interruptible>false</interruptible>
                     <canChangeInterruptableOption>true</canChangeInterruptableOption>
                     <ttsEnumed>false</ttsEnumed>
@@ -104,13 +159,56 @@ N6zpOPbKrWlt/wPx/+hdNgMAAA==</xml>
                 <collapsible>false</collapsible>
             </data>
         </play>
-        <input>
-            <ascendants>D0009CF178F84C41B2495B7534771518</ascendants>
-            <singleDescendant>96A0B72AC33844A98D82F286B605F103</singleDescendant>
-            <moduleName>Input7</moduleName>
-            <locationX>268</locationX>
-            <locationY>99</locationY>
-            <moduleId>702E95609FF5429E8E9E3DEED30934AB</moduleId>
+        <play>
+            <ascendants>8BA7208C924845ADAA5193480808B192</ascendants>
+            <singleDescendant>BF553F6C0E064B09AFBFD7066CA05E5A</singleDescendant>
+            <moduleName>Play3</moduleName>
+            <locationX>434</locationX>
+            <locationY>230</locationY>
+            <moduleId>0A1982A4334549D790B4DA73DED0023C</moduleId>
+            <data>
+                <prompt>
+                    <ttsPrompt>
+                        <xml>H4sIAAAAAAAAAIVSQWrDMBC85xVC92SbWylrhxYS6KWHNsm1rOMliMqrICkm+X1sF1zLcagukmbE
+zOwgXF0qq2r2wTjJ9HLxpBXLwZVGjpnebTfzZ61CJCnJOuFMXznoVT7DcGL6WVuuWGI+U81CitGb
+4hw5/AIdaEmOrw3xB3WwUMV5Y/3S8gjdNX3Rq+3JnvmNAqu6PWWaZb770jAwgdQFYRwFTeRqGKsm
+b6iwnExw7x1gxIx0ejzyJU5q/a+Zaj8iC1dec4Ruu7eHh/4IE5H78T/a3t/3nwv23vnvksMBISEH
+JU921usjpF/iBhlviuJaAgAA</xml>
+                        <promptTTSEnumed>false</promptTTSEnumed>
+                    </ttsPrompt>
+                    <interruptible>false</interruptible>
+                    <canChangeInterruptableOption>true</canChangeInterruptableOption>
+                    <ttsEnumed>false</ttsEnumed>
+                    <exitModuleOnException>false</exitModuleOnException>
+                </prompt>
+                <dispo>
+                    <id>-17</id>
+                    <name>Caller Disconnected</name>
+                </dispo>
+                <vivrPrompts>
+                    <interruptible>false</interruptible>
+                    <canChangeInterruptableOption>true</canChangeInterruptableOption>
+                    <ttsEnumed>false</ttsEnumed>
+                    <exitModuleOnException>false</exitModuleOnException>
+                </vivrPrompts>
+                <vivrHeader>
+                    <interruptible>false</interruptible>
+                    <canChangeInterruptableOption>true</canChangeInterruptableOption>
+                    <ttsEnumed>false</ttsEnumed>
+                    <exitModuleOnException>false</exitModuleOnException>
+                </vivrHeader>
+                <numberOfDigits>0</numberOfDigits>
+                <terminateDigit>N/A</terminateDigit>
+                <clearDigitBuffer>false</clearDigitBuffer>
+                <collapsible>false</collapsible>
+            </data>
+        </play>
+        <menu>
+            <ascendants>8BA7208C924845ADAA5193480808B192</ascendants>
+            <moduleName>Menu2</moduleName>
+            <locationX>308</locationX>
+            <locationY>140</locationY>
+            <moduleId>78CDAD9B0303485FBDDF1E6BD2E244A1</moduleId>
             <data>
                 <dispo>
                     <id>-17</id>
@@ -128,86 +226,33 @@ N6zpOPbKrWlt/wPx/+hdNgMAAA==</xml>
                     <ttsEnumed>false</ttsEnumed>
                     <exitModuleOnException>false</exitModuleOnException>
                 </vivrHeader>
-                <grammar xsi:type="boolean" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-                    <mainReturnValue>
-                        <name>MEANING</name>
-                        <type>STRING</type>
-                        <varName>__BUFFER__</varName>
-                    </mainReturnValue>
-                    <stringProperty>
-                        <type>LANGUAGE</type>
-                        <value xsi:type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema">en-US</value>
-                        <enabled>true</enabled>
-                    </stringProperty>
-                    <listProperty>
-                        <type>Y</type>
-                        <value xsi:type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema">1</value>
-                        <enabled>true</enabled>
-                        <list xsi:type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema">0</list>
-                        <list xsi:type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema">1</list>
-                        <list xsi:type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema">2</list>
-                        <list xsi:type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema">3</list>
-                        <list xsi:type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema">4</list>
-                        <list xsi:type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema">5</list>
-                        <list xsi:type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema">6</list>
-                        <list xsi:type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema">7</list>
-                        <list xsi:type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema">8</list>
-                        <list xsi:type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema">9</list>
-                        <list xsi:type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema">*</list>
-                        <list xsi:type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema">#</list>
-                    </listProperty>
-                    <listProperty>
-                        <type>N</type>
-                        <value xsi:type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema">2</value>
-                        <enabled>true</enabled>
-                        <list xsi:type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema">0</list>
-                        <list xsi:type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema">1</list>
-                        <list xsi:type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema">2</list>
-                        <list xsi:type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema">3</list>
-                        <list xsi:type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema">4</list>
-                        <list xsi:type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema">5</list>
-                        <list xsi:type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema">6</list>
-                        <list xsi:type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema">7</list>
-                        <list xsi:type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema">8</list>
-                        <list xsi:type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema">9</list>
-                        <list xsi:type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema">*</list>
-                        <list xsi:type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema">#</list>
-                    </listProperty>
-                    <additionalReturnValues>
-                        <name>SWI_literal</name>
-                        <type>STRING</type>
-                    </additionalReturnValues>
-                    <propertiesToVariables/>
-                </grammar>
-                <prompts>
-                    <prompt>
-                        <filePrompt>
-                            <promptData>
-                                <promptSelected>true</promptSelected>
-                                <prompt>
-                                    <id>-9</id>
-                                    <name>EIGHT</name>
-                                </prompt>
-                                <isRecordedMessage>false</isRecordedMessage>
-                            </promptData>
-                        </filePrompt>
-                        <interruptible>false</interruptible>
-                        <canChangeInterruptableOption>true</canChangeInterruptableOption>
-                        <ttsEnumed>false</ttsEnumed>
-                        <exitModuleOnException>false</exitModuleOnException>
-                    </prompt>
-                    <count>1</count>
-                </prompts>
+                <branches>
+                    <entry>
+                        <key>No Match</key>
+                        <value>
+                            <name>No Match</name>
+                            <desc>503CA41490AC4093824A918616931560</desc>
+                        </value>
+                    </entry>
+                </branches>
+                <useSpeechRecognition>true</useSpeechRecognition>
+                <useDTMF>true</useDTMF>
+                <recordUserInput>false</recordUserInput>
+                <maxAttempts>3</maxAttempts>
+                <confidenceTreshold>60</confidenceTreshold>
+                <saveInput>
+                    <name>__BUFFER__</name>
+                </saveInput>
                 <recoEvents>
                     <event>NO_MATCH</event>
                     <count>1</count>
                     <compoundPrompt>
                         <multiLanguagesPromptItem>
-                            <prompt>9BED287531A2493591A3DE63BF138F0C</prompt>
+                            <prompt>30E35D8D9B384EE0A3C5815B32F8F4FD</prompt>
                         </multiLanguagesPromptItem>
                         <interruptible>false</interruptible>
                         <canChangeInterruptableOption>true</canChangeInterruptableOption>
-                        <ttsEnumed>false</ttsEnumed>
+                        <ttsEnumed>true</ttsEnumed>
                         <exitModuleOnException>false</exitModuleOnException>
                     </compoundPrompt>
                     <action>CONTINUE</action>
@@ -217,27 +262,44 @@ N6zpOPbKrWlt/wPx/+hdNgMAAA==</xml>
                     <count>1</count>
                     <compoundPrompt>
                         <multiLanguagesPromptItem>
-                            <prompt>114228A09322479E93E8211044F2B775</prompt>
+                            <prompt>30E35D8D9B384EE0A3C5815B32F8F4FD</prompt>
                         </multiLanguagesPromptItem>
                         <interruptible>false</interruptible>
                         <canChangeInterruptableOption>true</canChangeInterruptableOption>
-                        <ttsEnumed>false</ttsEnumed>
+                        <ttsEnumed>true</ttsEnumed>
                         <exitModuleOnException>false</exitModuleOnException>
                     </compoundPrompt>
                     <action>REPROMPT</action>
                 </recoEvents>
+                <prompts>
+                    <prompt>
+                        <ttsPrompt>
+                            <xml>H4sIAAAAAAAAAIWRQUvDQBCF7/0Vy97r6E3KJqWCngWt92nzKMHNRDKT0vx7kwixm1jc0+77hvce
+s2F7qaI7o9Gylsw/3N17BznWRSmnzO/fX9aP3qmxFBxrQeY7qN/mq6Bf4M/niApi+cr1J7BZUx5a
+g/4IoxhZTrse/EqjLFwh76M3Aw80PtOJye2DY4snVrjzcMs8ZL1/83QVQmlKoHmVUBqq61rK3U6T
++stgpRmZmUy64WJ/ev3vmXrfgoe66PLXiGEJioijOXatotkEGtmyE90sFWi+DFpuYxrqYfLT39wU
++qExAgAA</xml>
+                            <promptTTSEnumed>true</promptTTSEnumed>
+                        </ttsPrompt>
+                        <interruptible>false</interruptible>
+                        <canChangeInterruptableOption>true</canChangeInterruptableOption>
+                        <ttsEnumed>true</ttsEnumed>
+                        <exitModuleOnException>false</exitModuleOnException>
+                    </prompt>
+                    <count>1</count>
+                </prompts>
                 <confirmData>
-                    <confirmRequired>REQUIRED</confirmRequired>
+                    <confirmRequired>NOT_REQUIRED</confirmRequired>
                     <requiredConfidence>75</requiredConfidence>
                     <maxAttemptsToConfirm>3</maxAttemptsToConfirm>
                     <noInputTimeout>3</noInputTimeout>
                     <prompt>
                         <multiLanguagesPromptItem>
-                            <prompt>755F78B037834CD09B29C42D1A63A1B6</prompt>
+                            <prompt>D5A47D1C6DBA4499B659519AE0000856</prompt>
                         </multiLanguagesPromptItem>
                         <interruptible>true</interruptible>
                         <canChangeInterruptableOption>true</canChangeInterruptableOption>
-                        <ttsEnumed>false</ttsEnumed>
+                        <ttsEnumed>true</ttsEnumed>
                         <exitModuleOnException>false</exitModuleOnException>
                     </prompt>
                     <recoEvents>
@@ -245,11 +307,11 @@ N6zpOPbKrWlt/wPx/+hdNgMAAA==</xml>
                         <count>1</count>
                         <compoundPrompt>
                             <multiLanguagesPromptItem>
-                                <prompt>9BED287531A2493591A3DE63BF138F0C</prompt>
+                                <prompt>30E35D8D9B384EE0A3C5815B32F8F4FD</prompt>
                             </multiLanguagesPromptItem>
                             <interruptible>false</interruptible>
                             <canChangeInterruptableOption>true</canChangeInterruptableOption>
-                            <ttsEnumed>false</ttsEnumed>
+                            <ttsEnumed>true</ttsEnumed>
                             <exitModuleOnException>false</exitModuleOnException>
                         </compoundPrompt>
                         <action>REPROMPT</action>
@@ -259,49 +321,184 @@ N6zpOPbKrWlt/wPx/+hdNgMAAA==</xml>
                         <count>1</count>
                         <compoundPrompt>
                             <multiLanguagesPromptItem>
-                                <prompt>114228A09322479E93E8211044F2B775</prompt>
+                                <prompt>A9EF0FBEC7A94AE1B421C564FB8E2FA4</prompt>
                             </multiLanguagesPromptItem>
                             <interruptible>false</interruptible>
                             <canChangeInterruptableOption>true</canChangeInterruptableOption>
-                            <ttsEnumed>false</ttsEnumed>
+                            <ttsEnumed>true</ttsEnumed>
                             <exitModuleOnException>false</exitModuleOnException>
                         </compoundPrompt>
                         <action>REPROMPT</action>
                     </recoEvents>
                 </confirmData>
-                <confidenceTreshold>5</confidenceTreshold>
-                <maxTimeToEnter>15</maxTimeToEnter>
+                <items>
+                    <choice>
+                        <type>MODULE</type>
+                        <value></value>
+                        <showInVivr>true</showInVivr>
+                        <module>8BA7208C924845ADAA5193480808B192</module>
+                        <moduleField>__BUFFER__</moduleField>
+                    </choice>
+                    <match>APPR</match>
+                    <thumbnail>
+                        <type>VALUE</type>
+                        <value></value>
+                        <showInVivr>true</showInVivr>
+                    </thumbnail>
+                    <dtmf>DTMF_AUTO</dtmf>
+                    <actionType>BRANCH</actionType>
+                    <actionName>No Match</actionName>
+                </items>
+                <maxTimeToEnter>5</maxTimeToEnter>
                 <noInputTimeout>5</noInputTimeout>
-                <sensitivity>50</sensitivity>
-                <incompleteTimeout>2</incompleteTimeout>
-                <completeTimeout>0</completeTimeout>
-                <swirecNbestListLength>2</swirecNbestListLength>
-                <maxAttempts>3</maxAttempts>
                 <collapsible>false</collapsible>
-                <recognizeConfigParameters>
-                    <recognizeConfigParameter>NO_INPUT_TIMEOUT</recognizeConfigParameter>
-                    <recognizeConfigParameter>CONFIDENCE_TRESHOLD</recognizeConfigParameter>
-                    <recognizeConfigParameter>MAX_TIME_TO_ENTER</recognizeConfigParameter>
-                </recognizeConfigParameters>
-                <recordUserInput>false</recordUserInput>
-                <dtmfHelpButton>null</dtmfHelpButton>
             </data>
-        </input>
+        </menu>
+        <skillTransfer>
+            <ascendants>503CA41490AC4093824A918616931560</ascendants>
+            <ascendants>0A1982A4334549D790B4DA73DED0023C</ascendants>
+            <singleDescendant>CDF589CBD29C4C10B141E6EF487FF484</singleDescendant>
+            <moduleName>SkillTransfer3</moduleName>
+            <locationX>568</locationX>
+            <locationY>140</locationY>
+            <moduleId>BF553F6C0E064B09AFBFD7066CA05E5A</moduleId>
+            <data>
+                <dispo>
+                    <id>-5</id>
+                    <name>Abandon</name>
+                </dispo>
+                <maxQueueTime>600</maxQueueTime>
+                <queueIfOnCall>true</queueIfOnCall>
+                <onCallQueueTime>600</onCallQueueTime>
+                <queueIfOnBreakOrLoggedOut>true</queueIfOnBreakOrLoggedOut>
+                <onBreakOrLoggedOutQueueTime>600</onBreakOrLoggedOutQueueTime>
+                <callbackDigit>35</callbackDigit>
+                <onQueueTimeoutExpiration>false</onQueueTimeoutExpiration>
+                <pauseBeforeTransfer>0</pauseBeforeTransfer>
+                <maxRingTime>15</maxRingTime>
+                <placeOnBreakIfNoAnswer>true</placeOnBreakIfNoAnswer>
+                <vmTransferOnQueueTimeout>false</vmTransferOnQueueTimeout>
+                <vmTransferOnDigit>false</vmTransferOnDigit>
+                <vmBoxType>SKILL</vmBoxType>
+                <clearDigitBuffer>true</clearDigitBuffer>
+                <enableMusicOnHold>true</enableMusicOnHold>
+                <announcements>
+                    <enabled>false</enabled>
+                    <loopped>false</loopped>
+                    <timeout>1</timeout>
+                    <prompt/>
+                    <annType>EWT</annType>
+                </announcements>
+                <announcements>
+                    <enabled>false</enabled>
+                    <loopped>false</loopped>
+                    <timeout>1</timeout>
+                    <prompt/>
+                    <annType>EWT</annType>
+                </announcements>
+                <announcements>
+                    <enabled>false</enabled>
+                    <loopped>false</loopped>
+                    <timeout>1</timeout>
+                    <prompt/>
+                    <annType>EWT</annType>
+                </announcements>
+                <announcements>
+                    <enabled>false</enabled>
+                    <loopped>false</loopped>
+                    <timeout>1</timeout>
+                    <prompt/>
+                    <annType>EWT</annType>
+                </announcements>
+                <announcements>
+                    <enabled>false</enabled>
+                    <loopped>false</loopped>
+                    <timeout>1</timeout>
+                    <prompt/>
+                    <annType>EWT</annType>
+                </announcements>
+                <priorityChangeType>INCREASE</priorityChangeType>
+                <priorityChangeValue>
+                    <isVarSelected>false</isVarSelected>
+                    <integerValue>
+                        <value>15</value>
+                    </integerValue>
+                </priorityChangeValue>
+                <listOfSkillsEx>
+                    <extrnalObj>
+                        <id>311</id>
+                        <name>sk_skill</name>
+                    </extrnalObj>
+                    <varSelected>false</varSelected>
+                </listOfSkillsEx>
+                <taskType>0</taskType>
+                <transferAlgorithm>
+                    <algorithmType>LongestReadyTime</algorithmType>
+                    <statAlgorithmTimeWindow>E15minutes</statAlgorithmTimeWindow>
+                </transferAlgorithm>
+                <recordedFilesAction>KEEP_AS_RECORDINGD</recordedFilesAction>
+                <callbackPhoneNumberPrompt>
+                    <id>-26</id>
+                    <name>QC1YourPhoneNumberIs</name>
+                </callbackPhoneNumberPrompt>
+                <callbackConfirmingPhoneNumberPrompt>
+                    <id>-27</id>
+                    <name>QC2PressOneIfCorrect</name>
+                </callbackConfirmingPhoneNumberPrompt>
+                <callbackEnteringPhoneNumberPrompt>
+                    <id>-28</id>
+                    <name>QC3PleaseEnterYourPhoneNumber</name>
+                </callbackEnteringPhoneNumberPrompt>
+                <callbackConfirmationPrompt>
+                    <id>-29</id>
+                    <name>QC4YouWillBeCalled</name>
+                </callbackConfirmationPrompt>
+                <callbackQueueTimeoutSec>18000</callbackQueueTimeoutSec>
+                <callbackEnterDigitsMaxTimeSec>5</callbackEnterDigitsMaxTimeSec>
+                <callbackAllowInternational>false</callbackAllowInternational>
+                <isTcpaConsentEnabled>false</isTcpaConsentEnabled>
+                <tcpaConsentText>H4sIAAAAAAAAADWOwQ3DMAwDV+EARYboL58uUPSh2EwjwJYCy878TVDkS/IOnJHcgtbRHY2JehBJ
+SgmszSvezxFqjMBLKj+Qc7gRnYX75kbYqAsb9uaHZmbI4gcfUEtlZLXv1VTv6iblL55mDMts0cXy
+aTuV9wcNmHfIFWS9IPiKfbS0SXD6AQLT2xmtAAAA</tcpaConsentText>
+                <ignoreSkillsOrder>false</ignoreSkillsOrder>
+            </data>
+        </skillTransfer>
+        <hangup>
+            <ascendants>BF553F6C0E064B09AFBFD7066CA05E5A</ascendants>
+            <moduleName>Hangup9</moduleName>
+            <locationX>678</locationX>
+            <locationY>140</locationY>
+            <moduleId>CDF589CBD29C4C10B141E6EF487FF484</moduleId>
+            <data>
+                <dispo>
+                    <id>0</id>
+                    <name>No Disposition</name>
+                </dispo>
+                <returnToCallingModule>true</returnToCallingModule>
+                <errCode>
+                    <isVarSelected>false</isVarSelected>
+                    <integerValue>
+                        <value>0</value>
+                    </integerValue>
+                </errCode>
+                <overwriteDisposition>true</overwriteDisposition>
+            </data>
+        </hangup>
     </modules>
     <modulesOnHangup>
         <startOnHangup>
-            <singleDescendant>B955689FF7E54E4A8CD84E30C38DD82F</singleDescendant>
+            <singleDescendant>F7045EDFB3BD4CAA814256299C6F524B</singleDescendant>
             <moduleName>StartOnHangup1</moduleName>
-            <locationX>34</locationX>
-            <locationY>62</locationY>
-            <moduleId>633140A87B554504A6D5DC276C3CF50F</moduleId>
+            <locationX>86</locationX>
+            <locationY>37</locationY>
+            <moduleId>C713301C29D948148AC2768FFBFC349C</moduleId>
         </startOnHangup>
         <hangup>
-            <ascendants>633140A87B554504A6D5DC276C3CF50F</ascendants>
+            <ascendants>C713301C29D948148AC2768FFBFC349C</ascendants>
             <moduleName>Hangup1</moduleName>
-            <locationX>134</locationX>
-            <locationY>62</locationY>
-            <moduleId>B955689FF7E54E4A8CD84E30C38DD82F</moduleId>
+            <locationX>186</locationX>
+            <locationY>37</locationY>
+            <moduleId>F7045EDFB3BD4CAA814256299C6F524B</moduleId>
             <data>
                 <dispo>
                     <id>-17</id>
@@ -318,59 +515,225 @@ N6zpOPbKrWlt/wPx/+hdNgMAAA==</xml>
             </data>
         </hangup>
     </modulesOnHangup>
-    <userVariables/>
+    <userVariables>
+        <entry>
+            <key>call_out_chinese</key>
+            <value>
+                <name>call_out_chinese</name>
+                <description></description>
+                <stringValue>
+                    <value>&#22823;&#21898;</value>
+                    <id>0</id>
+                </stringValue>
+                <attributes>8</attributes>
+                <isNullValue>false</isNullValue>
+            </value>
+        </entry>
+        <entry>
+            <key>call_out_english</key>
+            <value>
+                <name>call_out_english</name>
+                <description></description>
+                <stringValue>
+                    <value>CALL OUT</value>
+                    <id>0</id>
+                </stringValue>
+                <attributes>8</attributes>
+                <isNullValue>false</isNullValue>
+            </value>
+        </entry>
+        <entry>
+            <key>call_out_russian</key>
+            <value>
+                <name>call_out_russian</name>
+                <description></description>
+                <stringValue>
+                    <value>&#1054;&#1058;&#1054;&#1047;&#1042;&#1040;&#1058;&#1068;</value>
+                    <id>0</id>
+                </stringValue>
+                <attributes>8</attributes>
+                <isNullValue>false</isNullValue>
+            </value>
+        </entry>
+        <entry>
+            <key>checkin_chinese</key>
+            <value>
+                <name>checkin_chinese</name>
+                <description></description>
+                <stringValue>
+                    <value>&#27880;&#20876;</value>
+                    <id>0</id>
+                </stringValue>
+                <attributes>8</attributes>
+                <isNullValue>false</isNullValue>
+            </value>
+        </entry>
+        <entry>
+            <key>checkin_english</key>
+            <value>
+                <name>checkin_english</name>
+                <description></description>
+                <stringValue>
+                    <value>AUTO CHECK IN</value>
+                    <id>0</id>
+                </stringValue>
+                <attributes>8</attributes>
+                <isNullValue>false</isNullValue>
+            </value>
+        </entry>
+        <entry>
+            <key>checkin_russian</key>
+            <value>
+                <name>checkin_russian</name>
+                <description></description>
+                <stringValue>
+                    <value>&#1056;&#1045;&#1043;&#1048;&#1057;&#1058;&#1056;&#1040;&#1062;&#1048;&#1071;</value>
+                    <id>0</id>
+                </stringValue>
+                <attributes>8</attributes>
+                <isNullValue>false</isNullValue>
+            </value>
+        </entry>
+        <entry>
+            <key>language</key>
+            <value>
+                <name>language</name>
+                <description></description>
+                <stringValue>
+                    <value>english</value>
+                    <id>0</id>
+                </stringValue>
+                <attributes>4</attributes>
+                <isNullValue>false</isNullValue>
+            </value>
+        </entry>
+        <entry>
+            <key>please_choose_chinese</key>
+            <value>
+                <name>please_choose_chinese</name>
+                <description></description>
+                <stringValue>
+                    <value>&#35831;&#20174;&#19979;&#38754;&#36873;&#39033;&#20013;&#36873;&#25321;</value>
+                    <id>0</id>
+                </stringValue>
+                <attributes>8</attributes>
+                <isNullValue>false</isNullValue>
+            </value>
+        </entry>
+        <entry>
+            <key>please_choose_english</key>
+            <value>
+                <name>please_choose_english</name>
+                <description></description>
+                <stringValue>
+                    <value>Please choose from the choices below</value>
+                    <id>0</id>
+                </stringValue>
+                <attributes>8</attributes>
+                <isNullValue>false</isNullValue>
+            </value>
+        </entry>
+        <entry>
+            <key>please_choose_russian</key>
+            <value>
+                <name>please_choose_russian</name>
+                <description></description>
+                <stringValue>
+                    <value>&#1042;&#1099;&#1073;&#1077;&#1088;&#1080;&#1090;&#1077; &#1086;&#1076;&#1085;&#1091; &#1080;&#1079; &#1086;&#1087;&#1094;&#1080;&#1081;:</value>
+                    <id>0</id>
+                </stringValue>
+                <attributes>8</attributes>
+                <isNullValue>false</isNullValue>
+            </value>
+        </entry>
+        <entry>
+            <key>user</key>
+            <value>
+                <name>user</name>
+                <description></description>
+                <stringValue>
+                    <value></value>
+                    <id>0</id>
+                </stringValue>
+                <attributes>4</attributes>
+                <isNullValue>true</isNullValue>
+            </value>
+        </entry>
+    </userVariables>
     <multiLanguagesPrompts>
         <entry>
-            <key>114228A09322479E93E8211044F2B775</key>
+            <key>0A1F8EF43492454DBDB8CC7934D51071</key>
             <value>
-                <promptId>114228A09322479E93E8211044F2B775</promptId>
-                <name>NoInputPrompt</name>
-                <description>Default prompt for NoInput event</description>
+                <promptId>0A1F8EF43492454DBDB8CC7934D51071</promptId>
+                <name>Prompt1</name>
+                <description>Great prompt</description>
                 <type>AUDIO</type>
                 <prompts>
                     <entry key="en-US">
                         <ttsPrompt>
-                            <xml>H4sIAAAAAAAAAIWRQYvCMBCF7/6KkHsdvS1LWnFhBc+7eh/toMV0Ip2p2H9vrVBNu7I5Je8b3ntM
-3OJaenOhSorAqZ1PZ9YQ70Ne8CG1m99V8mGNKHKOPjCltiGxi2zi5Ex4+vZUEms2Me1xqFoVu1pJ
-HkIneuTDsgVPqZMZS8ra6M87d9A944nebYu+pi8UMpf7LbXEyebHwksIxCkOhlVcoVS+1hJslhLV
-HwcLDMjApNeVrvqn1/+esfc7uAt5k63NHpmDmiNhZZpQTx10YFwI3jZyMNwEjFfRD7Uw+uYbQw31
-uC4CAAA=</xml>
+                            <xml>H4sIAAAAAAAAAIVRywrCQAy8+xXr3jV6E9lWFBQPggcf92hDKW5TabZi/95aobqtYk7JTJiZEDO7
+p1bdKJck40CPhyOtiM9ZlHAc6MN+NZhoJQ45QpsxBbok0bOwZ+RKeFlaSold2FNVGXQuT06FI3kB
+NWiR43lFvKEaZkwprKynT95APfobjdoRbUELFFK3Zxdo4sFhp+HDBHwXA+0oJnGUfsYSLOfixe8a
+C7SYlkiDO7q7r1r/NX3tX+Qpi8pwvdxstn0D9dANAT9TGGhfD93zm6WK9F77AN7XmcAiAgAA</xml>
                             <promptTTSEnumed>false</promptTTSEnumed>
                         </ttsPrompt>
-                    </entry>
-                </prompts>
-                <defaultLanguage>en-US</defaultLanguage>
-                <isPersistent>true</isPersistent>
-            </value>
-        </entry>
-        <entry>
-            <key>755F78B037834CD09B29C42D1A63A1B6</key>
-            <value>
-                <promptId>755F78B037834CD09B29C42D1A63A1B6</promptId>
-                <name>ConfirmPrompt</name>
-                <description>Default prompt for user input confirmation</description>
-                <type>AUDIO</type>
-                <prompts>
-                    <entry key="en-US">
                         <ttsPrompt>
-                            <xml>H4sIAAAAAAAAANVTUWvCMBB+91ccebeZexqSVhw4EMTB1A2fSrQ3DWsTyaXO/vulHXNttQwGe1jI
-Q/J9ue++3CVidMpSOKIlZXTIBsENA9Rbkyi9C9lq+dC/Y0BO6kSmRmPICiQ2inqCDijfJilmqF3U
-Az+EdM6qTe6QPoEKTKXejT3xDVWwlhlGPvWw5AWvts0TZ7VnmeZ4LwnhWK5Chrq/WjBeS8KbWQRv
-WxHKYVa3RbIYU8P+ZWLiLaYlcsYdntxVrZ81m9pd5MYkRbQ2uW+NQ4vJ0F+xwi698E4zgreLwK9X
-QRylVXKT4q/q0wa/xOZli+N48TKNZ9Pl5Gk8i2PBG2zNWaeF/9i5ABayALb2XweMhYNFImADBuoV
-3F4R+Lk11uLWBfDo9mjflX/uVAbNTT3mlv1V48+HPNn42h9LoLssIgQAAA==</xml>
+                            <xml>H4sIAAAAAAAAAIVRywrCQAy8+xXr3jV6E9lWFPQHfJ2jDVLcZqVZS/v31grVbRVzSmbCzISYRZlZ
+VVAuqeNIT8cTrYjPLkn5Eun9bjOaaSUeOUHrmCJdkehFPDByI7yuLWXEPh6ougx6n6enuyd5AQ1o
+kS/LmnhDDcyYUVxbz5+8gWYMN1q1A9o7rVBIFc8u0sSj/VbDhwmELga6UUzqKfuMJVgtJYjfNxbo
+MB2RFvdU+q9a/zVD7V/kySVVfHS5TYYGmqEfAn6mMNC9Hvrnt0s1Gbz2AZdt1mEiAgAA</xml>
                             <promptTTSEnumed>false</promptTTSEnumed>
                         </ttsPrompt>
+                        <filePrompt>
+                            <promptData>
+                                <promptSelected>true</promptSelected>
+                                <prompt>
+                                    <id>-9</id>
+                                    <name>EIGHT</name>
+                                </prompt>
+                                <isRecordedMessage>false</isRecordedMessage>
+                            </promptData>
+                        </filePrompt>
+                        <filePrompt>
+                            <promptData>
+                                <promptSelected>false</promptSelected>
+                                <promptVariableName>call_out_chinese</promptVariableName>
+                                <isRecordedMessage>false</isRecordedMessage>
+                            </promptData>
+                        </filePrompt>
+                        <pausePrompt>
+                            <timeout>1000</timeout>
+                        </pausePrompt>
+                    </entry>
+                    <entry key="ru">
+                        <ttsPrompt>
+                            <xml>H4sIAAAAAAAAANVTwUrEMBC971fE3NfoTWTaZRe2Nz2IK97K1A5LME2lky3bn1m8CH5OP8m2Qm3a
+LV68GAhJ3hvem3kQWB0zI0oqWOc2kNeXV1KQfclTbfeB3D1Gyxsp2KFN0eSWAlkRy1W4AH4jfN0a
+ysi6cCGaBehcoZODI/4GOtCg3a8b4gfqYIsZhY31bcuD6p5+Ra/2hOZAG2QSZXsLJPHy7lmqgYny
+XUCNWwHtKBu2VWKhMTHkTTD1ZjViRjo97ujozmr9rulrz5FJnlYhqO6Y2qtZf1BnWu7Hv29zj+PN
+Loq2D3EMyiMGAc/mBYzVmv9XjPVHfarfm/1Zny7+IlNQ0xT6oob0/soXU3ioK3MDAAA=</xml>
+                            <promptTTSEnumed>false</promptTTSEnumed>
+                        </ttsPrompt>
+                        <filePrompt>
+                            <promptData>
+                                <promptSelected>true</promptSelected>
+                                <prompt>
+                                    <id>-9</id>
+                                    <name>EIGHT</name>
+                                </prompt>
+                                <isRecordedMessage>false</isRecordedMessage>
+                            </promptData>
+                        </filePrompt>
                     </entry>
                 </prompts>
                 <defaultLanguage>en-US</defaultLanguage>
-                <isPersistent>true</isPersistent>
+                <isPersistent>false</isPersistent>
             </value>
         </entry>
         <entry>
-            <key>9BED287531A2493591A3DE63BF138F0C</key>
+            <key>30E35D8D9B384EE0A3C5815B32F8F4FD</key>
             <value>
-                <promptId>9BED287531A2493591A3DE63BF138F0C</promptId>
+                <promptId>30E35D8D9B384EE0A3C5815B32F8F4FD</promptId>
                 <name>NoMatchPrompt</name>
                 <description>Default prompt for NoMatch event</description>
                 <type>AUDIO</type>
@@ -391,9 +754,44 @@ LAIAAA==</xml>
             </value>
         </entry>
         <entry>
-            <key>FDA5FB8B16E24EE1BAEE0D3A4360161D</key>
+            <key>49DF58AE5B15414E8F2EDD155362E5CF</key>
             <value>
-                <promptId>FDA5FB8B16E24EE1BAEE0D3A4360161D</promptId>
+                <promptId>49DF58AE5B15414E8F2EDD155362E5CF</promptId>
+                <name>Prompt2</name>
+                <description>Yet more great prompt</description>
+                <type>AUDIO</type>
+                <prompts>
+                    <entry key="en-US">
+                        <filePrompt>
+                            <promptData>
+                                <promptSelected>true</promptSelected>
+                                <prompt>
+                                    <id>2105</id>
+                                    <name>121</name>
+                                </prompt>
+                                <isRecordedMessage>false</isRecordedMessage>
+                            </promptData>
+                        </filePrompt>
+                    </entry>
+                    <entry key="ru">
+                        <ttsPrompt>
+                            <xml>H4sIAAAAAAAAAIVRQW7CMBC88wrLd9j2hionCCR640YrelzirTE4TsU6Ef59k1RKcVJUS5a8M6OZ
+0VqtbqUTDV3ZVj6Tz4snKcgXlbbeZPJt/zpfSsEBvUZXecpkJJarfKb4i/CydVSSD/lMtEdhCFd7
+rAPxD9CDDr1Zt8Qv1MMeS8rb6JeOV9CPqWJwe0dX0waZRNO9Mkk83x0k3IVAmqJgXEXZQOV9Lca4
+5qT+NJhhxIxMBjzQLfzp9b9n6v2IPFY65vuPYGvT3XNxMkVzMqxRmGjNJX6iZq2g1037wcOCCsaL
+gelmBlFLJr/+DZ/Bje89AgAA</xml>
+                            <promptTTSEnumed>false</promptTTSEnumed>
+                        </ttsPrompt>
+                    </entry>
+                </prompts>
+                <defaultLanguage>en-US</defaultLanguage>
+                <isPersistent>false</isPersistent>
+            </value>
+        </entry>
+        <entry>
+            <key>767037A5A97F444FB62472EE7C2B0007</key>
+            <value>
+                <promptId>767037A5A97F444FB62472EE7C2B0007</promptId>
                 <name>ConfirmPromptWithoutVSR</name>
                 <description>Default prompt for user input confirmation with disabled voice recognition</description>
                 <type>AUDIO</type>
@@ -414,10 +812,140 @@ BujB7kB/cHfD98e6a/xX8+2KHOm94E/oteYzCQQAAA==</xml>
                 <isPersistent>true</isPersistent>
             </value>
         </entry>
+        <entry>
+            <key>A9EF0FBEC7A94AE1B421C564FB8E2FA4</key>
+            <value>
+                <promptId>A9EF0FBEC7A94AE1B421C564FB8E2FA4</promptId>
+                <name>NoInputPrompt</name>
+                <description>Default prompt for NoInput event</description>
+                <type>AUDIO</type>
+                <prompts>
+                    <entry key="en-US">
+                        <ttsPrompt>
+                            <xml>H4sIAAAAAAAAAIWRQYvCMBCF7/6KkHsdvS1LWnFhBc+7eh/toMV0Ip2p2H9vrVBNu7I5Je8b3ntM
+3OJaenOhSorAqZ1PZ9YQ70Ne8CG1m99V8mGNKHKOPjCltiGxi2zi5Ex4+vZUEms2Me1xqFoVu1pJ
+HkIneuTDsgVPqZMZS8ra6M87d9A944nebYu+pi8UMpf7LbXEyebHwksIxCkOhlVcoVS+1hJslhLV
+HwcLDMjApNeVrvqn1/+esfc7uAt5k63NHpmDmiNhZZpQTx10YFwI3jZyMNwEjFfRD7Uw+uYbQw31
+uC4CAAA=</xml>
+                            <promptTTSEnumed>false</promptTTSEnumed>
+                        </ttsPrompt>
+                    </entry>
+                </prompts>
+                <defaultLanguage>en-US</defaultLanguage>
+                <isPersistent>true</isPersistent>
+            </value>
+        </entry>
+        <entry>
+            <key>D5A47D1C6DBA4499B659519AE0000856</key>
+            <value>
+                <promptId>D5A47D1C6DBA4499B659519AE0000856</promptId>
+                <name>ConfirmPrompt</name>
+                <description>Default prompt for user input confirmation</description>
+                <type>AUDIO</type>
+                <prompts>
+                    <entry key="en-US">
+                        <ttsPrompt>
+                            <xml>H4sIAAAAAAAAANVTUWvCMBB+91ccebeZexqSVhw4EMTB1A2fSrQ3DWsTyaXO/vulHXNttQwGe1jI
+Q/J9ue++3CVidMpSOKIlZXTIBsENA9Rbkyi9C9lq+dC/Y0BO6kSmRmPICiQ2inqCDijfJilmqF3U
+Az+EdM6qTe6QPoEKTKXejT3xDVWwlhlGPvWw5AWvts0TZ7VnmeZ4LwnhWK5Chrq/WjBeS8KbWQRv
+WxHKYVa3RbIYU8P+ZWLiLaYlcsYdntxVrZ81m9pd5MYkRbQ2uW+NQ4vJ0F+xwi698E4zgreLwK9X
+QRylVXKT4q/q0wa/xOZli+N48TKNZ9Pl5Gk8i2PBG2zNWaeF/9i5ABayALb2XweMhYNFImADBuoV
+3F4R+Lk11uLWBfDo9mjflX/uVAbNTT3mlv1V48+HPNn42h9LoLssIgQAAA==</xml>
+                            <promptTTSEnumed>false</promptTTSEnumed>
+                        </ttsPrompt>
+                    </entry>
+                </prompts>
+                <defaultLanguage>en-US</defaultLanguage>
+                <isPersistent>true</isPersistent>
+            </value>
+        </entry>
     </multiLanguagesPrompts>
-    <multiLanguagesVIVRPrompts/>
-    <multiLanguagesMenuChoices/>
-    <languages/>
+    <multiLanguagesVIVRPrompts>
+        <entry>
+            <key>4A3A2314AB14449484E73B14A8CA3408</key>
+            <value>
+                <promptId>4A3A2314AB14449484E73B14A8CA3408</promptId>
+                <name>VPrompt3</name>
+                <description>VISUAL1</description>
+                <type>VISUAL</type>
+                <prompts>
+                    <entry key="en-US">
+                        <vivrPrompt>
+                            <xml>H4sIAAAAAAAAAG1OvQ7CIBjc+xSEXdGtA9DNJ8ChI5UvhqTlS+CjKW+v0kYS4033k8udHLZlZivE
+5DEofj1fOIPwQOfDU/G7uZ16zhLZ4OyMARQvkPigOxkRSXfsDWmJop8yQRKH4wmWtPOqCTZq8n/p
+m9TyrzmhK9qMmXIhZkr/IWY02RcpatbGRFuT4ngixf73BbHfljDvAAAA</xml>
+                        </vivrPrompt>
+                        <imagePrompt>
+                            <imageURL>http://google.com</imageURL>
+                            <isVariableSelected>false</isVariableSelected>
+                        </imagePrompt>
+                        <imagePrompt>
+                            <isVariableSelected>true</isVariableSelected>
+                            <variableName>call_out_english</variableName>
+                        </imagePrompt>
+                    </entry>
+                    <entry key="ru">
+                        <vivrPrompt>
+                            <xml>H4sIAAAAAAAAALOxr8jNUShLLSrOzM+zVTLUM1BSSM1Lzk/JzEu3VQoNcdO1UFIoLknMS0nMyc9L
+tVWqTC1WsrfjsinKzy+x41IAApvEkpKizKTSktRifahIZklqbjGEDeaXpFaUILjYNcFlwJrRBZPy
+UyrtLiy9MO/CAiBecWGewoWFF2ZcmALEcxRt9MHSCPv0ERba6EMdY6MPcTIAiBp4tvIAAAA=</xml>
+                        </vivrPrompt>
+                    </entry>
+                </prompts>
+                <defaultLanguage>en-US</defaultLanguage>
+                <isPersistent>false</isPersistent>
+            </value>
+        </entry>
+    </multiLanguagesVIVRPrompts>
+    <multiLanguagesMenuChoices>
+        <entry>
+            <key>62F7A8D46EE7412F84EBDD170EF21B68</key>
+            <value xsi:type="multiLanguageMenuPrompt" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                <promptId>62F7A8D46EE7412F84EBDD170EF21B68</promptId>
+                <name>Menu Item1</name>
+                <type>MENU_ITEM</type>
+                <prompts>
+                    <entry key="en-US">
+                        <multiLanguagesMenuChoiceItem>
+                            <voicePrompt>
+                                <xml>H4sIAAAAAAAAAIVSQW6DMBC85xWW7+mmt6paiIIUjj20pVe0lFVk1SwVNoj8vkAliglRfbE9Y83M
+jozHvrKq48aZWiL9+HDQiuWzLo1cIp29p/snrZwnKcnWwpG+stPHeIfum+nrbLli8fFODQvJ+8YU
+rWf3C0ygJbmcBuIPmmChiuPB+nnkEaZr+GJW+yDbckKOVTeeIs2yz940LEwgdEFYR0HjuVrG6qgx
+VFgOJrj1drBiVjoz7rn3m1r/a4ba98iiLq8xwrTd2sNdf4SNyPP4L2PveZ5kaXp+zXOEgFgUvNnX
+rI0QfocfuPHFw1YCAAA=</xml>
+                                <promptTTSEnumed>false</promptTTSEnumed>
+                            </voicePrompt>
+                            <vivrPrompt>
+                                <xml>H4sIAAAAAAAAAG2PwQrCMAyG73uK0rtWbx7aDoT1AcSdS+eCFNoU2mzo2yvb3ECWU/L95P8TWb9i
+YCPk4hMqfj6eOAN8pN7jU/H2bg4Xzgo57F1ICIq/ofBaVzKnRLpi35KOKPtuIChiIZ4glrmf5tFl
+77oATYAISJuyv78qk88//Jlpa6+tMc3NWilWuIWK3VQpluOkmF/4ABOR1x4CAQAA</xml>
+                            </vivrPrompt>
+                            <thumbnail>
+                                <type>VALUE</type>
+                                <value></value>
+                                <showInVivr>true</showInVivr>
+                            </thumbnail>
+                        </multiLanguagesMenuChoiceItem>
+                    </entry>
+                </prompts>
+                <defaultLanguage>en-US</defaultLanguage>
+                <isPersistent>false</isPersistent>
+                <variablesModule>8BA7208C924845ADAA5193480808B192</variablesModule>
+            </value>
+        </entry>
+    </multiLanguagesMenuChoices>
+    <languages>
+        <languages>
+            <lang>en-US</lang>
+            <ttsLanguage>en-US</ttsLanguage>
+            <ttsVoice>Samantha</ttsVoice>
+        </languages>
+        <languages>
+            <lang>ru</lang>
+            <ttsLanguage>es-MX</ttsLanguage>
+            <ttsVoice>Paulina</ttsVoice>
+        </languages>
+    </languages>
     <defaultLanguage>en-US</defaultLanguage>
     <defaultMethod>GET</defaultMethod>
     <defaultFetchTimeout>5</defaultFetchTimeout>

@@ -12,6 +12,7 @@ type InputModule struct {
 	Id         string    `xml:"moduleId"`
 	ModuleData DataInput `xml:"data"`
 }
+
 type DataInput struct {
 	DispoName string       `xml:"dispo>name"`
 	DispoId   int32        `xml:"dispo>id"`

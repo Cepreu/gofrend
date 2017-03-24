@@ -9,10 +9,12 @@ import (
 )
 
 type Script struct {
-	XMLName    xml.Name `xml:"ivrScript"`
-	Domain     int32    `xml:"domainId"`
-	Properties string   `xml:"properties"`
-	Modules    Modules  `xml:"modules"`
+	XMLName    xml.Name            `xml:"ivrScript"`
+	Domain     int32               `xml:"domainId"`
+	Properties string              `xml:"properties"`
+	Modules    Modules             `xml:"modules"`
+	MLPrompts  multilingualPrompts `xml:"multiLanguagesPrompts"`
+	Variables  []xUserVariable     `xml:"userVariables>entry"`
 }
 type Modules struct {
 	XMLName   xml.Name             `xml:"modules"`
@@ -20,6 +22,16 @@ type Modules struct {
 	ICModules []IncomingCallModule `xml:"incomingCall"`
 	PModules  []PlayModule         `xml:"play"`
 	IModules  []InputModule        `xml:"input"`
+}
+
+type xUserVariable struct {
+	Key           string `xml:"key"`
+	Name          string `xml:"value>name"`
+	Description   string `xml:"value>description"`
+	StringValue   string `xml:"value>stringValue>value"`
+	StringValueId int32  `xml:"value>stringValue>id"`
+	Attributes    int32  `xml:"value>attributes"`
+	IsNullValue   bool   `xml:"isNullValue"`
 }
 
 /*
