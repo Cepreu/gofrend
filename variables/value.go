@@ -10,7 +10,7 @@ type IVRValue interface {
 	toBigDecimal() (float64, typeCastError)
 	toDate() (date, typeCastError)
 	toTime() (time, typeCastError)
-}
+	compareTo(Value) (int, error)
 
     {
         throw new TypeCastException("Cannot convert " + 

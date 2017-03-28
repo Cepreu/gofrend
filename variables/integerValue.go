@@ -28,7 +28,7 @@ func (this IntegerValue) compareTo(value2 Value) (int, error) {
 	}
 	if this.value > toCompare {
 		res = 1
-	} else if value < toCompare {
+	} else if this.value < toCompare {
 		res = -1
 	}
 	return res, nil
