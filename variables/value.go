@@ -1,14 +1,24 @@
 package variables
 
-type Value struct {
+type IVRValue interface {
+	compareTo(Value) (uint8, error) 
+	assign(Value) 
+	isEmpty() bool
+	toString()
+	convertToString() (string, typeCastError)
+	toLong() (int64, error)
+	toBigDecimal() (float64, typeCastError)
+	toDate() (date, typeCastError)
+	toTime() (time, typeCastError)
 }
 
-func (v Value) compareTo(v2 Value) uint8 {
-	return 0
-}
-func (pv *Value) assign(v2 Value) {
-
-}
-func (v Value) isEmpty() bool {
-
-}
+    {
+        throw new TypeCastException("Cannot convert " + 
+                                    this.getClass().getSimpleName() + 
+                                    " to Integer");
+    }
+ 
+    func ToString()
+    {
+        return "{type=" + getType().getLogName() + "}{value=" + SecureValue.create(secure, convertToString()) + "}";
+    }
