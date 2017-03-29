@@ -21,7 +21,8 @@ const (
 type Type int
 
 const (
-	STRING Type = iota
+	UNDEFINED Type = iota
+	STRING
 	INTEGER
 	ERROR
 	NUMERIC

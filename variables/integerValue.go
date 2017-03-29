@@ -7,14 +7,14 @@ import (
 )
 
 type IntegerValue struct {
-	secure bool
-	value  int64
+	defaultValueImpl
+	value int64
 }
 
 func (ival *IntegerValue) isSecure() bool { return ival.secure }
 
 func (ival *IntegerValue) assign(that IVRValue) error {
-	ival.secure = that.isSecure()
+	ival.defaultValueImpl.assign(that)
 	v, err := that.toLong()
 	ival.value = v
 	return err
@@ -66,12 +66,6 @@ func (ival *IntegerValue) convertToString() (string, error) {
 func (ival *IntegerValue) toBigDecimal() (float64, error) {
 	return float64(ival.value), nil
 }
-func (*IntegerValue) toDate() ([]int32, error) {
-	return nil, errors.New("Data casting error")
-}
-func (*IntegerValue) toTime() ([]int32, error) {
-	return nil, errors.New("Data casting error")
-}
 
 func (*IntegerValue) getType() Type {
 	return INTEGER
@@ -79,26 +73,26 @@ func (*IntegerValue) getType() Type {
 
 ///////////
 func getSum(args []IVRValue) (IntegerValue, error) {
-	var value int64
-	secure := false
+	var val int64
+	scr := false
 
 	for _, v := range args {
 		add, err := v.toLong()
 		if err != nil {
 			return IntegerValue{}, err
 		}
-		value += add
-		secure = secure || v.isSecure()
+		val += add
+		scr = scr || v.isSecure()
 	}
 
-	return IntegerValue{secure, value}, nil
+	return IntegerValue{defaultValueImpl{scr}, val}, nil
 }
 
 func getDifference(arg1 IVRValue, arg2 IVRValue) (IntegerValue, error) {
 	v1, err := arg1.toLong()
 	if err == nil {
 		if v2, err := arg2.toLong(); err == nil {
-			return IntegerValue{arg1.isSecure() || arg2.isSecure(), v1 - v2}, nil
+			return IntegerValue{defaultValueImpl{arg1.isSecure() || arg2.isSecure()}, v1 - v2}, nil
 		}
 	}
 	return IntegerValue{}, err
@@ -118,7 +112,7 @@ func getProduct(args []IVRValue) (IntegerValue, error) {
 		secure = secure || v.isSecure()
 	}
 
-	return IntegerValue{secure, value}, nil
+	return IntegerValue{defaultValueImpl{secure}, value}, nil
 
 }
 
@@ -129,7 +123,7 @@ func getQuotation(arg1 IVRValue, arg2 IVRValue) (IntegerValue, error) {
 			if v2 == 0 {
 				return IntegerValue{}, errors.New("Division by zero")
 			}
-			return IntegerValue{arg1.isSecure() || arg2.isSecure(), v1 / v2}, nil
+			return IntegerValue{defaultValueImpl{arg1.isSecure() || arg2.isSecure()}, v1 / v2}, nil
 		}
 	}
 	return IntegerValue{}, err
