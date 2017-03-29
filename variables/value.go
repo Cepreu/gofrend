@@ -1,24 +1,15 @@
 package variables
 
 type IVRValue interface {
-	compareTo(Value) (uint8, error) 
-	assign(Value) 
-	isEmpty() bool
-	toString()
-	convertToString() (string, typeCastError)
+	compareTo(IVRValue) (int, error)
+	assign(IVRValue) error
+	new(bool, string) error
+	toString() string
+	convertToString() (string, error)
 	toLong() (int64, error)
-	toBigDecimal() (float64, typeCastError)
-	toDate() (date, typeCastError)
-	toTime() (time, typeCastError)
-	compareTo(Value) (int, error)
-
-    {
-        throw new TypeCastException("Cannot convert " + 
-                                    this.getClass().getSimpleName() + 
-                                    " to Integer");
-    }
- 
-    func ToString()
-    {
-        return "{type=" + getType().getLogName() + "}{value=" + SecureValue.create(secure, convertToString()) + "}";
-    }
+	toBigDecimal() (float64, error)
+	toDate() ([]int32, error)
+	toTime() ([]int32, error)
+	isSecure() bool
+	getType() Type
+}

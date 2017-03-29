@@ -2,6 +2,7 @@ package variables
 
 import (
 	"errors"
+	"fmt"
 	"strconv"
 )
 
@@ -10,92 +11,126 @@ type IntegerValue struct {
 	value  int64
 }
 
-func (this *IntegerValue) Assign(secure bool, strValue string) error {
-	this.secure = secure
-	if i64, err := strconv.ParseInt(strValue, 10, 64); err != nil {
+func (ival *IntegerValue) isSecure() bool { return ival.secure }
+
+func (ival *IntegerValue) assign(that IVRValue) error {
+	ival.secure = that.isSecure()
+	v, err := that.toLong()
+	ival.value = v
+	return err
+}
+
+func (ival *IntegerValue) new(secure bool, strValue string) error {
+	ival.secure = secure
+	i64, err := strconv.ParseInt(strValue, 10, 64)
+	if err != nil {
 		return errors.New("Cannot convert string to long")
 	}
+	ival.value = i64
 	return nil
 }
 
-func (this IntegerValue) compareTo(value2 Value) (int, error) {
-	if value2.getType() == "NumericValue" {
-		return value2.compareTo(this)
+func (ival *IntegerValue) compareTo(value2 IVRValue) (int, error) {
+	if value2.getType() == NUMERIC {
+		return value2.compareTo(ival)
 	}
 	res := 0
-	if toCompare, err := value2.toLong(); err != nil {
-		return res, errors.New("Variable to compare must be of IntegerValue type:")
+	toCompare, err := value2.toLong()
+	if err != nil {
+		return res, errors.New("Variable to compare must be of IntegerValue type")
 	}
-	if this.value > toCompare {
+	if ival.value > toCompare {
 		res = 1
-	} else if this.value < toCompare {
+	} else if ival.value < toCompare {
 		res = -1
 	}
 	return res, nil
 }
 
-func (this IntegerValue) toLong() (int64, error) {
-	return this.value, nil
+func (ival *IntegerValue) toLong() (int64, error) {
+	return ival.value, nil
 }
 
-func (this IntegerValue) convertToString() string {
-	return strconv.FormatInt(this.value, 16)
+func (ival *IntegerValue) toString() string {
+	str := "*****"
+	if !ival.secure {
+		str, _ = ival.convertToString()
+	}
+	return fmt.Sprintf("{type=IntegerValue}{value=%s}", str)
 }
 
-func (IntegerValue) getType() {
-	return Type.INTEGER
+func (ival *IntegerValue) convertToString() (string, error) {
+	return strconv.FormatInt(ival.value, 10), nil
+}
+
+func (ival *IntegerValue) toBigDecimal() (float64, error) {
+	return float64(ival.value), nil
+}
+func (*IntegerValue) toDate() ([]int32, error) {
+	return nil, errors.New("Data casting error")
+}
+func (*IntegerValue) toTime() ([]int32, error) {
+	return nil, errors.New("Data casting error")
+}
+
+func (*IntegerValue) getType() Type {
+	return INTEGER
 }
 
 ///////////
-func getSum(args []Value) (IntegerValue, error) {
-	value := 0
+func getSum(args []IVRValue) (IntegerValue, error) {
+	var value int64
 	secure := false
 
 	for _, v := range args {
-		if add, err := v.toLong(); err != nil {
-			return nil, err
+		add, err := v.toLong()
+		if err != nil {
+			return IntegerValue{}, err
 		}
 		value += add
-		secure |= v.isSecure()
+		secure = secure || v.isSecure()
 	}
 
 	return IntegerValue{secure, value}, nil
 }
 
-func getDifference(arg1 Value, arg2 Value) (IntegerValue, error) {
-	if v1, err := arg1.toLong(); err == nil {
+func getDifference(arg1 IVRValue, arg2 IVRValue) (IntegerValue, error) {
+	v1, err := arg1.toLong()
+	if err == nil {
 		if v2, err := arg2.toLong(); err == nil {
 			return IntegerValue{arg1.isSecure() || arg2.isSecure(), v1 - v2}, nil
 		}
 	}
-	return nil, err
+	return IntegerValue{}, err
 }
 
-func getProduct(args []Value) (IntegerValue, error) {
+func getProduct(args []IVRValue) (IntegerValue, error) {
 
-	value := 1
+	value := int64(1)
 	secure := false
 
 	for _, v := range args {
-		if prod, err := v.toLong(); err != nil {
-			return nil, err
+		prod, err := v.toLong()
+		if err != nil {
+			return IntegerValue{}, err
 		}
 		value *= prod
-		secure |= v.isSecure()
+		secure = secure || v.isSecure()
 	}
 
 	return IntegerValue{secure, value}, nil
 
 }
 
-func getQuotation(arg1 Value, arg2 Value) (IntegerValue, error) {
-	if v1, err := arg1.toLong(); err == nil {
+func getQuotation(arg1 IVRValue, arg2 IVRValue) (IntegerValue, error) {
+	v1, err := arg1.toLong()
+	if err == nil {
 		if v2, err := arg2.toLong(); err == nil {
 			if v2 == 0 {
-				return nil, errors.New("Division by zero")
+				return IntegerValue{}, errors.New("Division by zero")
 			}
 			return IntegerValue{arg1.isSecure() || arg2.isSecure(), v1 / v2}, nil
 		}
 	}
-	return nil, err
+	return IntegerValue{}, err
 }
