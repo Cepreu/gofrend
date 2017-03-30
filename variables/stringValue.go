@@ -8,32 +8,45 @@ import (
 
 type StringValue struct {
 	defaultValueImpl
-	value  string
-        FileNameType fileNameType
-	id int64
+	value        string
+	fileNameType FileNameType
+	id           int64
 }
-type FileNameType const (
-	GREETING iota
-        VOICEMAIL
-	RECORDING
+type FileNameType int8
+
+const (
+	FN_UNDEFINED FileNameType = iota
+	FN_GREETING
+	FN_VOICEMAIL
+	FN_RECORDING
 )
 
 func (sval *StringValue) isSecure() bool { return sval.secure }
 
 func (sval *StringValue) assign(that IVRValue) error {
 	sval.defaultValueImpl.assign(that)
-	v, err := that.toLong()
-	sval.value = v
+	if that.getType() == STRING {
+		t, ok := that.(*StringValue)
+		if !ok {
+			return fmt.Errorf("Corrupted IVRValue: %v", that)
+		}
+		if t.isFileName() {
+			sval.fileNameType = t.fileNameType
+			sval.id = t.id
+			sval.value = fmt.Sprintf("%v, id=%v)", sval.fileNameType, sval.id)
+			return nil
+		}
+	}
+	v, err := that.convertToString()
+	if err == nil {
+		sval.value = v
+	}
 	return err
 }
 
 func (sval *StringValue) new(secure bool, strValue string) error {
 	sval.secure = secure
-	i64, err := strconv.ParseInt(strValue, 10, 64)
-	if err != nil {
-		return errors.New("Cannot convert string to long")
-	}
-	sval.value = i64
+	sval.value = strValue
 	return nil
 }
 
@@ -42,7 +55,7 @@ func (sval *StringValue) compareTo(value2 IVRValue) (int, error) {
 		return value2.compareTo(sval)
 	}
 	res := 0
-	toCompare, err := value2.toLong()
+	toCompare, err := value2.convertToString()
 	if err != nil {
 		return res, errors.New("Variable to compare must be of StringValue type")
 	}
@@ -55,7 +68,7 @@ func (sval *StringValue) compareTo(value2 IVRValue) (int, error) {
 }
 
 func (sval *StringValue) toLong() (int64, error) {
-	return sval.value, nil
+	return strconv.ParseInt(sval.value, 10, 64)
 }
 
 func (sval *StringValue) toString() string {
@@ -67,11 +80,11 @@ func (sval *StringValue) toString() string {
 }
 
 func (sval *StringValue) convertToString() (string, error) {
-	return strconv.FormatInt(sval.value, 10), nil
+	return sval.value, nil
 }
 
 func (sval *StringValue) toBigDecimal() (float64, error) {
-	return float64(sval.value), nil
+	return strconv.ParseFloat(sval.value, 64)
 }
 
 func (*StringValue) getType() Type {
@@ -79,13 +92,12 @@ func (*StringValue) getType() Type {
 }
 
 ///////////
-func (sval StringValue)isFileName() bool {
-    return sval.fileNameType != nil
+func (sval StringValue) isFileName() bool {
+	return (sval.fileNameType != FN_UNDEFINED)
 }
 func (sval StringValue) getFileNameType() FileNameType {
-     return fileNameType;
+	return sval.fileNameType
 }
-func (sval StringValue) getRecordingId() long {
-     return id;
+func (sval StringValue) getRecordingID() int64 {
+	return sval.id
 }
-
