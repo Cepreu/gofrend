@@ -87,9 +87,13 @@ func (sval *StringValue) toBigDecimal() (float64, error) {
 	return strconv.ParseFloat(sval.value, 64)
 }
 
+func (sval *StringValue) toTime() []int32, error) {
+	return strconv.ParseFloat(sval.value, 64)
+}
 func (*StringValue) getType() Type {
 	return STRING
 }
+
 
 ///////////
 func (sval StringValue) isFileName() bool {
