@@ -36,3 +36,21 @@ func TestConvertion(t *testing.T) {
 		t.Error("Expected err, received OK")
 	}
 }
+func TestTime(t *testing.T) {
+	type timeTest struct {
+		s   string
+		v   int32
+		err bool
+	}
+	timeArray := [...]timeTest{{"6:34pm", 18*60 + 34, true}, {"12:34", 12*60 + 34, true}, {"12:34PM", 12*60 + 34, true}, {"12:34 AM", 34, true}, {"00:34", 34, true}, {"00:34am", 0, false}, {"13:34 AM", 0, false}}
+	for _, turple := range timeArray {
+		tm, e := vuStringToMinutes(turple.s)
+		if e == nil && turple.err {
+			if tm != turple.v {
+				t.Error(turple.s, "Expected ", turple.v, ", got ", tm)
+			}
+		} else if e == nil {
+			t.Error(turple.s, "Expected error, got OK")
+		}
+	}
+}

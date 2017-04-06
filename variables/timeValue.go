@@ -3,12 +3,11 @@ package variables
 import (
 	"errors"
 	"fmt"
-	"strconv"
 )
 
 type TimeValue struct {
 	defaultValueImpl
-	value int64
+	value int32
 }
 
 func (tval *TimeValue) isSecure() bool { return tval.secure }
@@ -16,22 +15,22 @@ func (tval *TimeValue) isSecure() bool { return tval.secure }
 func (tval *TimeValue) assign(that IVRValue) error {
 	tval.defaultValueImpl.assign(that)
 	v, err := that.toTime()
-	if err == nil {tval.value = v}
+	if err == nil {
+		tval.value = v
+	}
 	return err
 }
 
 func (tval *TimeValue) new(secure bool, strValue string) error {
 	tval.secure = secure
+	var err error
 	tval.value, err = vuStringToMinutes(strValue)
 	return err
 }
 
 func (tval *TimeValue) compareTo(value2 IVRValue) (int, error) {
-	if value2.getType() == NUMERIC {
-		return value2.compareTo(tval)
-	}
 	res := 0
-	toCompare, err := value2.toLong()
+	toCompare, err := value2.toTime()
 	if err != nil {
 		return res, errors.New("Variable to compare must be of TimeValue type")
 	}
@@ -44,7 +43,7 @@ func (tval *TimeValue) compareTo(value2 IVRValue) (int, error) {
 }
 
 func (tval *TimeValue) toLong() (int64, error) {
-	return tval.value, nil
+	return int64(tval.value), nil
 }
 
 func (tval *TimeValue) toString() string {
@@ -56,7 +55,7 @@ func (tval *TimeValue) toString() string {
 }
 
 func (tval *TimeValue) convertToString() (string, error) {
-	return strconv.FormatInt(tval.value, 10), nil
+	return fmt.Sprintf("%d", tval.value), nil
 }
 
 func (tval *TimeValue) toBigDecimal() (float64, error) {
@@ -64,63 +63,28 @@ func (tval *TimeValue) toBigDecimal() (float64, error) {
 }
 
 func (*TimeValue) getType() Type {
-	return INTEGER
+	return TIME
 }
 
-///////////
-func getSum(args []IVRValue) (TimeValue, error) {
-	var val int64
-	scr := false
-
-	for _, v := range args {
-		add, err := v.toLong()
-		if err != nil {
-			return TimeValue{}, err
-		}
-		val += add
-		scr = scr || v.isSecure()
-	}
-
-	return TimeValue{defaultValueImpl{scr}, val}, nil
+///////
+func (tval TimeValue) getDifference(t2 TimeValue) (iv IntegerValue) {
+	iv = IntegerValue{}
+	iv.new(true, fmt.Sprintf("%d", tval.value-t2.value))
+	return iv
 }
-
-func getDifference(arg1 IVRValue, arg2 IVRValue) (TimeValue, error) {
-	v1, err := arg1.toLong()
-	if err == nil {
-		if v2, err := arg2.toLong(); err == nil {
-			return TimeValue{defaultValueImpl{arg1.isSecure() || arg2.isSecure()}, v1 - v2}, nil
-		}
+func (tval TimeValue) getAddition(i2 IntegerValue) (iv IntegerValue, e error) {
+	iv = IntegerValue{}
+	i64 := int64(tval.value) + i2.value
+	if i64 >= 24*60 {
+		i64 %= 24 * 60
+		e = errors.New("Time in the next day")
 	}
-	return TimeValue{}, err
+	iv.new(true, fmt.Sprintf("%d", i64))
+	return iv, e
 }
-
-func getProduct(args []IVRValue) (TimeValue, error) {
-
-	value := int64(1)
-	secure := false
-
-	for _, v := range args {
-		prod, err := v.toLong()
-		if err != nil {
-			return TimeValue{}, err
-		}
-		value *= prod
-		secure = secure || v.isSecure()
-	}
-
-	return TimeValue{defaultValueImpl{secure}, value}, nil
-
+func (tval TimeValue) getHours() int32 {
+	return tval.value / 60
 }
-
-func getQuotation(arg1 IVRValue, arg2 IVRValue) (TimeValue, error) {
-	v1, err := arg1.toLong()
-	if err == nil {
-		if v2, err := arg2.toLong(); err == nil {
-			if v2 == 0 {
-				return TimeValue{}, errors.New("Division by zero")
-			}
-			return TimeValue{defaultValueImpl{arg1.isSecure() || arg2.isSecure()}, v1 / v2}, nil
-		}
-	}
-	return TimeValue{}, err
+func (tval TimeValue) getMinutes() int32 {
+	return tval.value % 60
 }

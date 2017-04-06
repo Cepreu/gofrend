@@ -15,10 +15,10 @@ type StringValue struct {
 type FileNameType int8
 
 const (
-	FN_UNDEFINED FileNameType = iota
-	FN_GREETING
-	FN_VOICEMAIL
-	FN_RECORDING
+	fnUndefined FileNameType = iota
+	fnGreeting
+	fnVoiceMail
+	fnRecording
 )
 
 func (sval *StringValue) isSecure() bool { return sval.secure }
@@ -51,9 +51,6 @@ func (sval *StringValue) new(secure bool, strValue string) error {
 }
 
 func (sval *StringValue) compareTo(value2 IVRValue) (int, error) {
-	if value2.getType() == NUMERIC {
-		return value2.compareTo(sval)
-	}
 	res := 0
 	toCompare, err := value2.convertToString()
 	if err != nil {
@@ -87,17 +84,16 @@ func (sval *StringValue) toBigDecimal() (float64, error) {
 	return strconv.ParseFloat(sval.value, 64)
 }
 
-func (sval *StringValue) toTime() []int32, error) {
-	return strconv.ParseFloat(sval.value, 64)
+func (sval *StringValue) toTime() (int32, error) {
+	return vuStringToMinutes(sval.value)
 }
 func (*StringValue) getType() Type {
 	return STRING
 }
 
-
 ///////////
 func (sval StringValue) isFileName() bool {
-	return (sval.fileNameType != FN_UNDEFINED)
+	return (sval.fileNameType != fnUndefined)
 }
 func (sval StringValue) getFileNameType() FileNameType {
 	return sval.fileNameType

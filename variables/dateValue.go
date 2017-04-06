@@ -7,8 +7,6 @@ import (
 	"strconv"
 )
 
-const timeRe = "^((0?[1-9])|(1[0-2])):([0-5][0-9]) ?(AM|PM|am|pm)|(([01][0-9])|(2[0-3])):([0-5][0-9])$"
-
 type DateValue struct {
 	defaultValueImpl
 	value int64
@@ -18,7 +16,7 @@ func (dval *DateValue) isSecure() bool { return dval.secure }
 
 func (dval *DateValue) assign(that IVRValue) error {
 	dval.defaultValueImpl.assign(that)
-	v, err := that.toTime()
+	v, err := that.toDate()
 	if err == nil {
 		dval.value = v
 	}
@@ -43,15 +41,12 @@ func (dval *DateValue) new(secure bool, strValue string) error {
 		i64, _ = strconv.ParseInt(res[0][9], 10, 64)
 		dval.value += i64
 	}
-	return errors.New("Cannot convert string to time")
+	return errors.New("Cannot convert string to date")
 }
 
 func (dval *DateValue) compareTo(value2 IVRValue) (int, error) {
-	if value2.getType() == NUMERIC {
-		return value2.compareTo(dval)
-	}
 	res := 0
-	toCompare, err := value2.toLong()
+	toCompare, err := value2.toDate()
 	if err != nil {
 		return res, errors.New("Variable to compare must be of DateValue type")
 	}
@@ -84,63 +79,5 @@ func (dval *DateValue) toBigDecimal() (float64, error) {
 }
 
 func (*DateValue) getType() Type {
-	return INTEGER
-}
-
-///////////
-func getSum(args []IVRValue) (DateValue, error) {
-	var val int64
-	scr := false
-
-	for _, v := range args {
-		add, err := v.toLong()
-		if err != nil {
-			return DateValue{}, err
-		}
-		val += add
-		scr = scr || v.isSecure()
-	}
-
-	return DateValue{defaultValueImpl{scr}, val}, nil
-}
-
-func getDifference(arg1 IVRValue, arg2 IVRValue) (DateValue, error) {
-	v1, err := arg1.toLong()
-	if err == nil {
-		if v2, err := arg2.toLong(); err == nil {
-			return DateValue{defaultValueImpl{arg1.isSecure() || arg2.isSecure()}, v1 - v2}, nil
-		}
-	}
-	return DateValue{}, err
-}
-
-func getProduct(args []IVRValue) (DateValue, error) {
-
-	value := int64(1)
-	secure := false
-
-	for _, v := range args {
-		prod, err := v.toLong()
-		if err != nil {
-			return DateValue{}, err
-		}
-		value *= prod
-		secure = secure || v.isSecure()
-	}
-
-	return DateValue{defaultValueImpl{secure}, value}, nil
-
-}
-
-func getQuotation(arg1 IVRValue, arg2 IVRValue) (DateValue, error) {
-	v1, err := arg1.toLong()
-	if err == nil {
-		if v2, err := arg2.toLong(); err == nil {
-			if v2 == 0 {
-				return DateValue{}, errors.New("Division by zero")
-			}
-			return DateValue{defaultValueImpl{arg1.isSecure() || arg2.isSecure()}, v1 / v2}, nil
-		}
-	}
-	return DateValue{}, err
+	return DATE
 }
