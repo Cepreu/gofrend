@@ -13,7 +13,7 @@ type NumericValue struct {
 
 func (fval *NumericValue) isSecure() bool { return fval.secure }
 
-func (fval *NumericValue) assign(that IVRValue) error {
+func (fval *NumericValue) assign(that Value) error {
 	fval.defaultValueImpl.assign(that)
 	v, err := that.toBigDecimal()
 	fval.value = v
@@ -30,7 +30,7 @@ func (fval *NumericValue) new(secure bool, strValue string) error {
 	return nil
 }
 
-func (fval *NumericValue) compareTo(value2 IVRValue) (int, error) {
+func (fval *NumericValue) compareTo(value2 Value) (int, error) {
 	res := 0
 	toCompare, err := value2.toBigDecimal()
 	if err != nil {
@@ -72,7 +72,7 @@ func (*NumericValue) getType() Type {
 }
 
 ///////////
-func getSumN(args []IVRValue) (NumericValue, error) {
+func getSumN(args []Value) (NumericValue, error) {
 	var val float64
 	scr := false
 
@@ -88,7 +88,7 @@ func getSumN(args []IVRValue) (NumericValue, error) {
 	return NumericValue{defaultValueImpl{scr}, val}, nil
 }
 
-func getDifferenceN(arg1 IVRValue, arg2 IVRValue) (NumericValue, error) {
+func getDifferenceN(arg1 Value, arg2 Value) (NumericValue, error) {
 	v1, err := arg1.toBigDecimal()
 	if err == nil {
 		if v2, err := arg2.toBigDecimal(); err == nil {
@@ -98,7 +98,7 @@ func getDifferenceN(arg1 IVRValue, arg2 IVRValue) (NumericValue, error) {
 	return NumericValue{}, err
 }
 
-func getProductN(args []IVRValue) (NumericValue, error) {
+func getProductN(args []Value) (NumericValue, error) {
 
 	value := 1.0
 	secure := false
@@ -116,7 +116,7 @@ func getProductN(args []IVRValue) (NumericValue, error) {
 
 }
 
-func getQuotationN(arg1 IVRValue, arg2 IVRValue) (NumericValue, error) {
+func getQuotationN(arg1 Value, arg2 Value) (NumericValue, error) {
 	v1, err := arg1.toBigDecimal()
 	if err == nil {
 		if v2, err := arg2.toBigDecimal(); err == nil {

@@ -4,6 +4,7 @@ import (
 	"errors"
 	"regexp"
 	"strconv"
+	"time"
 )
 
 const timeRe = "^((0?[1-9])|(1[0-2])):([0-5][0-9]) ?(AM|PM|am|pm)$|(([01][0-9])|(2[0-3])):([0-5][0-9]$)"
@@ -28,4 +29,12 @@ func vuStringToMinutes(strValue string) (int32, error) {
 		return int32(minutes), nil
 	}
 	return 0, errors.New("Cannot convert string to time")
+}
+
+func vuStringToDate(strValue string) (int, int, int, error) {
+	const template = "2006-01-02"
+	if t, e := time.Parse(template, strValue); e == nil {
+		return t.Year(), int(t.Month()), t.Day(), e
+	}
+	return 0, 0, 0, errors.New("Cannot convert string to date")
 }

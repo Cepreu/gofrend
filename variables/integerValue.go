@@ -13,7 +13,7 @@ type IntegerValue struct {
 
 func (ival *IntegerValue) isSecure() bool { return ival.secure }
 
-func (ival *IntegerValue) assign(that IVRValue) error {
+func (ival *IntegerValue) assign(that Value) error {
 	ival.defaultValueImpl.assign(that)
 	v, err := that.toLong()
 	ival.value = v
@@ -30,7 +30,7 @@ func (ival *IntegerValue) new(secure bool, strValue string) error {
 	return nil
 }
 
-func (ival *IntegerValue) compareTo(value2 IVRValue) (int, error) {
+func (ival *IntegerValue) compareTo(value2 Value) (int, error) {
 	if value2.getType() == NUMERIC {
 		return value2.compareTo(ival)
 	}
@@ -72,7 +72,7 @@ func (*IntegerValue) getType() Type {
 }
 
 ///////////
-func getSum(args []IVRValue) (IntegerValue, error) {
+func getSum(args []Value) (IntegerValue, error) {
 	var val int64
 	scr := false
 
@@ -88,7 +88,7 @@ func getSum(args []IVRValue) (IntegerValue, error) {
 	return IntegerValue{defaultValueImpl{scr}, val}, nil
 }
 
-func getDifference(arg1 IVRValue, arg2 IVRValue) (IntegerValue, error) {
+func getDifference(arg1 Value, arg2 Value) (IntegerValue, error) {
 	v1, err := arg1.toLong()
 	if err == nil {
 		if v2, err := arg2.toLong(); err == nil {
@@ -98,7 +98,7 @@ func getDifference(arg1 IVRValue, arg2 IVRValue) (IntegerValue, error) {
 	return IntegerValue{}, err
 }
 
-func getProduct(args []IVRValue) (IntegerValue, error) {
+func getProduct(args []Value) (IntegerValue, error) {
 
 	value := int64(1)
 	secure := false
@@ -116,7 +116,7 @@ func getProduct(args []IVRValue) (IntegerValue, error) {
 
 }
 
-func getQuotation(arg1 IVRValue, arg2 IVRValue) (IntegerValue, error) {
+func getQuotation(arg1 Value, arg2 Value) (IntegerValue, error) {
 	v1, err := arg1.toLong()
 	if err == nil {
 		if v2, err := arg2.toLong(); err == nil {

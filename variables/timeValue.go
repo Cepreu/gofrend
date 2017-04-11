@@ -12,7 +12,7 @@ type TimeValue struct {
 
 func (tval *TimeValue) isSecure() bool { return tval.secure }
 
-func (tval *TimeValue) assign(that IVRValue) error {
+func (tval *TimeValue) assign(that Value) error {
 	tval.defaultValueImpl.assign(that)
 	v, err := that.toTime()
 	if err == nil {
@@ -28,7 +28,7 @@ func (tval *TimeValue) new(secure bool, strValue string) error {
 	return err
 }
 
-func (tval *TimeValue) compareTo(value2 IVRValue) (int, error) {
+func (tval *TimeValue) compareTo(value2 Value) (int, error) {
 	res := 0
 	toCompare, err := value2.toTime()
 	if err != nil {

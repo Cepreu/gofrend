@@ -4,15 +4,15 @@ import (
 	"fmt"
 )
 
-type IVRValue interface {
-	compareTo(IVRValue) (int, error)
-	assign(IVRValue) error
+type Value interface {
+	compareTo(Value) (int, error)
+	assign(Value) error
 	new(bool, string) error
 	toString() string
 	convertToString() (string, error)
 	toLong() (int64, error)
 	toBigDecimal() (float64, error)
-	toDate() (int64, error)
+	toDate() ([3]int, error)
 	toTime() (int32, error)
 	isSecure() bool
 	getType() Type
@@ -26,7 +26,7 @@ func (ival *defaultValueImpl) isSecure() bool {
 	return ival.secure
 }
 
-func (ival *defaultValueImpl) assign(that IVRValue) error {
+func (ival *defaultValueImpl) assign(that Value) error {
 	ival.secure = that.isSecure()
 	return nil
 }
@@ -36,7 +36,7 @@ func (ival *defaultValueImpl) new(secure bool, strValue string) error {
 	return nil
 }
 
-func (ival *defaultValueImpl) compareTo(value2 IVRValue) (int, error) {
+func (ival *defaultValueImpl) compareTo(value2 Value) (int, error) {
 	return 0, nil
 }
 
@@ -55,8 +55,8 @@ func (ival *defaultValueImpl) convertToString() (string, error) {
 func (ival *defaultValueImpl) toBigDecimal() (float64, error) {
 	return 0, fmt.Errorf("toBigDecimal() is not supported for \"%v\"", ival.getType())
 }
-func (ival *defaultValueImpl) toDate() (int64, error) {
-	return 0, fmt.Errorf("toDate() is not supported for \"%v\"", ival.getType())
+func (ival *defaultValueImpl) toDate() ([]int, error) {
+	return nil, fmt.Errorf("toDate() is not supported for \"%v\"", ival.getType())
 }
 func (ival *defaultValueImpl) toTime() (int32, error) {
 	return 0, fmt.Errorf("toTime() is not supported for \"%v\"", ival.getType())

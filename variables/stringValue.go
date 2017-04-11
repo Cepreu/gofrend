@@ -23,7 +23,7 @@ const (
 
 func (sval *StringValue) isSecure() bool { return sval.secure }
 
-func (sval *StringValue) assign(that IVRValue) error {
+func (sval *StringValue) assign(that Value) error {
 	sval.defaultValueImpl.assign(that)
 	if that.getType() == STRING {
 		t, ok := that.(*StringValue)
@@ -50,7 +50,7 @@ func (sval *StringValue) new(secure bool, strValue string) error {
 	return nil
 }
 
-func (sval *StringValue) compareTo(value2 IVRValue) (int, error) {
+func (sval *StringValue) compareTo(value2 Value) (int, error) {
 	res := 0
 	toCompare, err := value2.convertToString()
 	if err != nil {
@@ -86,6 +86,12 @@ func (sval *StringValue) toBigDecimal() (float64, error) {
 
 func (sval *StringValue) toTime() (int32, error) {
 	return vuStringToMinutes(sval.value)
+}
+func (sval *StringValue) toDate() ([]int, error) {
+	if y, m, d, e := vuStringToDate(sval.value); e == nil {
+		return []int{y, m, d}, e
+	}
+	return nil, fmt.Errorf("Cannot convert \" %s\" to Date", sval.value)
 }
 func (*StringValue) getType() Type {
 	return STRING
