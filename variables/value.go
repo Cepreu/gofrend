@@ -12,7 +12,7 @@ type Value interface {
 	convertToString() (string, error)
 	toLong() (int64, error)
 	toBigDecimal() (float64, error)
-	toDate() ([3]int, error)
+	toDate() ([]int, error)
 	toTime() (int32, error)
 	isSecure() bool
 	getType() Type

@@ -36,13 +36,23 @@ func TestConvertion(t *testing.T) {
 		t.Error("Expected err, received OK")
 	}
 }
+
+type testVal struct {
+	s   string
+	v   int32
+	err bool
+}
+
 func TestTime(t *testing.T) {
-	type timeTest struct {
-		s   string
-		v   int32
-		err bool
+	timeArray := [...]testVal{
+		{"6:34pm", 18*60 + 34, true},
+		{"12:34", 12*60 + 34, true},
+		{"12:34PM", 12*60 + 34, true},
+		{"12:34 AM", 34, true},
+		{"00:34", 34, true},
+		{"00:34am", 0, false},
+		{"13:34 AM", 0, false},
 	}
-	timeArray := [...]timeTest{{"6:34pm", 18*60 + 34, true}, {"12:34", 12*60 + 34, true}, {"12:34PM", 12*60 + 34, true}, {"12:34 AM", 34, true}, {"00:34", 34, true}, {"00:34am", 0, false}, {"13:34 AM", 0, false}}
 	for _, turple := range timeArray {
 		tm, e := vuStringToMinutes(turple.s)
 		if e == nil && turple.err {
@@ -51,6 +61,25 @@ func TestTime(t *testing.T) {
 			}
 		} else if e == nil {
 			t.Error(turple.s, "Expected error, got OK")
+		}
+	}
+}
+
+func TestDate(t *testing.T) {
+
+	dateArray := [...]testVal{
+		{"2001-12-31", 20011231, true},
+		{"2003-02-29", 20030229, false},
+		{"2004-02-29", 20040229, true},
+		{"04-02-29", 20040229, false},
+	}
+	tv := DateValue{}
+	for _, turple := range dateArray {
+		e := tv.new(true, turple.s)
+		if e == nil && !turple.err {
+			t.Error(turple.s, "Expected error, got OK")
+		} else if e != nil && turple.err {
+			t.Error(turple.s, "Expected OK, got ", e)
 		}
 	}
 }
