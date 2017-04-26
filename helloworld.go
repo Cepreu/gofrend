@@ -12,7 +12,8 @@ import (
 	"os"
 	"os/exec"
 
-	"github.com/Cepreu/gofrend/IVRParser"
+	"github.com/Cepreu/gofrend/five9ivr"
+	"github.com/Cepreu/gofrend/web"
 )
 
 func main() {
@@ -29,7 +30,8 @@ qb6tJRiWEtUfBwsMyMCk1z1d/F2v556x9yNYuDLkmwPyUQXXpOrDuVIVgVIDHRpXgoedDAx3AeNl
 
 	// Cmd(base64Text)
 	//	zlibbing(base64Text)
-	IVRParser.ParseIVR(strings.NewReader("<test/>"))
+	IVRParser.ParseIVR(strings.NewReader("<ivrScript/>"))
+	web.RunServer()
 }
 
 func zlibbing(source []byte) {

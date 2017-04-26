@@ -2,14 +2,16 @@ package web
 
 import (
 	"encoding/json"
-	"fmt"
+	"log"
 	"net/http"
+
+	"github.com/gorilla/mux"
 )
 
 type CampaignStateResp struct {
 	Count int             `json:"count"`
 	Items []CampaignState `json:"items"`
-	Error ApiError        `json:"error"`
+	Error *ApiError       `json:"error"`
 }
 type ApiError struct {
 	Code    int32  `json:"code"`
@@ -21,20 +23,38 @@ type CampaignState struct {
 	Name               string `json:"name"`
 	ID                 int32  `json:"id"`
 	DomainID           int32  `json:"domainId"`
-	IsVisualIVREnabled bool   `json:"isVisualIVREnabled"`
+	IsVisualIVREnabled bool   `json:"is_visual_ivr_enabled"`
 }
 
 //HTTP Get - /domains/{domain_name}/campaigns?name={campaign_name}
-func GetDomainAndCampaignIDs(w http.ResponseWriter, r *http.Request) {
+func GetDomainAndCampaignIDsHandler(w http.ResponseWriter, r *http.Request) {
 	campName := r.URL.Query().Get("name")
 	rs := CampaignStateResp{}
+	if campName == "" {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte("query parameter 'name' is missing"))
+	} else {
+		rs.Count = 1
+		rs.Items = append(rs.Items, CampaignState{SelfURL: "www.google.com", ID: 333333, Name: campName, DomainID: 12345, IsVisualIVREnabled: true})
 
-	if campName != "" {
+		j, err := json.Marshal(rs)
+		if err != nil {
+			panic(err)
+		}
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		w.Write(j)
 	}
-	w.Header().Set("Content-Type", "application/json")
-	j, err := json.Marshal(rs)
-	if err == nil {
-		panic(err)
+}
+
+func RunServer() {
+	r := mux.NewRouter().StrictSlash(false)
+	r.HandleFunc("/api/domains/{domain_name}/campaigns", GetDomainAndCampaignIDsHandler).Methods("GET")
+
+	server := &http.Server{
+		Addr:    ":8080",
+		Handler: r,
 	}
-	fmt.Println(j)
+	log.Println("Listening...")
+	server.ListenAndServe()
 }
