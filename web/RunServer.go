@@ -26,6 +26,29 @@ type CampaignState struct {
 	IsVisualIVREnabled bool   `json:"is_visual_ivr_enabled"`
 }
 
+type IVRSessionResp struct {
+	Count int             `json:"count"`
+	Items []IVRSession `json:"items"`
+	Error *ApiError       `json:"error"`
+}
+type IVRSession struct {
+	ID	int `json:"id"`
+	CampaignID string `json:"campaignId"`
+	DomainID string `json:"domainId"`
+	Languages []string `json:"languages"`
+	Theme string `json:"theme"`
+}
+
+type UserAction struct {
+	Name string `json:"name"`
+	ScriptID string `json:"scriptId"`
+	ModuleID string `json:"moduleId"`
+	BranchID string `json:"branchId"`
+	Args	KVList	`json:"args"`
+}
+
+type KVList map[string]interface{}
+
 //HTTP Get - /domains/{domain_name}/campaigns?name={campaign_name}
 func GetDomainAndCampaignIDsHandler(w http.ResponseWriter, r *http.Request) {
 	campName := r.URL.Query().Get("name")
