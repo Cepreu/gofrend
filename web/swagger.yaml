@@ -81,13 +81,13 @@ paths:
         - name: args
           in: body
           schema:
-            $ref: '#/definitions/IVRSessionResp'
+            $ref: '#/definitions/KVList'
           required: false
       responses:
         200:
           description: OK. Returns Visual IVR Session
           schema:
-            $ref: '#/definitions/CampaignState'
+            $ref: '#/definitions/IVRSessionResp'
             
   /{domain_id}/campaigns/{campaign_id}/web/new_ivr_session:
     get:
