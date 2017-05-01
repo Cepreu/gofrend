@@ -79,9 +79,8 @@ paths:
           format: int32
           required: true
         - name: args
-          in: body
-          schema:
-            $ref: '#/definitions/KVList'
+          in: formData
+          description: KVList of parameters
           required: false
       responses:
         200:
