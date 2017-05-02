@@ -7,20 +7,18 @@ import (
 	"github.com/gorilla/mux"
 )
 
-type ApiError struct {
+type APIError struct {
 	Code    int32  `json:"code"`
 	Message string `json:"message"`
 }
 
-type UserAction struct {
-	Name     string `json:"name"`
-	ScriptID string `json:"scriptId"`
-	ModuleID string `json:"moduleId"`
-	BranchID string `json:"branchId"`
-	Args     KVList `json:"args"`
-}
-
 type KVList map[string]interface{}
+
+type ScriptArgs struct {
+	ContactFields KVList `json:"contactFields"`
+	ClientRecord  KVList `json:"clientRecord"`
+	ExternalVars  KVList `json:"externalVars"`
+}
 
 ////////////////////////////////////////////////////////////////////////////////////
 

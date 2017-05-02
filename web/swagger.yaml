@@ -650,7 +650,7 @@ definitions:
       mlChoices:
         type: array
         items:
-          $ref: '#/definitions/DecoratedText'
+          $ref: '#/definitions/MultiLanguageChoice'
       
   MultiLanguageChoice:
     type: object

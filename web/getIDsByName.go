@@ -10,7 +10,7 @@ import (
 type CampaignStateResp struct {
 	Count int             `json:"count"`
 	Items []CampaignState `json:"items"`
-	Error *ApiError       `json:"error"`
+	Error *APIError       `json:"error"`
 }
 type CampaignState struct {
 	SelfURL            string `json:"selfURL"` // format: url

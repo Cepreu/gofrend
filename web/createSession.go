@@ -11,7 +11,7 @@ import (
 type IVRSessionResp struct {
 	Count int          `json:"count"`
 	Items []IVRSession `json:"items"`
-	Error *ApiError    `json:"error"`
+	Error *APIError    `json:"error"`
 }
 type IVRSession struct {
 	ID         int      `json:"id"`
