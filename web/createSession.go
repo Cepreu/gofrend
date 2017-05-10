@@ -22,7 +22,7 @@ type IVRSession struct {
 }
 
 //HTTP GET - /{domain_id}/campaigns/{campaign_id}/create_session?{args}
-func CreateSession(w http.ResponseWriter, r *http.Request) {
+func CreateSessionHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	domainID := vars["domain_id"]
 	campaignID := vars["campaign_id"]

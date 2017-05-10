@@ -1,7 +1,7 @@
 package web
 
-//HTTP Post - /{domain_id}/sessions/{session_id}/idle
-func IdleHandler(w http.ResponseWriter, r *http.Request) {
+//HTTP Get - /{domain_id}/sessions/{session_id}
+func getStateHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	domainID := vars["domain_id"]
 	campaignID := vars["campaign_id"]

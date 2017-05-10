@@ -64,7 +64,7 @@ type Caption struct {
 }
 
 //HTTP POST - /{domain_id}/sessions/{session_id}/action
-func Action(w http.ResponseWriter, r *http.Request) {
+func ActionHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	domainID := vars["domain_id"]
 	campaignID := vars["campaign_id"]

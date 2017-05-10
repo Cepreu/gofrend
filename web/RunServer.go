@@ -25,7 +25,9 @@ type ScriptArgs struct {
 func RunServer() {
 	r := mux.NewRouter().StrictSlash(false)
 	r.HandleFunc("/api/domains/{domain_name}/campaigns", GetDomainAndCampaignIDsHandler).Methods("GET")
-	r.HandleFunc("/api/{domain_id}/campaigns/{campaign_id}/create_session", CreateSession).Methods("GET")
+	r.HandleFunc("/api/{domain_id}/campaigns/{campaign_id}/create_session", CreateSessionHandler).Methods("GET")
+	r.HandleFunc("/api/{domain_id}/campaigns/{campaign_id}/action", ActionHandler).Methods("POST")
+	r.HandleFunc("/api/{domain_id}/campaigns/{campaign_id}/idle", IdleHandler).Methods("POST")
 
 	server := &http.Server{
 		Addr:    ":8080",

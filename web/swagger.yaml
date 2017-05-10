@@ -113,7 +113,7 @@ paths:
         200:
           description: OK
           schema:
-            $ref: '#/definitions/CampaignState'
+            $ref: '#/definitions/CampaignStateResp'
     post:
       description: Initiates a new visual IVR session. Return SessionState json object for first module.
       parameters:
@@ -138,7 +138,7 @@ paths:
         200:
           description: OK
           schema:
-            $ref: '#/definitions/CampaignState'
+            $ref: '#/definitions/CampaignStateResp'
             
   /{domain_id}/{server_id}/sessions/{session_id}:
     get:
@@ -164,7 +164,7 @@ paths:
         200:
           description: OK
           schema:
-            $ref: '#/definitions/CampaignState'
+            $ref: '#/definitions/CampaignStateResp'
 
   /{domain_id}/sessions/{session_id}/action:
     post:
@@ -240,7 +240,7 @@ paths:
         200:
           description: OK
           schema:
-            $ref: '#/definitions/CampaignState'
+            $ref: '#/definitions/CampaignStateResp'
 
   /{domain_id}/sessions/{session_id}/cancel:
     post:
@@ -306,7 +306,7 @@ paths:
         200:
           description: OK
           schema:
-            $ref: '#/definitions/CampaignState'
+            $ref: '#/definitions/CampaignStateResp'
 
 
 ###############################################################
