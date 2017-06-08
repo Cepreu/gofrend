@@ -1,14 +1,54 @@
 swagger: '2.0'
+################################################################################
+#                              API Information                                 #
+################################################################################
 info:
-  version: 2.0.21
-  title: Five9 vIVR API
-  description: Five9 Visual IVR API
+  version: 2.0.22
+  title: Five9 VisualIVR API
+  description: |
+    The first version of the Five9 vIVR API is an exciting step forward towards
+    making it easier for users to have an ability to build their own integration with
+    the Five9's features early available through the telephony call only. We created it
+    so that customers can utilize the same IVR script for any type of interactions 
+    with no of minimal changes.
+
+    Build something great!
+  
+    Once you've
+
+    ## Structure
+
+    ### The Envelope
+    Every response is contained by an envelope. That is, each response has a
+    predictable set of keys with which you can expect to interact:
+    ```json
+    {
+        "count": 1,
+        "items":  [
+                    {...}
+                  ],
+        "error": null
+    }
+    ```
+
+    or
+    ```json
+    {
+        "count": 0,
+        "items": null,
+        "error": "The error descroption"
+    }
+    ```
+  termsOfService: http://five9.com/about/legal/terms/api
   contact:
     name: API Support
     url: http://www.five9.com/support
     email: support@five9.com
+################################################################################
+#                  Host, Base Path, Schemes and Content Types                  #
+################################################################################
 host: api.five9.com
-basePath: /ivr/2/
+basePath: /ivr/1/
 schemes:
   - https
 consumes:
@@ -17,10 +57,30 @@ consumes:
 produces:
   - application/json
   - text/html
+  
+################################################################################
+#                                   Tags                                       #
+################################################################################
+tags:
+  - name: Campaign
+    description: |
+      Campaign methods are used for detecting if the campaign is able to support the visual IVR functionality: in terms of the configuration or limits.
+  - name: Session
+    description: |
+      all methods required for a session's interactivity with VCC
+      
+      
+################################################################################
+#                                           Paths                              #
+################################################################################
 paths:
   /domains/{domain_name}/campaigns:
     get:
-      description: This method could be used to check Visual IVR's availability for the specified campaign. 
+      tags:
+        - Campaign
+      description: |
+        This method could be used to check Visual IVR's availability for 
+        the specified campaign. 
       parameters:
         - name: domain_name
           in: path
@@ -34,12 +94,30 @@ paths:
           required: true
       responses:
         200:
-          description:  OK
+          description: >
+            Get the `domain-id` and the `campaign-id` based on their names.
+            Also returns `is-visual-mode-enabled` campaign parameter 
+            and a URL which you can use for creation of a new session .
           schema:
             $ref: '#/definitions/CampaignStateResp'
-            
-  /{domain_id}/campaigns/{campaign_id}/create_session:
+          examples:
+            application/json:
+              count: 1
+              items:
+                - selfURL: https://www.five9.com/ivr/2/54/campaigns/465
+                  name: in2
+                  id: 465
+                  domainId: 54
+                  is_visual_ivr_enabled: true
+              error: null
+
+ 
+  /{domain_id}/campaigns/{campaign_id}/{interaction}/create_session:
     get:
+      consumes:
+        - text/xml
+      tags:
+        - Campaign
       description: Creates a new visual IVR session.
       parameters:
         - name: domain_id
@@ -54,6 +132,16 @@ paths:
           type: integer
           format: int32
           required: true
+        - name: interaction
+          in: path
+          type: string
+          description: interaction type [ web | chat | email | sms ]
+          enum: 
+            - web
+            - chat
+            - email
+            - sms
+          required: true
         - name: args
           in: query
           type: string
@@ -63,8 +151,29 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/IVRSessionResp'
+          examples:
+            application/json:
+              count: 1
+              items:
+                - id: 646F697B925140189F40BA4377D53E04_1
+                  domainId: 54
+                  campaignId: 465
+                  languages:
+                    - ar-AE
+                    - de-DE
+                    - en-US
+                    - es-MX
+                    - ru-RU
+                  theme: d
+              error: null
+
     post:
-      description: Creates a new visual IVR session
+      tags:
+        - Campaign
+        
+      consumes:
+        - application/json
+      description: Creates a new visual IVR session. 
       parameters:
         - name: domain_id
           in: path
@@ -78,56 +187,15 @@ paths:
           type: integer
           format: int32
           required: true
-        - name: args
-          in: formData
-          description: KVList of parameters
-          required: false
-      responses:
-        200:
-          description: OK. Returns Visual IVR Session
-          schema:
-            $ref: '#/definitions/IVRSessionResp'
-            
-  /{domain_id}/campaigns/{campaign_id}/web/new_ivr_session:
-    get:
-      description: Initiates a new visual IVR session. Return SessionState object for the first module.
-      parameters:
-        - name: domain_id
+        - name: interaction
           in: path
-          description: ID of the domain
-          type: integer
-          format: int32
-          required: true
-        - name: campaign_id
-          in: path
-          description: ID of the campaign
-          type: integer
-          format: int32
-          required: true
-        - name: args
-          description: ?????
-          in: query
           type: string
-          required: false
-      responses:
-        200:
-          description: OK
-          schema:
-            $ref: '#/definitions/CampaignStateResp'
-    post:
-      description: Initiates a new visual IVR session. Return SessionState json object for first module.
-      parameters:
-        - name: domain_id
-          in: path
-          description: ID of the domain
-          type: integer
-          format: int32
-          required: true
-        - name: campaign_id
-          in: path
-          description: ID of the campaign
-          type: integer
-          format: int32
+          description: interaction type [ web | chat | email | sms ]
+          enum:
+            - web
+            - chat
+            - email
+            - sms
           required: true
         - name: args
           in: body
@@ -136,22 +204,247 @@ paths:
           required: false
       responses:
         200:
-          description: OK
+          description: OK. Returns Visual IVR Session. (The same as for GET)
           schema:
-            $ref: '#/definitions/CampaignStateResp'
+            $ref: '#/definitions/IVRSessionResp'
+          examples:
+            application/json:
+              count: 1
+              items:
+                - id: 646F697B925140189F40BA4377D53E04_1
+                  domainId: 54
+                  campaignId: 465
+                  languages:
+                    - ar-AE
+                    - de-DE
+                    - en-US
+                    - es-MX
+                    - ru-RU
+                  theme: d
+              error: null
             
-  /{domain_id}/{server_id}/sessions/{session_id}:
+            
+# I suppose it is necessary to remove from API  
+#/{domain_id}/campaigns/{campaign_id}/web/new_ivr_session:
+#    get:
+#      description: Initiates a new visual IVR session. Return SessionState object for the first module.
+#      parameters:
+#        - name: domain_id
+#          in: path
+#          description: ID of the domain
+#          type: integer
+#          format: int32
+#          required: true
+#        - name: campaign_id
+#          in: path
+#          description: ID of the campaign
+#          type: integer
+#          format: int32
+#          required: true
+#        - name: args
+#          description: ?????
+#          in: query
+#          type: string
+#          required: false
+#      responses:
+#        200:
+#          description: OK
+#          schema:
+#            $ref: '#/definitions/CampaignState'
+#    post:
+#      description: Initiates a new visual IVR session. Return SessionState json object for first module.
+#      parameters:
+#        - name: domain_id
+#          in: path
+#          description: ID of the domain
+#          type: integer
+#          format: int32
+#          required: true
+#        - name: campaign_id
+#          in: path
+#          description: ID of the campaign
+#          type: integer
+#          format: int32
+#          required: true
+#        - name: args
+#          in: body
+#          schema:
+#            $ref: '#/definitions/ScriptArgs'
+#          required: false
+#      responses:
+#        200:
+#          description: OK
+#          schema:
+#            $ref: '#/definitions/CampaignState'
+            
+  /{domain_id}/sessions/{session_id}:
     get:
-      description: returns state of the current session. The state is based on IVR variables and current module. ????
+      tags:
+        - Session
+      description: Requests a state of the current session. Can be used immediately after `create_session` to receive the first module, or for any syncronization purposes.
       parameters:
         - name: domain_id
           in: path
           type: integer
           format: int32
           required: true
-        - name: server_id
+        - name: session_id
           in: path
-          description: ID of the VCC host which is processing the session
+          type: integer
+          format: int32
+          required: true
+      responses:
+        200:
+          description: Returns a state of the current session. (The state consists of the current module's description and involved call variables).
+          schema:
+            $ref: '#/definitions/SessionStateResp'
+          examples:
+            application/json:
+              count: 1
+              items:
+              - moduleDescription:
+                  moduleId: 8CE0140BE7F04CADAA964F47449D8530
+                  moduleType: play
+                  moduleName: Play46
+                  prompts:
+                  - promptType: textContainer
+                    lang: de-DE
+                    children:
+                    - promptType: value
+                      text: Klartext
+                  - promptType: textContainer
+                    lang: en-US
+                    children:
+                    - promptType: strong
+                      children:
+                      - promptType: value
+                        text: 'page 3 '
+                    - promptType: value
+                      text: ''
+                  - promptType: textContainer
+                    lang: en-US
+                    children:
+                    - promptType: mark
+                      children:
+                      - promptType: newcastomTag
+                        children:
+                        - promptType: value
+                          text: tratrata
+                        - promptType: value
+                          text: ''
+                        attributes:
+                        - name: atrr2
+                          value: val2
+                        - name: atrr1
+                          value: va1
+                  - promptType: textContainer
+                    children:
+                    - promptType: break
+                  - promptType: textContainer
+                    children:
+                    - promptType: paragraph
+                      children:
+                      - promptType: value
+                        text: sdfdsf
+                      - promptType: value
+                        text: 'true'
+                      attributes:
+                      - name: color
+                        value: aqua
+                      - name: font-family
+                        value: Georgia
+                      - name: text-align
+                        value: left
+                  - promptType: image
+                    image: http://bla.ru
+                  caption:
+                  - promptType: textContainer
+                    lang: de-DE
+                    children:
+                    - promptType: value
+                      text: Klartext
+                  - promptType: textContainer
+                    lang: en-US
+                    children:
+                    - promptType: strong
+                      children:
+                      - promptType: value
+                        text: 'page 3 '
+                    - promptType: value
+                      text: ''
+                  - promptType: textContainer
+                    lang: en-US
+                    children:
+                    - promptType: mark
+                      children:
+                      - promptType: newcastomTag
+                        children:
+                        - promptType: value
+                          text: tratrata
+                        - promptType: value
+                          text: ''
+                        attributes:
+                        - name: atrr2
+                          value: val2
+                        - name: atrr1
+                          value: va1
+                  - promptType: textContainer
+                    children:
+                    - promptType: value
+                      text: dsfds
+                    - promptType: heading
+                      children:
+                      - promptType: span
+                        children:
+                        - promptType: paragraph
+                          children:
+                          - promptType: value
+                            text: ''
+                          attributes:
+                          - name: color
+                            value: aqua
+                          - name: font-family
+                            value: Georgia
+                          - name: text-align
+                            value: left
+                      attributes:
+                      - name: heading
+                        value: h1
+                  languages:
+                  - de-DE
+                  - en-US
+                  restriction: {}
+                  descendant:
+                    moduleId: F13166AAC9E2437DA36F970343C37794
+                    moduleType: play
+                    moduleName: Play9
+                    prompts:
+                    - promptType: textContainer
+                      children:
+                      - promptType: value
+                        text: text
+                    caption: []
+                    languages: []
+                    restriction: {}
+                stage: 2
+                scriptId: '956'
+                moduleId: 8CE0140BE7F04CADAA964F47449D8530
+                sessionURL: http://lx-aalexeyev.nn.five9.com:8080/ivr/1/54/sessions/3FD310EDCAD948489720FB8E86831E36_1
+                isFinal: false
+                variables:
+                  __BUFFER__: ''
+                  var_1234: 'true'
+                isBackAvailable: false
+                isCallbackRequested: false
+                isFeedbackRequested: false
+              error: 
+    delete:
+      tags:
+        - Session
+      description: Cancels this IVR session. Response can contain cancel result like URL to which redirect should be done or custom information. If request contains parameter ‘redirect=true’, the server will respond with redirect to redirect URL, or will return error about misconfiguration. 
+      parameters:
+        - name: domain_id
+          in: path
           type: integer
           format: int32
           required: true
@@ -164,10 +457,12 @@ paths:
         200:
           description: OK
           schema:
-            $ref: '#/definitions/CampaignStateResp'
+            $ref: '#/definitions/FinalizationResult'
 
   /{domain_id}/sessions/{session_id}/action:
     post:
+      tags:
+        - Session
       description: Submits client action to IVR module. 
       parameters:
         - name: domain_id
@@ -190,10 +485,47 @@ paths:
           description: OK. Response contains the session's new state
           schema:
             $ref: '#/definitions/SessionStateResp'
+ 
+ 
+# I suggest to remove it from API 
+#  /{domain_id}/sessions/{session_id}/stages/{stage}/action:
+#    post:
+#      tags:
+#        - Session
+#      description: Submits client action to IVR module in appliance with stage . 
+#      parameters:
+#        - name: domain_id
+#          in: path
+#          type: integer
+#          format: int32
+#          required: true
+#        - name: session_id
+#          in: path
+#          type: integer
+#          format: int32
+#          required: true
+#        - name: stage
+#          in: path
+#          type: integer
+#          format: int32
+#          required: true
+#          description: Module stage for which the action submits
+#        - name: body
+#          in: body
+#          schema:
+#            $ref: '#/definitions/UserAction'
+#          required: false
+#      responses:
+#        200:
+#          description: OK. Response contains the session's new state
+#          schema:
+#            $ref: '#/definitions/SessionStateResp'
 
   /{domain_id}/sessions/{session_id}/ewt:
     get:
-      description: Returns a value of the Estimated Wait-Time Timer. Request is returned immediate if “last_expires_at” value is missing or doesn’t match to current timer state. For example, first timer have been got with expires at value = 1000, so request with parameter “last_expires_at=1000” will return immediately if wait-time have been re-estimated, otherwise request will return after long-polling period timeout (configurable).  
+      tags:
+        - Session
+      description: Returns a value of the Estimated Wait Time Timer. Request is returned immediately if the `last_expires_at` value is missing or doesn’t match to current timer state. For example, first timer have been got with expires at value = 1000, so request with parameter “last_expires_at=1000” will return immediately if wait-time have been re-estimated, otherwise request will return after long-polling period timeout (configurable).  
       parameters:
         - name: domain_id
           in: path
@@ -214,11 +546,12 @@ paths:
         200:
           description: OK
           schema:
-            type: integer
-            format: int32
+            $ref: '#/definitions/EWTResp'
 
   /{domain_id}/sessions/{session_id}/back:
     post:
+      tags:
+        - Session
       description: steps back for one possible module. If back is available for current state returns previous state with actual changes. 
       parameters:
         - name: domain_id
@@ -231,37 +564,17 @@ paths:
           type: integer
           format: int32
           required: true
-        - name: args
-          in: body
-          schema:
-            $ref: '#/definitions/ScriptArgs'
-          required: true
       responses:
         200:
           description: OK
           schema:
-            $ref: '#/definitions/CampaignStateResp'
+            $ref: '#/definitions/SessionState'
 
-  /{domain_id}/sessions/{session_id}/cancel:
-    post:
-      description: Cancels this IVR session. Response can contain cancel result like URL to which redirect should be done or custom information. If request contains parameter ‘redirect=true’, the server will respond with redirect to redirect URL, or will return error about misconfiguration. 
-      parameters:
-        - name: domain_id
-          in: path
-          type: integer
-          format: int32
-          required: true
-        - name: session_id
-          in: path
-          type: integer
-          format: int32
-          required: true
-      responses:
-        200:
-          description: OK
 
   /{domain_id}/sessions/{session_id}/finalize:
     post:
+      tags:
+        - Session
       description: returns data to client for finalize client actions. 
       parameters:
         - name: domain_id
@@ -274,14 +587,11 @@ paths:
           type: integer
           format: int32
           required: true
-        - name: args
-          in: body
-          schema:
-            $ref: '#/definitions/ScriptArgs'
-          required: false
       responses:
         200:
           description: OK
+          schema:
+            $ref: '#/definitions/FinalizationResult'
 
   /{domain_id}/sessions/{session_id}/idle:
     post:
@@ -297,16 +607,9 @@ paths:
           type: integer
           format: int32
           required: true
-        - name: args
-          in: body
-          schema:
-            $ref: '#/definitions/ScriptArgs'
-          required: true
       responses:
         200:
           description: OK
-          schema:
-            $ref: '#/definitions/CampaignStateResp'
 
 
 ###############################################################
@@ -321,8 +624,15 @@ definitions:
       clientRecord:
         description: parameters passed from SCC (e.g. sentiment, etc)
         type: string
-      externalVars:
-        type: string
+      keyValueField:
+        type: object
+        properties:
+          field1:
+            description: Key value param 1
+            type: string
+          field2:
+            description: Key value param 2
+            type: string
         description: external parameters of the IVR script 
         
   CampaignStateResp:
@@ -341,6 +651,7 @@ definitions:
     required:
       - count
       - items
+      
   CampaignState:
     type: object
     properties:
@@ -427,17 +738,19 @@ definitions:
         description: name of the selected branch for Menu module; null for other modules
         type: string
       args:
-        description: List of ivr variables/values changed in result of the action 
+#        description: List of ivr variables/values changed in result of the action 
         $ref: "#/definitions/KVList"
     required:
       - name
       - moduleId
       - scriptId
     example:
-      args: {__BUFFER__: "nectarine"}
+      args:
+        __BUFFER__: nectarine
+        Call.language: en-US
       branch_id: appricots
       module_id: 8029B610A9434229BC299E52FDC4D2E2
-      name: select_fruit
+      name: userAnswer
       script_id: 44062
 
 ##############################################################
@@ -484,12 +797,14 @@ definitions:
       isFeedbackRequested:
         description: reserved. not used now
         type: boolean
+      isCallbackRequested:
+        description: true, if callback was requested
       isBackAvailable:
-        description: is it possible go to previous module 
+        description: is it possible go to previous module
       variables:
-        description: list of IVR variables used in the module (in prompts and as initial values)
+#        description: list of IVR variables used in the module (in prompts and as initial values)
         $ref: '#/definitions/KVList'
-      module:
+      moduleDescription:
         $ref: '#/definitions/ModuleDescription'
     required:
       - moduleId
@@ -508,7 +823,7 @@ definitions:
       - isBackAvailable: true
       - isCallbackRequested: false
       - isFeedbackRequested: false
-      - module: {ModuleDescription}
+      - moduleDescription: {ModuleDescription}
 
   ModuleDescription:
     description: parent structure containing fields common for all types of modules.
@@ -522,6 +837,7 @@ definitions:
         description: functional type of the module
         type: string
         enum:
+          - incoming
           - getDigits
           - input
           - menu
@@ -531,19 +847,20 @@ definitions:
           - skillTransfer
           - systemInfo
           - voiceInput
+          - hangup
       moduleName:
         description: the module's name used in the ivr builder
         type: string
       prompts:
-        description: list of configured prompts
+        description: list of configured prompts for all languages
         type: array
         items:
           $ref: '#/definitions/Prompt'
       caption:
-        description: text for the module's caption
+        description: text for the module's caption for all languages
         type: array
         items:
-          $ref: '#/definitions/Caption'
+          $ref: '#/definitions/Prompt'
       languages:
         description: array of languages configured for the script
         type: array
@@ -554,6 +871,7 @@ definitions:
       - moduleId
       - moduleType
       - moduleName
+  
   menu:
     description: Specific fields for the Menu module
     allOf:
@@ -582,6 +900,30 @@ definitions:
                 - descendant
         required:
           - branches
+  play:
+    allOf:
+      - $ref: '#/definitions/ModuleDescription'
+    example: 
+      moduleId: 45C7D98AF67A48C9B7E0B20C22ACE2DA
+      moduleType: play
+      moduleName: Play132
+      prompts:
+      - promptType: textContainer
+        lang: en-US
+        children:
+        - promptType: value
+          text: 'Preferable contact method '
+      - promptType: textContainer
+        lang: es-MX
+        children:
+        - promptType: value
+          text: Método de contacto preferible
+      caption: []
+      languages:
+      - en-US
+      - es-MX
+      restriction: {}
+      
   input:  
     description: Specific fields for the Input module
     allOf:
@@ -627,9 +969,25 @@ definitions:
           tcpaConsentText:
             type: boolean
             default: false
-  
+  hangup:
+    allOf:
+      - $ref: '#/definitions/ModuleDescription'
+    example: 
+      moduleId: 916D2CD53EA1491DBE99AF4573CD55A5
+      moduleType: hangup
+      moduleName: Hangup8
+      prompts:
+      caption:
+      languages:
+        - de-DE
+        - en-US
+        - ru-RU
+      restriction:
+      
   GenericInputModule:
     type: object
+    description: |
+      The `descendant` property appears if the module has a collapsible descendant
     properties: 
       targetVariable:
         description: name of the ivr script's variable to populate
@@ -637,9 +995,10 @@ definitions:
       restriction:
         $ref: '#/definitions/Restriction'
       descendant:
-        description: descendants are sent if the module has collapsible descendant
         $ref: '#/definitions/GenericInputModule'
-            
+    required:
+      - targetVariable
+
   Branch:
     type: object
     properties:
@@ -647,93 +1006,53 @@ definitions:
         type: string
       capture:
         type: string
+      thumbnail:
+        type: string
       mlChoices:
         type: array
         items:
-          $ref: '#/definitions/MultiLanguageChoice'
+          $ref: '#/definitions/MenuChoice'
       
-  MultiLanguageChoice:
-    type: object
-    properties:
-      language:
-        type: string
-        format: ISO 639-1
-      capture:
-        type: string
 
   Prompt:
     type: object
     properties:
       promptType:
         type: string
-        enum:
-          - text
-          - image
+        description: "can contain any string, but can conain reserved types: 'value' mean text type of prompt, 'image' - link to image source, 'textContainer' mean that children fileds is not empty, 'break'"
       lang:
         description: language, if the prompt is localized
         type: string
         format: ISO 639-1
       text:
-        description: text of the prompt
-        $ref: '#/definitions/DecoratedText'
+        type: string
       image:
         description: URI of the image source
         type: string
         format: URI
-
-  DecoratedText:
-    description: Text with markup (usually by html tags)
-    discriminator: element
-    type: object
-    properties:
-      element:
-        type: string
-        enum:
-          - Text
-          - Markup
-    required:
-      - element
-  Text:
-    description: Inner text
+      children: 
+        type: array
+        items:
+          $ref: '#/definitions/Prompt'
+      attributes:
+        type: array
+        items:
+          type: object
+          properties:
+            name:
+              type: string
+            value:
+              type: string
+  
+  MenuChoice:
+    description: Specific multilanguage prompt for menu item
     allOf:
-      - $ref: '#/definitions/DecoratedText'
+      - $ref: '#/definitions/Prompt'
       - type: object
         properties:
-          innerText:
+          thumbnail:
             type: string
-  Markup:
-    allOf:
-      - $ref: '#/definitions/DecoratedText'
-      - type: object
-        properties:
-          tag:
-            type: string
-          attributes:
-            $ref: '#/definitions/KVList'
-          children:
-            type: array
-            items:
-              $ref: '#/definitions/DecoratedText'
-        required:
-          - tag
 
-  Caption:
-    type: object
-    properties:
-      promptType:
-        type: string
-        enum:
-          - text
-        description: only "text" is allowed for now
-      text:
-        type: string
-      isE164:
-        type: boolean
-      language:
-        type: string
-        format: ISO 639-1
-        
-      
   Restriction:
     description: Represents restrictions for a user's input
     type: object
@@ -861,5 +1180,64 @@ definitions:
       type: object
       additionalProperties:
         type: string
-    
-      
+  
+  EWTResp:
+    type: object
+    properties:
+      count:
+        description: number of items in the response
+        type: integer
+        format: int32
+      items:
+        type: array
+        items:
+          $ref: '#/definitions/EWT'
+      error:
+        $ref: '#/definitions/APIError'
+    required:
+      - count
+      - items
+    example:
+      count: 1
+      items: [SessionState]
+      error: null
+  
+  EWT:
+    type: object
+    properties:
+      timeout:
+        type: integer
+        format: int32
+      startedAt:
+        description: waiting start timestamp
+        type: integer
+        format: int32
+      leftTime:
+        description: estimated wait time in seconds
+        type: integer
+        format: int32
+  
+  FinalizationResult:
+    type: object
+    properties:
+      redirectURL:
+        type: string
+        format: URI
+
+
+  Dummy:
+    description: Swagger Editor has a bug reporting the "Definition is not used" warning for each inherited structure. I listed them here just to reduce the garbage printout.
+    allOf:
+      - $ref: '#/definitions/ccexpdate'
+      - $ref: '#/definitions/date'
+      - $ref: '#/definitions/time'
+      - $ref: '#/definitions/intNumber'
+      - $ref: '#/definitions/currency'
+      - $ref: '#/definitions/number'
+      - $ref: '#/definitions/digits'
+      - $ref: '#/definitions/skillTransfer'
+      - $ref: '#/definitions/voiceInput'
+      - $ref: '#/definitions/getDigits'
+      - $ref: '#/definitions/input'
+      - $ref: '#/definitions/play'
+      - $ref: '#/definitions/hangup'

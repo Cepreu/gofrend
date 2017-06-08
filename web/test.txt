@@ -1,0 +1,107 @@
+https://qawebapi01.five9lab.com/ivr/1/1/campaigns/2864/new_ivr_session
+Response headers:
+HTTP/1.1 303 See Other
+Server: Apache-Coyote/1.1
+Server: Apache-Coyote/1.1
+Access-Control-Allow-Origin: *
+Access-Control-Allow-Methods: GET,POST,PUT,DELETE,OPTIONS
+Access-Control-Allow-Headers: X-Requested-With, Content-Type, Content-Length
+Location: https://qawebapi01.five9lab.com:443/ivr/1/1/sessions/8BA416AA21DA4836AA9EACEF78A6B933_1/view.html
+Date: Thu, 25 May 2017 20:36:04 GMT
+Connection: close
+Content-Length: 0
+
+
+https://qawebapi01.five9lab.com/ivr/1/1/sessions/8BA416AA21DA4836AA9EACEF78A6B933_1/view.html
+<!DOCTYPE HTML>
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="IE=Edge" http-equiv="X-UA-Compatible">
+<meta content="width=device-width, initial-scale=1" name="viewport">
+<meta content="yes" name="apple-mobile-web-app-capable">
+<meta content="$" name="five9-ivr-version">
+<link href="css/images/five9.ico" rel="apple-touch-icon">
+<link href="css/images/five9.ico" rel="apple-touch-startup-image">
+<link href="https://qawebapi01.five9lab.com:443/ivr/1/five9vivr/1/css/jquery.mobile.structure-1.4.0.css" rel="stylesheet">
+<link href="https://qawebapi01.five9lab.com:443/ivr/1/five9vivr/1/css/jquery.mobile.external-png-1.4.0.min.css" rel="stylesheet">
+<link href="https://qawebapi01.five9lab.com:443/ivr/1/five9vivr/1/css/default.style.css" rel="stylesheet">
+<link href="https://qawebapi01.five9lab.com:443/ivr/common/css/jquery.mobile.theme-default.css" rel="stylesheet">
+<link href="https://qawebapi01.five9lab.com:443/ivr/1/five9vivr/1/css/style.css" rel="stylesheet">
+</head>
+<body>
+<div style="position: fixed; z-index: 200; width: 100%; height: 100%; display:block; background-color: #C5C9CA;" id="five9-ivr-init-overlay">
+<img src="https://qawebapi01.five9lab.com:443/ivr/1/images/five9_logo.gif" style="position: fixed; top: 10%; left: 20%; max-width: 80%; max-height: 80%; width: 60%; height: auto"><h5 style="position: relative; top: 75%; text-align: center;">Visual IVR powered by <a href="http://www.five9.com/">five9.com</a>
+</h5>
+</div>
+<div style="display: none;" id="five9-ivr-content">
+<div id="wndCallMeBack" data-theme="c" data-role="page">
+<div data-position="fixed" data-role="header">
+<h1>
+                Welcome
+            </h1>
+<a data-inline="true" class="ui-btn-right five9-ivr-right-btn" data-iconpos="right" data-icon="arrow-r" href="#">Next</a>
+</div>
+<div data-role="content"></div>
+</div>
+<div data-theme="c" data-add-back-btn="true" id="_ivr_final_page" data-role="page">
+<div data-position="fixed" data-role="header">
+<h1>
+<span data-localization="en-US" class="static-localized">Have a nice day!</span><span data-localization="es-MX" class="static-localized">Tenga un buen d&iacute;a!</span><span data-localization="en-GB" class="static-localized">Have a nice day!</span><span data-localization="fr-FR" class="static-localized">Bonne journ&eacute;e!</span><span data-localization="de-DE" class="static-localized">Einen sch&ouml;nen Tag noch!</span>
+</h1>
+</div>
+<div data-role="content">
+<h2>
+<span data-localization="en-US" class="static-localized">Thank you!</span><span data-localization="es-MX" class="static-localized">&iexcl;Gracias!</span><span data-localization="en-GB" class="static-localized">Thank you!</span><span data-localization="fr-FR" class="static-localized">Merci!</span><span data-localization="de-DE" class="static-localized">Danke!</span><span data-localization="en-US" class="static-localized">We appreciate your business and loyalty.</span><span data-localization="es-MX" class="static-localized">Apreciamos su negocio y lealtad.</span><span data-localization="en-GB" class="static-localized">We appreciate your business and loyalty.</span><span data-localization="fr-FR" class="static-localized">Nous appr&eacute;cions votre entreprise et la loyaut&eacute;.</span><span data-localization="de-DE" class="static-localized">Wir sch&auml;tzen Ihr Gesch&auml;ft und Loyalit&auml;t.</span><span data-localization="en-US" class="static-localized">Have a nice day!</span><span data-localization="es-MX" class="static-localized">Tenga un buen d&iacute;a!</span><span data-localization="en-GB" class="static-localized">Have a nice day!</span><span data-localization="fr-FR" class="static-localized">Bonne journ&eacute;e!</span><span data-localization="de-DE" class="static-localized">Einen sch&ouml;nen Tag noch!</span>
+</h2>
+</div>
+</div>
+<div data-theme="c" data-add-back-btn="true" id="_ivr_error_page" data-role="page">
+<div data-position="fixed" data-role="header">
+<h1>
+<span data-localization="en-US" class="static-localized">Error</span><span data-localization="es-MX" class="static-localized">Error</span><span data-localization="en-GB" class="static-localized">Error</span><span data-localization="fr-FR" class="static-localized">Erreur</span><span data-localization="de-DE" class="static-localized">Fehler</span>
+</h1>
+<a class="five9-ivr-restart-btn ui-btn-right"><span data-localization="en-US" class="static-localized">Restart</span><span data-localization="es-MX" class="static-localized">Reiniciar</span><span data-localization="en-GB" class="static-localized">Restart</span><span data-localization="fr-FR" class="static-localized">Red&eacute;marrer</span><span data-localization="de-DE" class="static-localized">Neustart</span></a>
+</div>
+<div data-role="content">
+<h2 id="five9_ivr_error_msg"></h2>
+</div>
+</div>
+<div style="background: #fff; opacity: 1" data-position-to="window" data-dismissible="false" data-role="popup" id="five9-idle-warning-popup">
+<p>
+<span data-localization="en-US" class="static-localized">Staying idle your session will expire in </span><span data-localization="es-MX" class="static-localized">Permanecer inactiva su sesi&oacute;n expira en </span><span data-localization="en-GB" class="static-localized">Staying idle your session will expire in </span><span data-localization="fr-FR" class="static-localized">Rester inactif votre session expirera en </span><span data-localization="de-DE" class="static-localized">Der Aufenthalt im Leerlauf Ihre Sitzung abl&auml;uft in </span><i></i>
+</p>
+</div>
+</div>
+<script src="https://qawebapi01.five9lab.com:443/ivr/1/five9vivr/1/js/jquery-1.11.0.min.js"></script><script src="https://qawebapi01.five9lab.com:443/ivr/1/five9vivr/1/js/jquery.mobile-1.4.0.min.js"></script><script src="https://qawebapi01.five9lab.com:443/ivr/1/five9vivr/1/js/underscore-min.js"></script><!--[if lt IE 8]><script src="https://qawebapi01.five9lab.com:443/ivr/1/five9vivr/1/js/json2.js"></script><![endif]--><script src="https://qawebapi01.five9lab.com:443/ivr/1/five9vivr/1/js/five9.session_state.js"></script><script src="https://qawebapi01.five9lab.com:443/ivr/1/five9vivr/1/js/five9.ivr.init_functions.js"></script><script src="https://qawebapi01.five9lab.com:443/ivr/1/five9vivr/1/js/five9.ivr.html.generator.js"></script><script src="https://qawebapi01.five9lab.com:443/ivr/1/five9vivr/1/js/five9.common.js"></script><script src="https://qawebapi01.five9lab.com:443/ivr/1/five9vivr/1/js/five9.ivr.web_ui.js"></script><script src="https://qawebapi01.five9lab.com:443/ivr/1/five9vivr/1/js/locales.js"></script><script type="text/javascript">
+                    Five9Ivr.sessionURL = "https://qawebapi01.five9lab.com:443/ivr/1/1/sessions/8BA416AA21DA4836AA9EACEF78A6B933_1";
+                    Five9Ivr.domainId = "1";
+                    Five9Ivr.campaignId = "2864";
+                    Five9Ivr.maxIdleTime = 5;
+                    Five9Ivr.callbackURL = "";
+                    Five9Ivr.restartURL = "https://qawebapi01.five9lab.com/ivr/1/1/campaigns/2864/new_ivr_session";
+                    Five9Ivr.theme = "c";
+                    Five9Ivr.target_domain = "https://qawebapi01.five9lab.com:443/ivr";
+                </script>
+</body>
+</html>
+
+
+
+Request URL:https://qawebapi01.five9lab.com/ivr/1/1/sessions/8BA416AA21DA4836AA9EACEF78A6B933_1/stages/1/action
+Request Method:POST
+
+Response:
+{"count":1,"items":[{"moduleDescription":{"moduleId":"E18F59B3DCEC437AB62C06A5E86DB0D5","moduleType":"play","moduleName":"Play9","prompts":[{"promptType":"textContainer","children":[{"promptType":"value","text":"Contact Record lookup returned too many records"}]}],"caption":[],"languages":[],"restriction":{}},"stage":3,"scriptId":"2858","moduleId":"E18F59B3DCEC437AB62C06A5E86DB0D5","sessionURL":"https://qawebapi01.five9lab.com:443/ivr/1/1/sessions/8BA416AA21DA4836AA9EACEF78A6B933_1","isFinal":false,"variables":{"IVR.error_desc":"Contact Record lookup returned too many records"},"isBackAvailable":false,"isCallbackRequested":false,"isFeedbackRequested":false}],"error":null}
+
+Request URL:https://qawebapi01.five9lab.com/ivr/1/1/sessions/8BA416AA21DA4836AA9EACEF78A6B933_1/idle
+{"count":1,"items":[""],"error":null}
+
+Request URL:https://qawebapi01.five9lab.com/ivr/1/1/sessions/8BA416AA21DA4836AA9EACEF78A6B933_1/stages/3/action
+Request Method:POST
+Response:
+{"count":1,"items":[{"moduleDescription":{"moduleId":"2BBAAC2CC8AA44F9A1EDA8E34315AF7B","moduleType":"hangup","moduleName":"Hangup12","prompts":[],"caption":[],"languages":[],"restriction":{}},"stage":0,"scriptId":"2858","moduleId":"2BBAAC2CC8AA44F9A1EDA8E34315AF7B","sessionURL":"https://qawebapi01.five9lab.com:443/ivr/1/1/sessions/8BA416AA21DA4836AA9EACEF78A6B933_1","isFinal":true,"variables":{},"isBackAvailable":true,"isCallbackRequested":false,"isFeedbackRequested":false}],"error":null}
+
+Request URL:https://qawebapi01.five9lab.com/ivr/1/1/sessions/8BA416AA21DA4836AA9EACEF78A6B933_1/finalize
+Request Method:POST
+{"count":1,"items":[{"redirectURL":""}],"error":null}
