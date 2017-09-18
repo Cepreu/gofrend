@@ -104,7 +104,7 @@ paths:
             application/json:
               count: 1
               items:
-                - selfURL: https://www.five9.com/ivr/2/54/campaigns/465
+                - selfURL: https://www.five9.com/ivr/1/54/campaigns/465
                   name: in2
                   id: 465
                   domainId: 54
@@ -135,12 +135,14 @@ paths:
         - name: interaction
           in: path
           type: string
-          description: interaction type [ web | chat | email | sms ]
+          description: interaction type [ web | chat | email | sms | gwi_online | gwi_offline]
           enum: 
             - web
             - chat
             - email
             - sms
+            - gwi_online
+            - gwi_offline
           required: true
         - name: args
           in: query
