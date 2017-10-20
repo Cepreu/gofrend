@@ -1077,7 +1077,7 @@ definitions:
           - zipCode
           - alphanum
       isE164:
-        type: boolean
+        type: boolean 
         default: false
       language:
         type: string

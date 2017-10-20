@@ -8,12 +8,12 @@ type xHangupModule struct {
 	Name       string      `xml:"moduleName"`
 	X          int32       `xml:"locationX"`
 	Y          int32       `xml:"locationY"`
-	Id         string      `xml:"moduleId"`
+	ID         string      `xml:"moduleId"`
 	ModuleData xDataHangup `xml:"data"`
 }
 type xDataHangup struct {
 	DispoName        string `xml:"dispo>name"`
-	DispoId          int32  `xml:"dispo>id"`
+	DispoID          int32  `xml:"dispo>id"`
 	Return2Caller    bool   `xml:"returnToCallingModule"`
 	ErrIsVarSelected bool   `xml:"errCode>isVarSelected"`
 	ErrIntegerValue  int32  `xml:"errCode>integerValue>value"`

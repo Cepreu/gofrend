@@ -5,16 +5,16 @@ import "encoding/xml"
 type xInputModule struct {
 	XMLName    xml.Name   `xml:"input"`
 	Ascendant  string     `xml:"ascendants"`
-	Descendant string     `xml:singleDescendant"`
+	Descendant string     `xml:"singleDescendant"`
 	Name       string     `xml:"moduleName"`
 	X          int32      `xml:"locationX"`
 	Y          int32      `xml:"locationY"`
-	Id         string     `xml:"moduleId"`
+	ID         string     `xml:"moduleId"`
 	ModuleData xDataInput `xml:"data"`
 }
 type xDataInput struct {
 	DispoName string        `xml:"dispo>name"`
-	DispoId   int32         `xml:"dispo>id"`
+	DispoID   int32         `xml:"dispo>id"`
 	VPrompt   xVivrPrompt   `xml:"vivrPrompts"`
 	VHeader   xVivrHeader   `xml:"vivrHeader"`
 	Prompt    xPrompts      `xml:"prompts"`
