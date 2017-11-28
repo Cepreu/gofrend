@@ -5,6 +5,6 @@ type xIncomingCallModule struct {
 	Name       string `xml:"moduleName"`
 	X          int32  `xml:"locationX"`
 	Y          int32  `xml:"locationY"`
-	Id         string `xml:"moduleId"`
+	ID         string `xml:"moduleId"`
 	Data       string `xml:"data"`
 }
