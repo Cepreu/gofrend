@@ -5,10 +5,10 @@ import (
 )
 
 type Value interface {
+	String() string
 	compareTo(Value) (int, error)
 	assign(Value) error
 	new(bool, string) error
-	convertToString() (string, error)
 	toLong() (int64, error)
 	toBigDecimal() (float64, error)
 	toDate() ([]int, error)

@@ -95,7 +95,7 @@ func (v Variable) IsCav() bool {
 func (v *Variable) String() string {
 	re := "NULL"
 	if !v.isNullValue {
-		re = v.value
+		re = v.value.String()
 	}
 	return fmt.Sprintf("{{name=\"%s\"}{description=\"%s\"} %s}", v.name, v.description, re)
 }

@@ -1,7 +1,6 @@
 package variables
 
 import (
-	"errors"
 	"fmt"
 	"strconv"
 )
@@ -37,11 +36,8 @@ func (sval *StringValue) assign(that Value) error {
 			return nil
 		}
 	}
-	v, err := that.convertToString()
-	if err == nil {
-		sval.value = v
-	}
-	return err
+	sval.value = that.String()
+	return nil
 }
 
 func (sval *StringValue) new(secure bool, strValue string) error {
@@ -52,10 +48,7 @@ func (sval *StringValue) new(secure bool, strValue string) error {
 
 func (sval *StringValue) compareTo(value2 Value) (int, error) {
 	res := 0
-	toCompare, err := value2.convertToString()
-	if err != nil {
-		return res, errors.New("Variable to compare must be of StringValue type")
-	}
+	toCompare := value2.String()
 	if sval.value > toCompare {
 		res = 1
 	} else if sval.value < toCompare {
@@ -69,15 +62,7 @@ func (sval *StringValue) toLong() (int64, error) {
 }
 
 func (sval *StringValue) String() string {
-	str := "*****"
-	if !sval.secure {
-		str, _ = sval.convertToString()
-	}
-	return fmt.Sprintf("{type=StringValue}{value=%s}", str)
-}
-
-func (sval *StringValue) convertToString() (string, error) {
-	return sval.value, nil
+	return sval.value
 }
 
 func (sval *StringValue) toBigDecimal() (float64, error) {
