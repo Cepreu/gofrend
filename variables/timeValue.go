@@ -46,7 +46,7 @@ func (tval *TimeValue) toLong() (int64, error) {
 	return int64(tval.value), nil
 }
 
-func (tval *TimeValue) toString() string {
+func (tval *TimeValue) String() string {
 	str := "*****"
 	if !tval.secure {
 		str, _ = tval.convertToString()

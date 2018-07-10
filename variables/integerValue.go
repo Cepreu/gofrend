@@ -51,7 +51,7 @@ func (ival *IntegerValue) toLong() (int64, error) {
 	return ival.value, nil
 }
 
-func (ival *IntegerValue) toString() string {
+func (ival *IntegerValue) String() string {
 	str := "*****"
 	if !ival.secure {
 		str, _ = ival.convertToString()

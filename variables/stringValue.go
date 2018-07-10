@@ -68,7 +68,7 @@ func (sval *StringValue) toLong() (int64, error) {
 	return strconv.ParseInt(sval.value, 10, 64)
 }
 
-func (sval *StringValue) toString() string {
+func (sval *StringValue) String() string {
 	str := "*****"
 	if !sval.secure {
 		str, _ = sval.convertToString()

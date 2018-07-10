@@ -55,7 +55,7 @@ func (dval *DateValue) toLong() (int64, error) {
 	return int64(dval.value[day] + dval.value[month]*100 + dval.value[year]*10000), nil
 }
 
-func (dval *DateValue) toString() string {
+func (dval *DateValue) String() string {
 	str := "*****"
 	if !dval.secure {
 		str, _ = dval.convertToString()

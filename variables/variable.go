@@ -92,10 +92,10 @@ func (v Variable) IsCav() bool {
 	return false //TBD (this instanceof CavVariable);
 }
 
-func (v Variable) ToString() string {
+func (v *Variable) String() string {
 	re := "NULL"
 	if !v.isNullValue {
-		re = v.value.toString()
+		re = v.value
 	}
 	return fmt.Sprintf("{{name=\"%s\"}{description=\"%s\"} %s}", v.name, v.description, re)
 }
@@ -113,6 +113,6 @@ func (v Variable) HashCode() uint64 {
 		result = prime*result + 1237
 	}
 	result = prime*result + utils.HashCode(v.name)
-	result = prime*result + utils.HashCode(v.value.toString())
+	result = prime*result + utils.HashCode(v.value.String())
 	return result
 }

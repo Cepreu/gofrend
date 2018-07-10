@@ -8,7 +8,6 @@ type Value interface {
 	compareTo(Value) (int, error)
 	assign(Value) error
 	new(bool, string) error
-	toString() string
 	convertToString() (string, error)
 	toLong() (int64, error)
 	toBigDecimal() (float64, error)
@@ -44,12 +43,8 @@ func (ival *defaultValueImpl) toLong() (int64, error) {
 	return 0, fmt.Errorf("toLong() is not supported for\" %v\"", ival.getType())
 }
 
-func (ival *defaultValueImpl) toString() string {
-	return "Undefined"
-}
-
-func (ival *defaultValueImpl) convertToString() (string, error) {
-	return "", fmt.Errorf("toLongconvertToString() is not supported for \"%v\"", ival.getType())
+func (ival *defaultValueImpl) String() (string, error) {
+	return "", fmt.Errorf("String() is not supported for \"%v\"", ival.getType())
 }
 
 func (ival *defaultValueImpl) toBigDecimal() (float64, error) {

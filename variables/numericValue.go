@@ -51,7 +51,7 @@ func (fval *NumericValue) toLong() (int64, error) {
 	return int64(fval.value), nil
 }
 
-func (fval *NumericValue) toString() string {
+func (fval *NumericValue) String() string {
 	str := "*****"
 	if !fval.secure {
 		str, _ = fval.convertToString()
