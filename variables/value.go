@@ -4,9 +4,13 @@ import (
 	"fmt"
 )
 
+type Comparator interface {
+	compareTo(Value) (int, error)
+}
+
 type Value interface {
 	String() string
-	compareTo(Value) (int, error)
+	Comparator
 	assign(Value) error
 	new(bool, string) error
 	toLong() (int64, error)

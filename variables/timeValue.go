@@ -47,15 +47,7 @@ func (tval *TimeValue) toLong() (int64, error) {
 }
 
 func (tval *TimeValue) String() string {
-	str := "*****"
-	if !tval.secure {
-		str, _ = tval.convertToString()
-	}
-	return fmt.Sprintf("{type=TimeValue}{value=%s}", str)
-}
-
-func (tval *TimeValue) convertToString() (string, error) {
-	return fmt.Sprintf("%d", tval.value), nil
+	return fmt.Sprintf("%d", tval.value)
 }
 
 func (tval *TimeValue) toBigDecimal() (float64, error) {
