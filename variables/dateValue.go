@@ -5,28 +5,28 @@ import (
 	"fmt"
 )
 
-const (
-	year int = iota
-	month
-	day
-)
-
 type DateValue struct {
 	defaultValueImpl
-	value [3]int
+	value struct {
+		day   uint8
+		month uint8
+		year  uint16
+	}
 }
 
 func (dval *DateValue) isSecure() bool { return dval.secure }
 
-func (dval *DateValue) assign(that Value) error {
+func (dval *DateValue) assign(that *Value) error {
 	dval.defaultValueImpl.assign(that)
-	v, err := that.toDate()
-	if err == nil {
-		dval.value[day] = v[day]
-		dval.value[month] = v[month]
-		dval.value[year] = v[year]
+	v := that.toDate()
+	if v == nil {
+		return errors.New("Variable of this type cannot be assigned to Date")
 	}
-	return err
+	dval.value.day = v.value.day
+	dval.value.month = v.value.month
+	dval.value.year = v.value.year
+
+	return nil
 }
 
 func (dval *DateValue) new(secure bool, strValue string) error {
@@ -36,11 +36,9 @@ func (dval *DateValue) new(secure bool, strValue string) error {
 	return err
 }
 
-func (dval *DateValue) compareTo(value2 Value) (int, error) {
+func (dval *DateValue) compareTo(value2 *DateValue) (int, error) {
 	res := 0
-	if value2.getType() != DATE {
-		return res, errors.New("Variable to compare must be of DateValue type")
-	}
+
 	d1, _ := dval.toLong()
 	d2, _ := value2.toLong()
 	if d1 > d2 {
@@ -56,18 +54,10 @@ func (dval *DateValue) toLong() (int64, error) {
 }
 
 func (dval *DateValue) String() string {
-	str := "*****"
-	if !dval.secure {
-		str, _ = dval.convertToString()
-	}
-	return fmt.Sprintf("{type=DateValue}{value=%s}", str)
+	return fmt.Sprintf("%4d-%02d-%02d", dval.value[year], dval.value[month], dval.value[day])
 }
 
-func (dval *DateValue) convertToString() (string, error) {
-	return fmt.Sprintf("%4d-%02d-%02d", dval.value[year], dval.value[month], dval.value[day]), nil
-}
-
-func (dval *DateValue) toDate() ([]int, error) {
+func (dval *DateValue) toDate() *DateValue {
 	return dval.value[:], nil
 }
 

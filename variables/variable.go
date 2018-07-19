@@ -72,7 +72,7 @@ func (v Variable) compareTo(arg Variable) (int, error) {
 	return v.value.compareTo(arg.value)
 }
 
-func (pv *Variable) assign(val Value) {
+func (pv *Variable) assign(val *Value) {
 	//	if val.isEmpty() {
 	//		pv.isNullValue = true
 	//	} else {
