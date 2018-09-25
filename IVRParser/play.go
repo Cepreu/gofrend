@@ -1,4 +1,4 @@
-package IVRParser
+package ivrparser
 
 type xPlayModule struct {
 	Ascendant  string    `xml:"ascendants"`

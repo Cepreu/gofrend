@@ -1,4 +1,4 @@
-package IVRParser
+package ivrparser
 
 type xIncomingCallModule struct {
 	Descendant string `xml:"singleDescendant"`

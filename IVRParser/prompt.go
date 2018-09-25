@@ -1,4 +1,4 @@
-package IVRParser
+package ivrparser
 
 type xPrompts struct {
 	Prompt xPrompt `xml:"prompt"`

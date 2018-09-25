@@ -1,4 +1,4 @@
-package IVRParser
+package ivrparser
 
 import (
 	"strings"

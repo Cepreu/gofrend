@@ -2,13 +2,14 @@ package main
 
 import (
 	"bytes"
+	"encoding/base64"
 	"fmt"
 	"io/ioutil"
 	"os/exec"
 	"strings"
 	"text/template"
 
-	"github.com/Cepreu/gofrend/IVRParser"
+	"github.com/Cepreu/gofrend/ivrparser"
 	"github.com/clbanning/mxj"
 	"github.com/davecgh/go-spew/spew"
 	"github.com/mitchellh/mapstructure"
@@ -28,7 +29,7 @@ func getIvrFromF9(name string) (string, error) {
 	}
 	m, _ := mxj.NewMapXml(contents, true)
 	PrettyPrint(m)
-	fmt.Println("============================================================")
+	fmt.Println("===========================================================")
 	ivr, error := convertIVRResults(&m)
 	if error != nil {
 		return "", error
@@ -82,7 +83,7 @@ func convertIVRResults(soapResponse *mxj.Map) (*IvrScriptDef, error) {
 	}
 	fmt.Println("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
 	go func() {
-		IVR, err := IVRParser.ParseIVR(strings.NewReader(result.XMLDefinition))
+		IVR, err := ivrparser.ParseIVR(strings.NewReader(result.XMLDefinition))
 		fmt.Println(">>>>>>>>>>>>>>>>>>>>>>>>", err)
 		PrettyPrint(IVR)
 
@@ -90,19 +91,22 @@ func convertIVRResults(soapResponse *mxj.Map) (*IvrScriptDef, error) {
 			for _, p := range m.ModuleData.Prompts {
 				for _, t := range p.Prompt.TTSes {
 					fmt.Println(m.Name, t.TtsPromptXML)
-					Cmd([]byte(t.TtsPromptXML))
+					Cmd(t.TtsPromptXML)
 				}
 			}
 		}
 	}()
 	return &result, nil
 }
-func Cmd(text []byte) {
+func Cmd(encoded string) {
+	base64Text := make([]byte, base64.StdEncoding.DecodedLen(len(encoded)))
+	base64.StdEncoding.Decode(base64Text, []byte(encoded))
+
 	grepCmd := exec.Command("gunzip")
 	grepIn, _ := grepCmd.StdinPipe()
 	grepOut, _ := grepCmd.StdoutPipe()
 	grepCmd.Start()
-	grepIn.Write(text)
+	grepIn.Write(base64Text)
 	grepIn.Close()
 	grepBytes, _ := ioutil.ReadAll(grepOut)
 	grepCmd.Wait()
