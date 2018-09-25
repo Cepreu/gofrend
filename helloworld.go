@@ -7,12 +7,12 @@ import (
 	"encoding/hex"
 	"fmt"
 	"strings"
+
 	//	"io"
 	"io/ioutil"
 	"os"
-	"os/exec"
 
-	"github.com/Cepreu/gofrend/five9ivr"
+	"github.com/Cepreu/gofrend/IVRParser"
 	"github.com/Cepreu/gofrend/web"
 )
 
@@ -45,19 +45,6 @@ func zlibbing(source []byte) {
 		panic(err)
 	}
 	fmt.Println(string(enflated))
-}
-
-func Cmd(text []byte) {
-	grepCmd := exec.Command("gunzip")
-	grepIn, _ := grepCmd.StdinPipe()
-	grepOut, _ := grepCmd.StdoutPipe()
-	grepCmd.Start()
-	grepIn.Write(text)
-	grepIn.Close()
-	grepBytes, _ := ioutil.ReadAll(grepOut)
-	grepCmd.Wait()
-	fmt.Println("> grep hello")
-	fmt.Println(string(grepBytes))
 }
 
 func hexdumper(source []byte) {
