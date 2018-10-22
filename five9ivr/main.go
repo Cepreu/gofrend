@@ -72,7 +72,7 @@ func main() {
 
 	logger.Println("Server is ready to handle requests at", listenAddr)
 	atomic.StoreInt32(&healthy, 1)
-	if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+	if err := server.ListenAndServeTLS("cert.pem", "key.pem"); err != nil && err != http.ErrServerClosed {
 		logger.Fatalf("Could not listen on %s: %v\n", listenAddr, err)
 	}
 
@@ -89,7 +89,7 @@ func index() http.Handler {
 		w.Header().Set("Content-Type", "text/plain; charset=utf-8")
 		w.Header().Set("X-Content-Type-Options", "nosniff")
 		w.WriteHeader(http.StatusOK)
-		fmt.Fprintln(w, "Hello, World!")
+		fmt.Fprintln(w, "Hello, Unknown World!")
 	})
 }
 func getSkills() http.Handler {
@@ -109,7 +109,7 @@ func getSkills() http.Handler {
 		if s, e := getSkillsFromF9(name); e == nil {
 			fmt.Fprint(w, s)
 		} else {
-			fmt.Fprintln(w, "Hello, World!")
+			fmt.Fprintln(w, e)
 		}
 	})
 }
@@ -127,7 +127,7 @@ func getIVRScripts() http.Handler {
 		if s, e := getIvrFromF9(name); e == nil {
 			fmt.Fprint(w, s)
 		} else {
-			fmt.Fprintln(w, "Hello, World!")
+			fmt.Fprintln(w, "Hello, IVR World!")
 		}
 	})
 }

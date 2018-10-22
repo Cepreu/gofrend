@@ -24,12 +24,12 @@ type IvrScriptDef struct {
 func getIvrFromF9(name string) (string, error) {
 	contents, err := queryF9(func() string { return generateIVRRequestContent(name) })
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println("........", err)
 		return "", err
 	}
 	m, _ := mxj.NewMapXml(contents, true)
 	PrettyPrint(m)
-	fmt.Println("===========================================================")
+	fmt.Println("==================================================")
 	ivr, error := convertIVRResults(&m)
 	if error != nil {
 		return "", error
@@ -87,14 +87,14 @@ func convertIVRResults(soapResponse *mxj.Map) (*IvrScriptDef, error) {
 		fmt.Println(">>>>>>>>>>>>>>>>>>>>>>>>", err)
 		PrettyPrint(IVR)
 
-		for _, m := range IVR.Modules.InputModules {
-			for _, p := range m.ModuleData.Prompts {
-				for _, t := range p.Prompt.TTSes {
-					fmt.Println(m.Name, t.TtsPromptXML)
-					Cmd(t.TtsPromptXML)
-				}
-			}
-		}
+		// for _, m := range IVR.Modules.InputModules {
+		// 	for _, p := range m.ModuleData.Prompts {
+		// 		for _, t := range p.Prompt.TTSes {
+		// 			fmt.Println(m.Name, t.TtsPromptXML)
+		// 			Cmd(t.TtsPromptXML)
+		// 		}
+		// 	}
+		// }
 	}()
 	return &result, nil
 }

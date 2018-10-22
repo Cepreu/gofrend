@@ -31,6 +31,7 @@ func queryF9(generateRequestContent func() string) ([]byte, error) {
 	url := conf.F9URL
 	client := &http.Client{}
 	sRequestContent := generateRequestContent()
+
 	requestContent := []byte(sRequestContent)
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(requestContent))
 	if err != nil {
@@ -42,6 +43,7 @@ func queryF9(generateRequestContent func() string) ([]byte, error) {
 	req.Header.Add("Authorization", "Basic "+conf.F9Authorization)
 	resp, err := client.Do(req)
 	if err != nil {
+		fmt.Println(req)
 		return nil, err
 	}
 	defer resp.Body.Close()

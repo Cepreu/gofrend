@@ -21,6 +21,8 @@ type SkillInfo struct {
 func getSkillsFromF9(name string) (string, error) {
 	contents, err := queryF9(func() string { return generateSkillsRequestContent(name) })
 	if err != nil {
+		fmt.Println("===========================================  ", err)
+
 		return "", err
 	}
 	m, _ := mxj.NewMapXml(contents, true)
