@@ -1,17 +1,29 @@
 package ivrparser
 
+import (
+	"encoding/base64"
+	"encoding/xml"
+	"fmt"
+	"io"
+	"io/ioutil"
+	"os/exec"
+)
+
+type PromptID string
+
 type xPrompts struct {
 	Prompt xPrompt `xml:"prompt"`
-	Count  int32   `xml:"count"`
+	Count  int     `xml:"count"`
 }
 type xPrompt struct {
-	TTSes                        []xTTSPrompt   `xml:"ttsPrompt"`
-	Files                        []xFilePrompt  `xml:"filePrompt"`
-	Pauses                       []xPausePrompt `xml:"pausePrompt"`
-	Interruptible                bool           `xml:"interruptible"`
-	CanChangeInterruptableOption bool           `xml:"canChangeInterruptableOption"`
-	TtsEnumed                    bool           `xml:"ttsEnumed"`
-	ExitModuleOnException        bool           `xml:"exitModuleOnException"`
+	//	TTSes                        []xTTSPrompt   `xml:"ttsPrompt"`
+	//	Files                        []xFilePrompt  `xml:"filePrompt"`
+	//	Pauses                       []xPausePrompt `xml:"pausePrompt"`
+	FullPrompt                   string `xml:",innerxml"`
+	Interruptible                bool   `xml:"interruptible"`
+	CanChangeInterruptableOption bool   `xml:"canChangeInterruptableOption"`
+	TtsEnumed                    bool   `xml:"ttsEnumed"`
+	ExitModuleOnException        bool   `xml:"exitModuleOnException"`
 }
 type xFilePrompt struct {
 	PromptDirectly     bool   `xml:"promptData>promptSelected"`
@@ -86,4 +98,77 @@ type xMLanguageEntry struct {
 	TTSes    []xTTSPrompt   `xml:"ttsPrompt"`
 	Files    []xFilePrompt  `xml:"filePrompt"`
 	Pauses   []xPausePrompt `xml:"pausePrompt"`
+}
+
+type gPrompt struct{}
+
+type prompt interface {
+	TransformToAI() string
+}
+
+func parseVoicePrompt(fullPrompt io.Reader) (pids []PromptID, err error) {
+	decoder := xml.NewDecoder(fullPrompt)
+	for {
+		t, err := decoder.Token()
+		if err == io.EOF {
+			// io.EOF is a successful end
+			break
+		}
+		if err != nil {
+			fmt.Printf("decoder.Token() failed with '%s'\n", err)
+			break
+		}
+
+		inFile := false
+		inPause := false
+		inTTS := true
+		inXML := true
+
+		switch v := t.(type) {
+		case xml.StartElement:
+			if v.Name.Local == "filePrompt" {
+				inFile = true
+			} else if v.Name.Local == "ttsPrompt" {
+				inTTS = true
+			} else if v.Name.Local == "pausePrompt" {
+				inPause = true
+			} else if v.Name.Local == "xml" {
+				inXML = true
+
+			}
+		case xml.EndElement:
+			if v.Name.Local == "filePrompt" {
+				inFile = false
+			} else if v.Name.Local == "ttsPrompt" {
+				inTTS = false
+			} else if v.Name.Local == "pausePrompt" {
+				inPause = false
+			} else if v.Name.Local == "xml" {
+				inXML = false
+			}
+
+		case xml.CharData:
+			if inTTS && inXML {
+				fmt.Printf("XML: %s\n", cmdUnzip(string(v))
+			}
+
+		}
+	}
+	return
+}
+
+func cmdUnzip(encoded string) string {
+	base64Text := make([]byte, base64.StdEncoding.DecodedLen(len(encoded)))
+	base64.StdEncoding.Decode(base64Text, []byte(encoded))
+
+	grepCmd := exec.Command("gunzip")
+	grepIn, _ := grepCmd.StdinPipe()
+	grepOut, _ := grepCmd.StdoutPipe()
+	grepCmd.Start()
+	grepIn.Write(base64Text)
+	grepIn.Close()
+	grepBytes, _ := ioutil.ReadAll(grepOut)
+	grepCmd.Wait()
+	fmt.Println("> grep hello")
+	return string(grepBytes)
 }

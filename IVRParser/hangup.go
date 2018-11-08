@@ -1,6 +1,9 @@
 package ivrparser
 
-import "encoding/xml"
+import (
+	"encoding/xml"
+	"fmt"
+)
 
 type xHangupModule struct {
 	XMLName    xml.Name    `xml:"hangup"`
@@ -18,4 +21,14 @@ type xDataHangup struct {
 	ErrIsVarSelected bool   `xml:"errCode>isVarSelected"`
 	ErrIntegerValue  int32  `xml:"errCode>integerValue>value"`
 	OverwriteDisp    bool   `xml:"overwriteDisposition"`
+}
+
+func parseHangup(decoder *xml.Decoder, v *xml.StartElement, inModulesOnHangup bool) error {
+	var m xHangupModule
+	err := decoder.DecodeElement(&m, v)
+	if err == nil {
+		fmt.Println(inModulesOnHangup)
+		fmt.Printf("\n\n%+#v\n", m)
+	}
+	return err
 }

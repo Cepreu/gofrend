@@ -1,5 +1,10 @@
 package ivrparser
 
+import (
+	"encoding/xml"
+	"fmt"
+)
+
 type xPlayModule struct {
 	Ascendant  string    `xml:"ascendants"`
 	Descendant string    `xml:"singleDescendant"`
@@ -20,4 +25,13 @@ type xDataPlay struct {
 	TerminateDigit   string       `xml:"terminateDigit"`
 	ClearDigitBuffer bool         `xml:"clearDigitBuffer"`
 	Collapsible      bool         `xml:"collapsible"`
+}
+
+func parsePlay(decoder *xml.Decoder, v *xml.StartElement) (*xPlayModule, error) {
+	var m = new(xPlayModule)
+	err := decoder.DecodeElement(m, v)
+	if err == nil {
+		fmt.Printf("\n\n%+#v\n", &m)
+	}
+	return m, err
 }

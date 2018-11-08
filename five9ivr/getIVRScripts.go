@@ -2,10 +2,7 @@ package main
 
 import (
 	"bytes"
-	"encoding/base64"
 	"fmt"
-	"io/ioutil"
-	"os/exec"
 	"strings"
 	"text/template"
 
@@ -86,30 +83,7 @@ func convertIVRResults(soapResponse *mxj.Map) (*IvrScriptDef, error) {
 		IVR, err := ivrparser.ParseIVR(strings.NewReader(result.XMLDefinition))
 		fmt.Println(">>>>>>>>>>>>>>>>>>>>>>>>", err)
 		PrettyPrint(IVR)
-
-		// for _, m := range IVR.Modules.InputModules {
-		// 	for _, p := range m.ModuleData.Prompts {
-		// 		for _, t := range p.Prompt.TTSes {
-		// 			fmt.Println(m.Name, t.TtsPromptXML)
-		// 			Cmd(t.TtsPromptXML)
-		// 		}
-		// 	}
-		// }
 	}()
-	return &result, nil
-}
-func Cmd(encoded string) {
-	base64Text := make([]byte, base64.StdEncoding.DecodedLen(len(encoded)))
-	base64.StdEncoding.Decode(base64Text, []byte(encoded))
 
-	grepCmd := exec.Command("gunzip")
-	grepIn, _ := grepCmd.StdinPipe()
-	grepOut, _ := grepCmd.StdoutPipe()
-	grepCmd.Start()
-	grepIn.Write(base64Text)
-	grepIn.Close()
-	grepBytes, _ := ioutil.ReadAll(grepOut)
-	grepCmd.Wait()
-	fmt.Println("> grep hello")
-	fmt.Println(string(grepBytes))
+	return &result, nil
 }
