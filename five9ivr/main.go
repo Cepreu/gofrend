@@ -35,6 +35,7 @@ func main() {
 	router := http.NewServeMux()
 	router.Handle("/", index())
 	router.Handle("/getSkills", getSkills())
+	router.Handle("/getPrompt", getPrompt())
 	router.Handle("/getIVRScripts", getIVRScripts())
 	router.Handle("/healthz", healthz())
 
@@ -107,6 +108,24 @@ func getSkills() http.Handler {
 			name = ".+"
 		}
 		if s, e := getSkillsFromF9(name); e == nil {
+			fmt.Fprint(w, s)
+		} else {
+			fmt.Fprintln(w, e)
+		}
+	})
+}
+func getPrompt() http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path != "/getPrompt" {
+			http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+			return
+		}
+		w.Header().Set("Content-Type", "text/plain; charset=utf-8")
+		w.Header().Set("X-Content-Type-Options", "nosniff")
+		w.WriteHeader(http.StatusOK)
+
+		name := r.URL.Query().Get("name")
+		if s, e := getPromptFromF9(name); e == nil {
 			fmt.Fprint(w, s)
 		} else {
 			fmt.Fprintln(w, e)

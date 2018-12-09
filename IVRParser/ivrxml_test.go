@@ -7,7 +7,7 @@ import (
 
 func TestParseIVR(t *testing.T) {
 
-	_, err := ParseIVR(strings.NewReader(xmlData))
+	_, err := NewIVRScript(strings.NewReader(xmlData))
 
 	if err != nil {
 		panic(err)

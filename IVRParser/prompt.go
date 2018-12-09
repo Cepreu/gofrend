@@ -4,27 +4,32 @@ import (
 	"encoding/base64"
 	"encoding/xml"
 	"fmt"
-	"io"
 	"io/ioutil"
 	"os/exec"
 )
 
-type PromptID string
+type promptID string
 
-type xPrompts struct {
-	Prompt xPrompt `xml:"prompt"`
-	Count  int     `xml:"count"`
+/*
+type modulePrompt map[language][]promptID
+
+type moduleBigPrompt struct {
+	PromptIDArr modulePrompt
+	Count       int
 }
-type xPrompt struct {
-	//	TTSes                        []xTTSPrompt   `xml:"ttsPrompt"`
-	//	Files                        []xFilePrompt  `xml:"filePrompt"`
-	//	Pauses                       []xPausePrompt `xml:"pausePrompt"`
-	FullPrompt                   string `xml:",innerxml"`
-	Interruptible                bool   `xml:"interruptible"`
-	CanChangeInterruptableOption bool   `xml:"canChangeInterruptableOption"`
-	TtsEnumed                    bool   `xml:"ttsEnumed"`
-	ExitModuleOnException        bool   `xml:"exitModuleOnException"`
+*/
+type bigTempPrompt struct {
+	PrArr []promptID
+	Count int
 }
+
+var counter int32
+
+func getPromptID(prefix string, t string) promptID {
+	counter++
+	return promptID(fmt.Sprintf("%s%s%d", prefix, t, counter))
+}
+
 type xFilePrompt struct {
 	PromptDirectly     bool   `xml:"promptData>promptSelected"`
 	PromptID           int32  `xml:"promptData>prompt>id"`
@@ -32,13 +37,33 @@ type xFilePrompt struct {
 	PromptVariableName string `xml:"promptData>promptVariableName"`
 	IsRecordedMessage  bool   `xml:"promptData>isRecordedMessage"`
 }
+
+func (t xFilePrompt) TransformToAI() string {
+	if t.IsRecordedMessage {
+		return fmt.Sprintf("%s", t.PromptName)
+	}
+	return fmt.Sprintf("%s", t.PromptVariableName)
+}
+
 type xPausePrompt struct {
 	Timeout int32 `xml:"timeout"`
 }
-type xTTSPrompt struct {
-	TtsPromptXML    string `xml:"xml"`
-	PromptTTSEnumed bool   `xml:"promptTTSEnumed"`
+
+func (t xPausePrompt) TransformToAI() string { return fmt.Sprintf("%d", t.Timeout) }
+
+type xMultiLanguagesPromptItem struct {
+	MLPromptID string `xml:"prompt"`
 }
+
+func (t xMultiLanguagesPromptItem) TransformToAI() string { return string(t.MLPromptID) }
+
+type ttsPrompt struct {
+	TTSPromptXML    string
+	PromptTTSEnumed bool
+}
+
+func (t ttsPrompt) TransformToAI() string { return t.TTSPromptXML }
+
 type xVivrPrompts struct {
 	VivrPrompts                  []xVivrPrompt  `xml:"vivrPrompt"`
 	ImagePrompts                 []xImagePrompt `xml:"imagePrompt"`
@@ -77,87 +102,84 @@ type xSimpleTextPromptItem struct {
 	TextXML string `xml:"xml"`
 }
 
-type xMultilingualPrompts struct {
-	Entries []xMLPromptEntry `xml:"entry"`
-}
-type xMLPromptEntry struct {
-	Key          string     `xml:"key"`
-	ID           string     `xml:"value>promptId"`
-	Name         string     `xml:"value>name"`
-	Description  string     `xml:"value>description"`
-	Type         string     `xml:"value>type"`
-	Prompts      xMLPrompts `xml:"value>prompts"`
-	DefLanguage  string     `xml:"defaultLanguage"`
-	IsPersistent bool       `xml:"isPersistent"`
-}
-type xMLPrompts struct {
-	Entries []xMLanguageEntry `xml:"entry"`
-}
-type xMLanguageEntry struct {
-	Language string         `xml:"key,attr"`
-	TTSes    []xTTSPrompt   `xml:"ttsPrompt"`
-	Files    []xFilePrompt  `xml:"filePrompt"`
-	Pauses   []xPausePrompt `xml:"pausePrompt"`
-}
-
-type gPrompt struct{}
-
 type prompt interface {
 	TransformToAI() string
 }
 
-func parseVoicePrompt(fullPrompt io.Reader) (pids []PromptID, err error) {
-	decoder := xml.NewDecoder(fullPrompt)
+func (s *IVRScript) parseVoicePrompt(decoder *xml.Decoder, v *xml.StartElement, prefix string) (pids []promptID, err error) {
+	var lastElement string
+	if v != nil {
+		lastElement = v.Name.Local
+	}
+	inTTS, inXML := false, false
+F:
 	for {
 		t, err := decoder.Token()
-		if err == io.EOF {
-			// io.EOF is a successful end
-			break
-		}
 		if err != nil {
 			fmt.Printf("decoder.Token() failed with '%s'\n", err)
 			break
 		}
 
-		inFile := false
-		inPause := false
-		inTTS := true
-		inXML := true
-
 		switch v := t.(type) {
 		case xml.StartElement:
 			if v.Name.Local == "filePrompt" {
-				inFile = true
+				var fp xFilePrompt
+				err = decoder.DecodeElement(&fp, &v)
+				if err != nil {
+					fmt.Printf("decoder.DecodeElement(filePrompt) failed with '%s'\n", err)
+					break
+				}
+				pid := getPromptID(prefix, "F")
+				pids = append(pids, pid)
+				s.Prompts[pid] = fp
 			} else if v.Name.Local == "ttsPrompt" {
 				inTTS = true
 			} else if v.Name.Local == "pausePrompt" {
-				inPause = true
+				var pp xPausePrompt
+				err = decoder.DecodeElement(&pp, &v)
+				if err != nil {
+					fmt.Printf("decoder.DecodeElement(pausePrompt) failed with '%s'\n", err)
+					break
+				}
+				pid := getPromptID(prefix, "P")
+				pids = append(pids, pid)
+				s.Prompts[pid] = pp
+			} else if v.Name.Local == "multiLanguagesPromptItem" {
+				var pp xMultiLanguagesPromptItem
+				err = decoder.DecodeElement(&pp, &v)
+				if err != nil {
+					fmt.Printf("decoder.DecodeElement(multiLanguagesPromptItem>) failed with '%s'\n", err)
+					break
+				}
+				pids = append(pids, promptID(pp.MLPromptID))
 			} else if v.Name.Local == "xml" {
 				inXML = true
-
 			}
+
 		case xml.EndElement:
-			if v.Name.Local == "filePrompt" {
-				inFile = false
-			} else if v.Name.Local == "ttsPrompt" {
+			if v.Name.Local == "ttsPrompt" {
 				inTTS = false
-			} else if v.Name.Local == "pausePrompt" {
-				inPause = false
 			} else if v.Name.Local == "xml" {
 				inXML = false
+			} else if v.Name.Local == lastElement {
+				break F /// <----------------------------------- Return is HERE!
 			}
-
 		case xml.CharData:
 			if inTTS && inXML {
-				fmt.Printf("XML: %s\n", cmdUnzip(string(v))
+				p, err := cmdUnzip(string(v))
+				if err == nil {
+					pid := getPromptID(prefix, "T")
+					pids = append(pids, pid)
+					var pp prompt = &ttsPrompt{TTSPromptXML: p}
+					s.Prompts[pid] = pp
+				}
 			}
-
 		}
 	}
-	return
+	return pids, nil
 }
 
-func cmdUnzip(encoded string) string {
+func cmdUnzip(encoded string) (string, error) {
 	base64Text := make([]byte, base64.StdEncoding.DecodedLen(len(encoded)))
 	base64.StdEncoding.Decode(base64Text, []byte(encoded))
 
@@ -169,6 +191,6 @@ func cmdUnzip(encoded string) string {
 	grepIn.Close()
 	grepBytes, _ := ioutil.ReadAll(grepOut)
 	grepCmd.Wait()
-	fmt.Println("> grep hello")
-	return string(grepBytes)
+	//	fmt.Println("> grep hello")
+	return string(grepBytes), nil
 }
