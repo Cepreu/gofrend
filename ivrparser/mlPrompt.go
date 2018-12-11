@@ -14,7 +14,7 @@ type multilingualPrompt struct {
 	Description string
 	Type        string
 	Prompts     map[langCode][]promptID
-	//	DefLanguage  string     `xml:"defaultLanguage"`
+	DefLanguage langCode
 	//	IsPersistent bool       `xml:"isPersistent"`
 }
 
@@ -37,7 +37,7 @@ func (s *IVRScript) parseMultilanguagePrompts(decoder *xml.Decoder, v *xml.Start
 	if v != nil {
 		lastElement = v.Name.Local
 	}
-	inDescription, inType, inName, inPromptID, inPrompts := false, false, false, false, false
+	inDescription, inType, inName, inPromptID, inPrompts, inDefaultLanguage := false, false, false, false, false, false
 
 F:
 	for {
@@ -57,6 +57,8 @@ F:
 				inType = true
 			} else if v.Name.Local == "description" {
 				inDescription = true
+			} else if v.Name.Local == "defaultLanguage" {
+				inDefaultLanguage = true
 			} else if v.Name.Local == "prompts" {
 				inPrompts = true
 			} else if v.Name.Local == "entry" && inPrompts {
@@ -80,6 +82,8 @@ F:
 				inType = false
 			} else if v.Name.Local == "description" {
 				inDescription = false
+			} else if v.Name.Local == "defaultLanguage" {
+				inDefaultLanguage = false
 			} else if v.Name.Local == lastElement {
 				break F /// <----------------------------------- Return should be HERE!
 			}
@@ -92,6 +96,8 @@ F:
 				pml.Name = string(v)
 			} else if inType {
 				pml.Type = string(v)
+			} else if inDefaultLanguage {
+				pml.DefLanguage = langCode(v)
 			}
 		}
 	}

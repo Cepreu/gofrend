@@ -32,7 +32,7 @@ type xGrammPropList struct {
 
 type inputModule struct {
 	generalInfo
-	//	VoicePromptIDArr moduleBigPrompt
+	VoicePromptIDs modulePrompts
 	//	VisualPromptIDs  modulePrompt
 	//	TextPromptIDs    modulePrompt
 	Grammar  xInputGrammar
@@ -48,8 +48,8 @@ func (s *IVRScript) parseInput2(decoder *xml.Decoder, v *xml.StartElement) error
 		lastElement = v.Name.Local
 	}
 	var inPrompts = false
-	var pWrk *bigTempPrompt
-	var pTempBP = make([]*bigTempPrompt, 0)
+	var pWrk *attemptPrompts
+	var pTempBP = make([]*attemptPrompts, 0)
 
 F:
 	for {
@@ -64,7 +64,7 @@ F:
 			///// prompts -->
 			if v.Name.Local == "prompts" {
 				inPrompts = true
-				pWrk = new(bigTempPrompt)
+				pWrk = new(attemptPrompts)
 			} else if v.Name.Local == "prompt" && inPrompts {
 				pWrk.PrArr, _ = s.parseVoicePrompt(decoder, &v, fmt.Sprintf("%s_%s_", pIM.ID, "I"))
 			} else if v.Name.Local == "count" && inPrompts {
@@ -105,7 +105,7 @@ F:
 		}
 	}
 
-	s.Modules.InputModules = append(s.Modules.InputModules, pIM)
+	s.InputModules = append(s.InputModules, pIM)
 	s.TempAPrompts[pIM.ID] = pTempBP
 	return nil
 }

@@ -10,17 +10,19 @@ import (
 
 type promptID string
 
-/*
-type modulePrompt map[language][]promptID
+type modulePrompts map[langCode][]attemptPrompts
 
-type moduleBigPrompt struct {
-	PromptIDArr modulePrompt
-	Count       int
-}
-*/
-type bigTempPrompt struct {
+type attemptPrompts struct {
 	PrArr []promptID
 	Count int
+}
+
+func (s *IVRScript) newModulePrompts() (modulePrompts, error) {
+	pmp := make(modulePrompts)
+	for _, l := range s.Languages {
+		pmp[l.Lang] = make([]attemptPrompts, 0)
+	}
+	return pmp, nil
 }
 
 var counter int32

@@ -12,16 +12,16 @@ type moduleID string
 
 //IVRScript - Unparsed IVR script structure
 type IVRScript struct {
-	Domain          int32
-	Properties      string
-	Modules         modules
+	Domain     int32
+	Properties string
+	modules
 	ModulesOnHangup modulesOnHangup
 	Prompts         scriptPrompts
 	MLPrompts       []*multilingualPrompt
 	MLChoices       []*multilanguageMenuChoice
 	//Variables map[string]*Variable
 	Languages    []language
-	TempAPrompts map[moduleID][]*bigTempPrompt
+	TempAPrompts map[moduleID][]*attemptPrompts
 }
 type scriptPrompts map[promptID]prompt
 
@@ -69,7 +69,7 @@ type language struct {
 //NewIVRScript - Parsing of the getIVRResponse received from Five9 Config web service
 func NewIVRScript(src io.Reader) (*IVRScript, error) {
 	s := newIVRScript()
-	s.TempAPrompts = make(map[moduleID][]*bigTempPrompt)
+	s.TempAPrompts = make(map[moduleID][]*attemptPrompts)
 
 	decoder := xml.NewDecoder(src)
 	decoder.CharsetReader = charset.NewReaderLabel
@@ -191,8 +191,62 @@ func NewIVRScript(src io.Reader) (*IVRScript, error) {
 			}
 		}
 	}
-
+	s.finalization()
 	return s, nil
+}
+
+func (s *IVRScript) finalization() error {
+	s.Languages = append(s.Languages, language{Lang: "Default", TtsLang: "en-US"})
+
+	for _, module := range s.PlayModules {
+		module.VoicePromptIDs, _ = s.normalizePrompt(module.ID)
+	}
+	for _, module := range s.InputModules {
+		module.VoicePromptIDs, _ = s.normalizePrompt(module.ID)
+	}
+	for _, module := range s.VoiceInputModules {
+		module.VoicePromptIDs, _ = s.normalizePrompt(module.ID)
+	}
+	for _, module := range s.MenuModules {
+		module.VoicePromptIDs, _ = s.normalizePrompt(module.ID)
+	}
+	for _, module := range s.GetDigitsModules {
+		module.VoicePromptIDs, _ = s.normalizePrompt(module.ID)
+	}
+	return nil
+}
+
+func (s *IVRScript) normalizePrompt(module moduleID) (mp modulePrompts, err error) {
+	if p, ok := s.TempAPrompts[module]; ok {
+		mp, _ = s.newModulePrompts()
+		for i, ap := range p {
+			for _, l := range s.Languages {
+				newap := attemptPrompts{make([]promptID, 0), ap.Count}
+				mp[l.Lang] = append(mp[l.Lang], newap)
+			}
+			for _, pid := range ap.PrArr {
+				if _, found := s.Prompts[pid]; found {
+					for _, l := range s.Languages {
+						mp[l.Lang][i].PrArr = append(mp[l.Lang][i].PrArr, pid)
+					}
+				} else {
+					for ij := range s.MLPrompts {
+						if s.MLPrompts[ij].ID == string(pid) {
+							// Found!
+							for lang, p := range s.MLPrompts[ij].Prompts {
+								mp[lang][i].PrArr = append(mp[lang][i].PrArr, p...)
+								if s.MLPrompts[ij].DefLanguage == lang {
+									mp["Default"][i].PrArr = append(mp["Default"][i].PrArr, p...)
+								}
+							}
+							break
+						}
+					}
+				}
+			}
+		}
+	}
+	return mp, nil
 }
 
 ////////////////////////////////////////////////////

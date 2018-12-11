@@ -8,7 +8,7 @@ import (
 
 type playModule struct {
 	generalInfo
-	//	VoicePromptIDs  modulePrompt
+	VoicePromptIDs modulePrompts
 	//	VisualPromptIDs modulePrompt
 	//	TextPromptIDs   modulePrompt
 	AuxInfo struct {
@@ -54,7 +54,7 @@ F:
 				///// prompts -->
 			} else if v.Name.Local == "prompt" {
 				if res, err := s.parseVoicePrompt(decoder, &v, fmt.Sprintf("%s_%s_", pPM.ID, "P")); err == nil {
-					s.TempAPrompts[pPM.ID] = []*bigTempPrompt{{res, 1}}
+					s.TempAPrompts[pPM.ID] = []*attemptPrompts{{res, 1}}
 				}
 
 			} else {
@@ -68,6 +68,6 @@ F:
 		}
 	}
 
-	s.Modules.PlayModules = append(s.Modules.PlayModules, pPM)
+	s.PlayModules = append(s.PlayModules, pPM)
 	return nil
 }

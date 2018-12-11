@@ -57,7 +57,7 @@ F:
 	}
 
 	if inModulesOnHangup == false {
-		s.Modules.HangupModules = append(s.Modules.HangupModules, pHM)
+		s.HangupModules = append(s.HangupModules, pHM)
 	} else {
 		s.ModulesOnHangup.HangupModules = append(s.ModulesOnHangup.HangupModules, pHM)
 	}

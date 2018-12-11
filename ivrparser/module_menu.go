@@ -9,7 +9,7 @@ import (
 type menuModule struct {
 	generalInfo
 
-	//	VoicePromptIDArr []*moduleBigPrompt
+	VoicePromptIDs modulePrompts
 	//	VisualPromptIDs  []promptID
 	//	TextPromptIDs    []promptID
 
@@ -48,8 +48,8 @@ func (s *IVRScript) newMenuModule(decoder *xml.Decoder, v *xml.StartElement) err
 	}
 	var (
 		inPrompts  = false
-		pWrk       *bigTempPrompt
-		pTempBP    = make([]*bigTempPrompt, 0)
+		pWrk       *attemptPrompts
+		pTempBP    = make([]*attemptPrompts, 0)
 		inBranches = false
 		pBranch    *outputBranch
 	)
@@ -92,7 +92,7 @@ F:
 				// prompts -->
 			} else if v.Name.Local == "prompts" {
 				inPrompts = true
-				pWrk = new(bigTempPrompt)
+				pWrk = new(attemptPrompts)
 			} else if v.Name.Local == "prompt" && inPrompts {
 				pWrk.PrArr, _ = s.parseVoicePrompt(decoder, &v, fmt.Sprintf("%s_%s_", pMM.ID, "I"))
 			} else if v.Name.Local == "count" && inPrompts {
@@ -156,7 +156,7 @@ F:
 		}
 	}
 
-	s.Modules.MenuModules = append(s.Modules.MenuModules, pMM)
+	s.MenuModules = append(s.MenuModules, pMM)
 	s.TempAPrompts[pMM.ID] = pTempBP
 	return nil
 }

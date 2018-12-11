@@ -36,7 +36,7 @@ F:
 	}
 
 	if inModulesOnHangup == false {
-		s.Modules.IncomingCall = pICM
+		s.IncomingCall = pICM
 	} else {
 		s.ModulesOnHangup.StartOnHangup = pICM
 	}

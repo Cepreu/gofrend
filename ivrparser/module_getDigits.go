@@ -8,7 +8,7 @@ import (
 
 type getDigitsModule struct {
 	generalInfo
-	//	VoicePromptIDs     modulePrompt
+	VoicePromptIDs     modulePrompts
 	VisualPromptIDs    []promptID
 	TextPromptIDs      []promptID
 	TargetVariableName string
@@ -79,7 +79,7 @@ F:
 				///// prompts -->
 			} else if v.Name.Local == "prompt" {
 				if res, err := s.parseVoicePrompt(decoder, &v, fmt.Sprintf("%s_%s_", pModule.ID, "G")); err == nil {
-					s.TempAPrompts[pModule.ID] = []*bigTempPrompt{{res, 1}}
+					s.TempAPrompts[pModule.ID] = []*attemptPrompts{{res, 1}}
 				}
 
 			} else {
@@ -93,6 +93,6 @@ F:
 		}
 	}
 
-	s.Modules.GetDigitsModules = append(s.Modules.GetDigitsModules, pModule)
+	s.GetDigitsModules = append(s.GetDigitsModules, pModule)
 	return nil
 }

@@ -10,7 +10,7 @@ import (
 
 type voiceInputModule struct {
 	generalInfo
-	//	VoicePromptIDArr moduleBigPrompt
+	VoicePromptIDs modulePrompts
 	//	VisualPromptIDs  modulePrompt
 	//	TextPromptIDs    modulePrompt
 	Events   []*recoEvent
@@ -46,8 +46,8 @@ func (s *IVRScript) parseVoiceInput(decoder *xml.Decoder, v *xml.StartElement) e
 		lastElement = v.Name.Local
 	}
 	var inPrompts = false
-	var pWrk *bigTempPrompt
-	var pTempBP = make([]*bigTempPrompt, 0)
+	var pWrk *attemptPrompts
+	var pTempBP = make([]*attemptPrompts, 0)
 
 F:
 	for {
@@ -137,7 +137,7 @@ F:
 				///// prompts -->
 			} else if v.Name.Local == "prompts" {
 				inPrompts = true
-				pWrk = new(bigTempPrompt)
+				pWrk = new(attemptPrompts)
 			} else if v.Name.Local == "prompt" && inPrompts {
 				pWrk.PrArr, _ = s.parseVoicePrompt(decoder, &v, fmt.Sprintf("%s_%s_", pIM.Descendant, "I"))
 			} else if v.Name.Local == "count" && inPrompts {
@@ -177,7 +177,7 @@ F:
 		}
 	}
 
-	s.Modules.VoiceInputModules = append(s.Modules.VoiceInputModules, pIM)
+	s.VoiceInputModules = append(s.VoiceInputModules, pIM)
 	s.TempAPrompts[pIM.ID] = pTempBP
 	return nil
 }
