@@ -20,8 +20,7 @@ type IVRScript struct {
 	MLPrompts       []*multilingualPrompt
 	MLChoices       []*multilanguageMenuChoice
 	//Variables map[string]*Variable
-	Languages    []language
-	TempAPrompts map[moduleID][]*attemptPrompts
+	Languages []language
 }
 type scriptPrompts map[promptID]prompt
 
@@ -57,8 +56,7 @@ type xUserVariable struct {
 }
 
 type languages struct {
-	XMLName xml.Name   `xml:"languages"`
-	Langs   []language `xml:"languages"`
+	Langs []language `xml:"languages"`
 }
 type language struct {
 	Lang     langCode `xml:"lang"`
@@ -69,7 +67,6 @@ type language struct {
 //NewIVRScript - Parsing of the getIVRResponse received from Five9 Config web service
 func NewIVRScript(src io.Reader) (*IVRScript, error) {
 	s := newIVRScript()
-	s.TempAPrompts = make(map[moduleID][]*attemptPrompts)
 
 	decoder := xml.NewDecoder(src)
 	decoder.CharsetReader = charset.NewReaderLabel
@@ -167,12 +164,15 @@ func NewIVRScript(src io.Reader) (*IVRScript, error) {
 					fmt.Printf("newGetDigitsModule() failed with '%s'\n", err)
 					break
 				}
-
 			} else if v.Name.Local == "languages" {
 				var m languages
 				err := decoder.DecodeElement(&m, &v)
 				if err == nil {
-					s.Languages = m.Langs
+					if len(m.Langs) > 0 {
+						s.Languages = m.Langs
+					} else {
+						s.Languages = []language{{Lang: "en-US", TtsLang: "en-US", TtsVoice: "Samanta"}}
+					}
 				}
 			}
 		case xml.EndElement:
@@ -196,57 +196,43 @@ func NewIVRScript(src io.Reader) (*IVRScript, error) {
 }
 
 func (s *IVRScript) finalization() error {
-	s.Languages = append(s.Languages, language{Lang: "Default", TtsLang: "en-US"})
-
 	for _, module := range s.PlayModules {
-		module.VoicePromptIDs, _ = s.normalizePrompt(module.ID)
+		s.normalizePrompt(module.VoicePromptIDs)
 	}
 	for _, module := range s.InputModules {
-		module.VoicePromptIDs, _ = s.normalizePrompt(module.ID)
-	}
-	for _, module := range s.VoiceInputModules {
-		module.VoicePromptIDs, _ = s.normalizePrompt(module.ID)
-	}
-	for _, module := range s.MenuModules {
-		module.VoicePromptIDs, _ = s.normalizePrompt(module.ID)
-	}
-	for _, module := range s.GetDigitsModules {
-		module.VoicePromptIDs, _ = s.normalizePrompt(module.ID)
-	}
-	return nil
-}
-
-func (s *IVRScript) normalizePrompt(module moduleID) (mp modulePrompts, err error) {
-	if p, ok := s.TempAPrompts[module]; ok {
-		mp, _ = s.newModulePrompts()
-		for i, ap := range p {
-			for _, l := range s.Languages {
-				newap := attemptPrompts{make([]promptID, 0), ap.Count}
-				mp[l.Lang] = append(mp[l.Lang], newap)
-			}
-			for _, pid := range ap.PrArr {
-				if _, found := s.Prompts[pid]; found {
-					for _, l := range s.Languages {
-						mp[l.Lang][i].PrArr = append(mp[l.Lang][i].PrArr, pid)
-					}
-				} else {
-					for ij := range s.MLPrompts {
-						if s.MLPrompts[ij].ID == string(pid) {
-							// Found!
-							for lang, p := range s.MLPrompts[ij].Prompts {
-								mp[lang][i].PrArr = append(mp[lang][i].PrArr, p...)
-								if s.MLPrompts[ij].DefLanguage == lang {
-									mp["Default"][i].PrArr = append(mp["Default"][i].PrArr, p...)
-								}
-							}
-							break
-						}
-					}
-				}
-			}
+		s.normalizePrompt(module.VoicePromptIDs)
+		for i := range module.Events {
+			s.normalizeAttemptPrompt(&module.Events[i].CountAndPrompt)
+		}
+		s.normalizePrompt(module.ConfData.VoicePromptIDs)
+		for i := range module.Events {
+			s.normalizeAttemptPrompt(&module.ConfData.Events[i].CountAndPrompt)
 		}
 	}
-	return mp, nil
+	for _, module := range s.VoiceInputModules {
+		s.normalizePrompt(module.VoicePromptIDs)
+		for i := range module.Events {
+			s.normalizeAttemptPrompt(&module.Events[i].CountAndPrompt)
+		}
+		s.normalizePrompt(module.ConfData.VoicePromptIDs)
+		for i := range module.Events {
+			s.normalizeAttemptPrompt(&module.ConfData.Events[i].CountAndPrompt)
+		}
+	}
+	for _, module := range s.MenuModules {
+		s.normalizePrompt(module.VoicePromptIDs)
+		for i := range module.Events {
+			s.normalizeAttemptPrompt(&module.Events[i].CountAndPrompt)
+		}
+		s.normalizePrompt(module.ConfData.VoicePromptIDs)
+		for i := range module.Events {
+			s.normalizeAttemptPrompt(&module.ConfData.Events[i].CountAndPrompt)
+		}
+	}
+	for _, module := range s.GetDigitsModules {
+		s.normalizePrompt(module.VoicePromptIDs)
+	}
+	return nil
 }
 
 ////////////////////////////////////////////////////

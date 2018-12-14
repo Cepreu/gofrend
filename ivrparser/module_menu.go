@@ -47,9 +47,6 @@ func (s *IVRScript) newMenuModule(decoder *xml.Decoder, v *xml.StartElement) err
 		lastElement = v.Name.Local
 	}
 	var (
-		inPrompts  = false
-		pWrk       *attemptPrompts
-		pTempBP    = make([]*attemptPrompts, 0)
 		inBranches = false
 		pBranch    *outputBranch
 	)
@@ -63,7 +60,12 @@ F:
 
 		switch v := t.(type) {
 		case xml.StartElement:
-			if v.Name.Local == "useSpeechRecognition" {
+			///// prompts -->
+			if v.Name.Local == "prompts" {
+				if prmts, err := s.parseVoicePromptS(decoder, &v, fmt.Sprintf("%s_%s_", pMM.ID, "V")); err == nil {
+					pMM.VoicePromptIDs = append(pMM.VoicePromptIDs, prmts)
+				}
+			} else if v.Name.Local == "useSpeechRecognition" {
 				innerText, err := decoder.Token()
 				if err == nil {
 					pMM.UseASR = (string(innerText.(xml.CharData)) == "true")
@@ -88,19 +90,6 @@ F:
 				if err == nil {
 					pMM.RecoParams.MaxTimeToEnter, _ = strconv.Atoi(string(innerText.(xml.CharData)))
 				}
-
-				// prompts -->
-			} else if v.Name.Local == "prompts" {
-				inPrompts = true
-				pWrk = new(attemptPrompts)
-			} else if v.Name.Local == "prompt" && inPrompts {
-				pWrk.PrArr, _ = s.parseVoicePrompt(decoder, &v, fmt.Sprintf("%s_%s_", pMM.ID, "I"))
-			} else if v.Name.Local == "count" && inPrompts {
-				innerText, err := decoder.Token()
-				if err == nil {
-					pWrk.Count, _ = strconv.Atoi(string(innerText.(xml.CharData)))
-				}
-
 				// -->reco-events
 			} else if v.Name.Local == "recoEvents" {
 				pRE := s.newEvent(decoder, &v, fmt.Sprintf("%s_", pMM.ID))
@@ -147,9 +136,6 @@ F:
 				inBranches = false
 			} else if v.Name.Local == "entry" && inBranches {
 				pMM.Branches = append(pMM.Branches, pBranch)
-			} else if v.Name.Local == "prompts" {
-				inPrompts = false
-				pTempBP = append(pTempBP, pWrk)
 			} else if v.Name.Local == lastElement {
 				break F /// <----------------------------------- Return should be HERE!
 			}
@@ -157,6 +143,5 @@ F:
 	}
 
 	s.MenuModules = append(s.MenuModules, pMM)
-	s.TempAPrompts[pMM.ID] = pTempBP
 	return nil
 }

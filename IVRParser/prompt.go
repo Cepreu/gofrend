@@ -6,23 +6,65 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os/exec"
+	"strconv"
 )
+
+const defaultLang = "Default"
 
 type promptID string
 
-type modulePrompts map[langCode][]attemptPrompts
+type modulePrompts []attemptPrompts
 
 type attemptPrompts struct {
-	PrArr []promptID
-	Count int
+	LangPrArr []languagePrompts
+	Count     int
 }
 
-func (s *IVRScript) newModulePrompts() (modulePrompts, error) {
-	pmp := make(modulePrompts)
+type languagePrompts struct {
+	PrArr    []promptID
+	Language langCode
+}
+
+func newModulePrompts(c int, p []promptID) (modulePrompts, error) {
+	return modulePrompts{newAttemptPrompts(c, p)}, nil
+}
+func newAttemptPrompts(c int, p []promptID) attemptPrompts {
+	pmp := attemptPrompts{Count: c, LangPrArr: []languagePrompts{{Language: defaultLang, PrArr: p}}}
+	return pmp
+}
+
+func (s *IVRScript) normalizeAttemptPrompt(ap *attemptPrompts) error {
+	var prsdef = []promptID{}
 	for _, l := range s.Languages {
-		pmp[l.Lang] = make([]attemptPrompts, 0)
+		ap.LangPrArr = append(ap.LangPrArr, languagePrompts{Language: l.Lang, PrArr: nil})
 	}
-	return pmp, nil
+	for _, pid := range ap.LangPrArr[0].PrArr {
+		if _, found := s.Prompts[pid]; found {
+			for j := range s.Languages {
+				ap.LangPrArr[j+1].PrArr = append(ap.LangPrArr[j+1].PrArr, pid)
+			}
+			prsdef = append(prsdef, pid)
+		} else {
+			for k := range s.MLPrompts {
+				if s.MLPrompts[k].ID == string(pid) {
+					// Found!
+					for j, l := range s.Languages {
+						ap.LangPrArr[j+1].PrArr = append(ap.LangPrArr[j+1].PrArr, s.MLPrompts[k].Prompts[l.Lang]...)
+					}
+					prsdef = append(prsdef, s.MLPrompts[k].Prompts[s.MLPrompts[k].DefLanguage]...)
+					break
+				}
+			}
+		}
+	}
+	ap.LangPrArr[0].PrArr = prsdef
+	return nil
+}
+func (s *IVRScript) normalizePrompt(mp modulePrompts) error {
+	for i := range mp {
+		s.normalizeAttemptPrompt(&mp[i])
+	}
+	return nil
 }
 
 var counter int32
@@ -106,6 +148,43 @@ type xSimpleTextPromptItem struct {
 
 type prompt interface {
 	TransformToAI() string
+}
+
+func (s *IVRScript) parseVoicePromptS(decoder *xml.Decoder, v *xml.StartElement, prefix string) (attemptPrompts, error) {
+	var lastElement string
+	var (
+		PrArr []promptID
+		count int
+	)
+	if v != nil {
+		lastElement = v.Name.Local
+	}
+F:
+	for {
+		t, err := decoder.Token()
+		if err != nil {
+			fmt.Printf("decoder.Token() failed with '%s'\n", err)
+			return attemptPrompts{}, err
+		}
+
+		switch v := t.(type) {
+		case xml.StartElement:
+			if v.Name.Local == "prompt" {
+				PrArr, _ = s.parseVoicePrompt(decoder, &v, prefix)
+			} else if v.Name.Local == "count" {
+				innerText, err := decoder.Token()
+				if err == nil {
+					count, _ = strconv.Atoi(string(innerText.(xml.CharData)))
+				}
+			}
+
+		case xml.EndElement:
+			if v.Name.Local == lastElement {
+				break F /// <----------------------------------- Return should be HERE!
+			}
+		}
+	}
+	return newAttemptPrompts(count, PrArr), nil
 }
 
 func (s *IVRScript) parseVoicePrompt(decoder *xml.Decoder, v *xml.StartElement, prefix string) (pids []promptID, err error) {

@@ -19,10 +19,9 @@ const (
 )
 
 type recoEvent struct {
-	Event  string
-	Count  int
-	Prompt []promptID
-	Action string
+	Event          string
+	Action         string
+	CountAndPrompt attemptPrompts
 }
 
 func (s *IVRScript) newEvent(decoder *xml.Decoder, v *xml.StartElement, prefix string) *recoEvent {
@@ -30,7 +29,11 @@ func (s *IVRScript) newEvent(decoder *xml.Decoder, v *xml.StartElement, prefix s
 	if v != nil {
 		lastElement = v.Name.Local
 	}
-	var pRE = new(recoEvent)
+	var (
+		pRE    = new(recoEvent)
+		prompt []promptID
+		count  int
+	)
 
 F:
 	for {
@@ -43,7 +46,7 @@ F:
 		switch v := t.(type) {
 		case xml.StartElement:
 			if v.Name.Local == "compoundPrompt" {
-				pRE.Prompt, _ = s.parseVoicePrompt(decoder, &v, fmt.Sprintf("%s_%s_", prefix, "RE"))
+				prompt, _ = s.parseVoicePrompt(decoder, &v, fmt.Sprintf("%s_%s_", prefix, "RE"))
 			} else if v.Name.Local == "event" {
 				innerText, err := decoder.Token()
 				if err == nil {
@@ -57,11 +60,12 @@ F:
 			} else if v.Name.Local == "count" {
 				innerText, err := decoder.Token()
 				if err == nil {
-					pRE.Count, _ = strconv.Atoi(string(innerText.(xml.CharData)))
+					count, _ = strconv.Atoi(string(innerText.(xml.CharData)))
 				}
 			}
 		case xml.EndElement:
 			if v.Name.Local == lastElement {
+				pRE.CountAndPrompt = newAttemptPrompts(count, prompt)
 				break F /// <----------------------------------- Return should be HERE!
 			}
 		}

@@ -3,7 +3,6 @@ package ivrparser
 import (
 	"encoding/xml"
 	"fmt"
-	"io"
 	"strconv"
 )
 
@@ -17,7 +16,7 @@ type confirmData struct {
 	RequiredConfidence   int
 	MaxAttemptsToConfirm int
 	NoInputTimeout       int
-	Prompts              []promptID
+	VoicePromptIDs       modulePrompts
 	Events               []*recoEvent
 }
 
@@ -31,10 +30,6 @@ func (s *IVRScript) newConfirmData(decoder *xml.Decoder, v *xml.StartElement, pr
 F:
 	for {
 		t, err := decoder.Token()
-		if err == io.EOF {
-			// io.EOF is a successful end
-			break
-		}
 		if err != nil {
 			fmt.Printf("decoder.Token() failed with '%s'\n", err)
 			break
@@ -42,8 +37,11 @@ F:
 
 		switch v := t.(type) {
 		case xml.StartElement:
+			///// prompts -->
 			if v.Name.Local == "prompt" {
-				pCD.Prompts, _ = s.parseVoicePrompt(decoder, &v, fmt.Sprintf("%s_%s_", prefix, "CD"))
+				if res, err := s.parseVoicePrompt(decoder, &v, prefix); err == nil {
+					pCD.VoicePromptIDs, _ = newModulePrompts(1, res)
+				}
 			} else if v.Name.Local == "recoEvents" {
 				pRE := s.newEvent(decoder, &v, fmt.Sprintf("%s_", prefix))
 				if pRE != nil {

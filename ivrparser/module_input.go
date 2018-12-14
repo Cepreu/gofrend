@@ -3,7 +3,6 @@ package ivrparser
 import (
 	"encoding/xml"
 	"fmt"
-	"strconv"
 )
 
 type xInputGrammar struct {
@@ -47,9 +46,6 @@ func (s *IVRScript) parseInput2(decoder *xml.Decoder, v *xml.StartElement) error
 	if v != nil {
 		lastElement = v.Name.Local
 	}
-	var inPrompts = false
-	var pWrk *attemptPrompts
-	var pTempBP = make([]*attemptPrompts, 0)
 
 F:
 	for {
@@ -63,16 +59,9 @@ F:
 		case xml.StartElement:
 			///// prompts -->
 			if v.Name.Local == "prompts" {
-				inPrompts = true
-				pWrk = new(attemptPrompts)
-			} else if v.Name.Local == "prompt" && inPrompts {
-				pWrk.PrArr, _ = s.parseVoicePrompt(decoder, &v, fmt.Sprintf("%s_%s_", pIM.ID, "I"))
-			} else if v.Name.Local == "count" && inPrompts {
-				innerText, err := decoder.Token()
-				if err == nil {
-					pWrk.Count, _ = strconv.Atoi(string(innerText.(xml.CharData)))
+				if prmts, err := s.parseVoicePromptS(decoder, &v, fmt.Sprintf("%s_%s_", pIM.ID, "V")); err == nil {
+					pIM.VoicePromptIDs = append(pIM.VoicePromptIDs, prmts)
 				}
-
 				///// -->grammar
 			} else if v.Name.Local == "grammar" {
 				var pg = &pIM.Grammar
@@ -96,16 +85,12 @@ F:
 				pIM.parseGeneralInfo(decoder, &v)
 			}
 		case xml.EndElement:
-			if v.Name.Local == "prompts" {
-				inPrompts = false
-				pTempBP = append(pTempBP, pWrk)
-			} else if v.Name.Local == lastElement {
+			if v.Name.Local == lastElement {
 				break F /// <----------------------------------- Return should be HERE!
 			}
 		}
 	}
 
 	s.InputModules = append(s.InputModules, pIM)
-	s.TempAPrompts[pIM.ID] = pTempBP
 	return nil
 }

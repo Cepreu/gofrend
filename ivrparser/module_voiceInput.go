@@ -45,9 +45,6 @@ func (s *IVRScript) parseVoiceInput(decoder *xml.Decoder, v *xml.StartElement) e
 	if v != nil {
 		lastElement = v.Name.Local
 	}
-	var inPrompts = false
-	var pWrk *attemptPrompts
-	var pTempBP = make([]*attemptPrompts, 0)
 
 F:
 	for {
@@ -63,8 +60,13 @@ F:
 
 		switch v := t.(type) {
 		case xml.StartElement:
-			// RecordingParams -->
-			if v.Name.Local == "maxTime" {
+			///// prompts -->
+			if v.Name.Local == "prompts" {
+				if prmts, err := s.parseVoicePromptS(decoder, &v, fmt.Sprintf("%s_%s_", pIM.ID, "V")); err == nil {
+					pIM.VoicePromptIDs = append(pIM.VoicePromptIDs, prmts)
+				}
+				// RecordingParams -->
+			} else if v.Name.Local == "maxTime" {
 				innerText, err := decoder.Token()
 				if err == nil {
 					pIM.RecordingParams.MaxTime, _ = strconv.Atoi(string(innerText.(xml.CharData)))
@@ -133,19 +135,6 @@ F:
 				if err == nil {
 					pIM.AsGreeting.VariableName = string(innerText.(xml.CharData))
 				}
-
-				///// prompts -->
-			} else if v.Name.Local == "prompts" {
-				inPrompts = true
-				pWrk = new(attemptPrompts)
-			} else if v.Name.Local == "prompt" && inPrompts {
-				pWrk.PrArr, _ = s.parseVoicePrompt(decoder, &v, fmt.Sprintf("%s_%s_", pIM.Descendant, "I"))
-			} else if v.Name.Local == "count" && inPrompts {
-				innerText, err := decoder.Token()
-				if err == nil {
-					pWrk.Count, _ = strconv.Atoi(string(innerText.(xml.CharData)))
-				}
-
 				///// -->reco-events
 			} else if v.Name.Local == "recoEvents" {
 				pRE := s.newEvent(decoder, &v, fmt.Sprintf("%s_", pIM.ID))
@@ -162,10 +151,7 @@ F:
 				pIM.parseGeneralInfo(decoder, &v)
 			}
 		case xml.EndElement:
-			if v.Name.Local == "prompts" {
-				inPrompts = false
-				pTempBP = append(pTempBP, pWrk)
-			} else if v.Name.Local == "varToAccessRecording" {
+			if v.Name.Local == "varToAccessRecording" {
 				inRecordingDuration = false
 			} else if v.Name.Local == "recordingDuration" {
 				inRecordingDuration = false
@@ -178,6 +164,5 @@ F:
 	}
 
 	s.VoiceInputModules = append(s.VoiceInputModules, pIM)
-	s.TempAPrompts[pIM.ID] = pTempBP
 	return nil
 }

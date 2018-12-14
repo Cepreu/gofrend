@@ -54,7 +54,7 @@ F:
 				///// prompts -->
 			} else if v.Name.Local == "prompt" {
 				if res, err := s.parseVoicePrompt(decoder, &v, fmt.Sprintf("%s_%s_", pPM.ID, "P")); err == nil {
-					s.TempAPrompts[pPM.ID] = []*attemptPrompts{{res, 1}}
+					pPM.VoicePromptIDs, _ = newModulePrompts(1, res)
 				}
 
 			} else {
