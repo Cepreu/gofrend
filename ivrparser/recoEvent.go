@@ -24,17 +24,12 @@ type recoEvent struct {
 	CountAndPrompt attemptPrompts
 }
 
-func (s *IVRScript) newEvent(decoder *xml.Decoder, v *xml.StartElement, prefix string) *recoEvent {
-	var lastElement string
-	if v != nil {
-		lastElement = v.Name.Local
-	}
+func newEvent(decoder *xml.Decoder, sp scriptPrompts, prefix string) *recoEvent {
 	var (
 		pRE    = new(recoEvent)
 		prompt []promptID
 		count  int
 	)
-
 F:
 	for {
 		t, err := decoder.Token()
@@ -46,7 +41,7 @@ F:
 		switch v := t.(type) {
 		case xml.StartElement:
 			if v.Name.Local == "compoundPrompt" {
-				prompt, _ = s.parseVoicePrompt(decoder, &v, fmt.Sprintf("%s_%s_", prefix, "RE"))
+				prompt, _ = parseVoicePrompt(decoder, &v, sp, fmt.Sprintf("%s_%s_", prefix, "RE"))
 			} else if v.Name.Local == "event" {
 				innerText, err := decoder.Token()
 				if err == nil {
@@ -64,7 +59,7 @@ F:
 				}
 			}
 		case xml.EndElement:
-			if v.Name.Local == lastElement {
+			if v.Name.Local == "recoEvents" {
 				pRE.CountAndPrompt = newAttemptPrompts(count, prompt)
 				break F /// <----------------------------------- Return should be HERE!
 			}

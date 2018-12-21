@@ -14,19 +14,18 @@ type hangupModule struct {
 	OverwriteDisp bool
 }
 
-func (s *IVRScript) parseHangup(decoder *xml.Decoder, v *xml.StartElement, inModulesOnHangup bool) error {
-	var pHM = new(hangupModule)
-	var lastElement string
-	if v != nil {
-		lastElement = v.Name.Local
-	}
+func (*hangupModule) normalize(*IVRScript) error {
+	return nil
+}
 
+func newHangupModule(decoder *xml.Decoder) Module {
+	var pHM = new(hangupModule)
 F:
 	for {
 		t, err := decoder.Token()
 		if err != nil {
 			fmt.Printf("decoder.Token() failed with '%s'\n", err)
-			return err
+			return nil
 		}
 
 		switch v := t.(type) {
@@ -49,17 +48,11 @@ F:
 				pHM.parseGeneralInfo(decoder, &v)
 			}
 		case xml.EndElement:
-			if v.Name.Local == lastElement {
+			if v.Name.Local == cHangup {
 				break F /// <----------------------------------- Return should be HERE!
 
 			}
 		}
 	}
-
-	if inModulesOnHangup == false {
-		s.HangupModules = append(s.HangupModules, pHM)
-	} else {
-		s.ModulesOnHangup.HangupModules = append(s.ModulesOnHangup.HangupModules, pHM)
-	}
-	return nil
+	return pHM
 }

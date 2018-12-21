@@ -1,58 +1,48 @@
 package ivrparser
 
 import (
+	"bytes"
 	"encoding/xml"
 	"fmt"
+	"html/template"
 	"reflect"
 )
 
 const (
-	menuMatchAPPR  string = "APPR"
-	menuMatchEXACT string = "EXACT"
-)
-const (
 	menuActionTypeEVENT  string = "EVENT"
 	menuActionTypeBRANCH string = "BRANCH"
 )
-const (
-	menuChoiceTypeVALUE    string = "VALUE"
-	menuChoiceTypeVARIABLE string = "VARIABLE"
-	menuChoiceTypeMLITEM   string = "ML_ITEM"
-)
+
 const (
 	menuEventHELP    string = "HELP"
 	menuEventNOINPUT string = "NO_INPUT"
 	menuEventNOMATCH string = "NO_MATCH"
 )
 
-type menuChoice struct {
-	Type       string
-	Value      string
-	VarName    string
-	MlItem     string
-	ShowInVivr bool
-}
-
 type menuItem struct {
-	Choice    menuChoice
-	Match     string
-	Thumbnail menuChoice
-	Dtmf      string
-	Action    struct {
+	Prompt     attemptPrompts
+	ShowInVivr bool
+	MatchExact bool
+	Dtmf       string
+	Action     struct {
 		Type actionType
 		Name string
 	}
 }
 
-func (s *IVRScript) newMenuItem(decoder *xml.Decoder, v *xml.StartElement, prefix string) *menuItem {
-	var lastElement string
-	if v != nil {
-		lastElement = v.Name.Local
-	}
+func newMenuItem(decoder *xml.Decoder, sp scriptPrompts, itemPromptID promptID) *menuItem {
 	var (
-		pItem       = new(menuItem)
-		inChoice    = false
-		inThumbnail = false
+		choice struct {
+			cType        string
+			cValue       string
+			cVarName     string
+			cMlItem      promptID
+			cModule      moduleID
+			cModuleField string
+		}
+		pItem    = new(menuItem)
+		inChoice = false
+		//		inThumbnail = false
 	)
 F:
 	for {
@@ -61,62 +51,76 @@ F:
 			fmt.Printf("decoder.Token() failed with '%s'\n", err)
 			return nil
 		}
-
 		switch v := t.(type) {
 		case xml.StartElement:
 			if v.Name.Local == "choice" {
 				inChoice = true
-			} else if v.Name.Local == "thumbnail" {
-				inThumbnail = true
+				//			} else if v.Name.Local == "thumbnail" {
+				//				inThumbnail = true
 			} else if v.Name.Local == "type" {
 				innerText, err := decoder.Token()
 				if err == nil {
 					if inChoice {
-						pItem.Choice.Type = string(innerText.(xml.CharData))
-					} else if inThumbnail {
-						pItem.Thumbnail.Type = string(innerText.(xml.CharData))
+						choice.cType = string(innerText.(xml.CharData))
 					}
+					// } else if inThumbnail {
+					// 	pItem.Thumbnail.cType = string(innerText.(xml.CharData))
+					// }
 				}
 			} else if v.Name.Local == "value" {
 				innerText, err := decoder.Token()
 				if err == nil && reflect.TypeOf(innerText).String() == "xml.CharData" {
 					if inChoice {
-						pItem.Choice.Value = string(innerText.(xml.CharData))
-					} else if inThumbnail {
-						pItem.Thumbnail.Value = string(innerText.(xml.CharData))
+						choice.cValue = string(innerText.(xml.CharData))
+						// else if inThumbnail {
+						// 	pItem.Thumbnail.cValue = string(innerText.(xml.CharData))
 					}
 				}
 			} else if v.Name.Local == "varName" {
 				innerText, err := decoder.Token()
 				if err == nil && reflect.TypeOf(innerText).String() == "xml.CharData" {
 					if inChoice {
-						pItem.Choice.VarName = string(innerText.(xml.CharData))
-					} else if inThumbnail {
-						pItem.Thumbnail.VarName = string(innerText.(xml.CharData))
+						choice.cVarName = string(innerText.(xml.CharData))
+						// } else if inThumbnail {
+						// 	pItem.Thumbnail.cVarName = string(innerText.(xml.CharData))
+					}
+				}
+			} else if v.Name.Local == "module" {
+				innerText, err := decoder.Token()
+				if err == nil && reflect.TypeOf(innerText).String() == "xml.CharData" {
+					if inChoice {
+						choice.cModule = moduleID(innerText.(xml.CharData))
+					}
+				}
+			} else if v.Name.Local == "moduleField" {
+				innerText, err := decoder.Token()
+				if err == nil && reflect.TypeOf(innerText).String() == "xml.CharData" {
+					if inChoice {
+						choice.cModuleField = string(innerText.(xml.CharData))
 					}
 				}
 			} else if v.Name.Local == "mlItem" {
 				innerText, err := decoder.Token()
 				if err == nil && reflect.TypeOf(innerText).String() == "xml.CharData" {
 					if inChoice {
-						pItem.Choice.MlItem = string(innerText.(xml.CharData))
-					} else if inThumbnail {
-						pItem.Thumbnail.MlItem = string(innerText.(xml.CharData))
+						choice.cMlItem = promptID(innerText.(xml.CharData))
+						// } else if inThumbnail {
+						// 	pItem.Thumbnail.cMlItem = string(innerText.(xml.CharData))
 					}
 				}
 			} else if v.Name.Local == "showInVivr" {
 				innerText, err := decoder.Token()
 				if err == nil {
 					if inChoice {
-						pItem.Choice.ShowInVivr = string(innerText.(xml.CharData)) == "true"
-					} else if inThumbnail {
-						pItem.Thumbnail.ShowInVivr = string(innerText.(xml.CharData)) == "true"
+						pItem.ShowInVivr = string(innerText.(xml.CharData)) == "true"
+						// } else if inThumbnail {
+						// 	pItem.Thumbnail.cShowInVivr = string(innerText.(xml.CharData)) == "true"
 					}
 				}
 			} else if v.Name.Local == "match" {
 				innerText, err := decoder.Token()
 				if err == nil {
-					pItem.Match = string(innerText.(xml.CharData))
+					pItem.MatchExact = string(innerText.(xml.CharData)) == "EXACT"
 				}
 			} else if v.Name.Local == "dtmf" {
 				innerText, err := decoder.Token()
@@ -135,14 +139,112 @@ F:
 				}
 			}
 		case xml.EndElement:
-			if v.Name.Local == lastElement {
+			if v.Name.Local == cMenuItems {
 				break F /// <----------------------------------- Return should be HERE!
 			} else if v.Name.Local == "choice" {
 				inChoice = false
-			} else if v.Name.Local == "thumbnail" {
-				inThumbnail = false
+				// } else if v.Name.Local == "thumbnail" {
+				// 	inThumbnail = false
 			}
 		}
 	}
+
+	const tmplVar = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<speakElement>
+    <attributes>
+        <langAttr>
+            <name>xml:lang</name>
+            <attributeValueBase value="{{.Language}}"/>
+       </langAttr>
+    </attributes>
+    <items>
+        <variableElement>
+            <attributes/>
+            <items>
+     			<textElement>
+                    <attributes/>
+                    <items/>
+                    <body></body>
+                </textElement>
+            </items>
+            <variableName>{{.PromptVariable}}</variableName>
+        </variableElement>
+    </items>
+</speakElement>`
+
+	const tmplValue = `
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<speakElement>
+	<attributes>
+		<langAttr>
+			<name>xml:lang</name>
+			<attributeValueBase value="{{.Language}}"/>
+		</langAttr>
+	</attributes>
+	<items>
+		<sayAsElement>
+			<attributes/>
+			<items>
+				<textElement>
+					<attributes/>
+					<items/>
+					<body>{{.PromptValue}}</body>
+				</textElement>
+			</items>
+		</sayAsElement>
+	</items>
+</speakElement>`
+	type PromptData struct {
+		Language       string
+		PromptValue    string
+		PromptVariable string
+	}
+
+	var pp *ttsPrompt
+	switch choice.cType {
+	case "VALUE":
+		promptdata := PromptData{Language: "en-US", PromptValue: choice.cValue}
+		tmpl, err := template.New("promptTemplate").Parse(tmplValue)
+		if err != nil {
+			panic(err)
+		}
+		var doc bytes.Buffer
+		err = tmpl.Execute(&doc, promptdata)
+		if err != nil {
+			panic(err)
+		}
+		pp = &ttsPrompt{TTSPromptXML: doc.String()}
+		sp[itemPromptID] = pp
+	case "VARIABLE":
+		promptdata := PromptData{Language: "en-US", PromptVariable: choice.cVarName}
+		tmpl, err := template.New("promptTemplateVar").Parse(tmplVar)
+		if err != nil {
+			panic(err)
+		}
+		var doc bytes.Buffer
+		err = tmpl.Execute(&doc, promptdata)
+		if err != nil {
+			panic(err)
+		}
+		pp = &ttsPrompt{TTSPromptXML: doc.String()}
+		sp[itemPromptID] = pp
+	case "MODULE":
+		promptdata := PromptData{Language: "en-US", PromptVariable: string(choice.cModule) + ":" + choice.cModuleField}
+		//TBD: Attention: normally "ModuleName:ModuleField", here "ModuleID:ModuleField"
+		tmpl, err := template.New("promptTemplateVar").Parse(tmplVar)
+		if err != nil {
+			panic(err)
+		}
+		var doc bytes.Buffer
+		err = tmpl.Execute(&doc, promptdata)
+		if err != nil {
+			panic(err)
+		}
+		pp = &ttsPrompt{TTSPromptXML: doc.String()}
+		sp[itemPromptID] = pp
+	case "ML_ITEM":
+		itemPromptID = choice.cMlItem
+	}
+	pItem.Prompt = attemptPrompts{[]languagePrompts{{PrArr: []promptID{itemPromptID}, Language: defaultLang}}, 1}
 	return pItem
 }

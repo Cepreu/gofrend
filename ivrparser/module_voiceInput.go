@@ -3,7 +3,6 @@ package ivrparser
 import (
 	"encoding/xml"
 	"fmt"
-	"io"
 	"reflect"
 	"strconv"
 )
@@ -36,33 +35,28 @@ type voiceInputModule struct {
 	}
 }
 
+func (module *voiceInputModule) normalize(s *IVRScript) error {
+	return s.normalizePrompt(module.VoicePromptIDs)
+}
+
 //////////////////////////////////////
-func (s *IVRScript) parseVoiceInput(decoder *xml.Decoder, v *xml.StartElement) error {
+func newVoiceInput(decoder *xml.Decoder, sp scriptPrompts) Module {
 	var inRecordingDuration, inTerminationCharacter, inVarToAccessRecording = false, false, false
 
 	var pIM = new(voiceInputModule)
-	var lastElement string
-	if v != nil {
-		lastElement = v.Name.Local
-	}
-
 F:
 	for {
 		t, err := decoder.Token()
-		if err == io.EOF {
-			// io.EOF should not be here
-			return err
-		}
 		if err != nil {
 			fmt.Printf("decoder.Token() failed with '%s'\n", err)
-			return err
+			return nil
 		}
 
 		switch v := t.(type) {
 		case xml.StartElement:
 			///// prompts -->
 			if v.Name.Local == "prompts" {
-				if prmts, err := s.parseVoicePromptS(decoder, &v, fmt.Sprintf("%s_%s_", pIM.ID, "V")); err == nil {
+				if prmts, err := parseVoicePromptS(decoder, sp, fmt.Sprintf("%s_%s_", pIM.ID, "V")); err == nil {
 					pIM.VoicePromptIDs = append(pIM.VoicePromptIDs, prmts)
 				}
 				// RecordingParams -->
@@ -137,14 +131,14 @@ F:
 				}
 				///// -->reco-events
 			} else if v.Name.Local == "recoEvents" {
-				pRE := s.newEvent(decoder, &v, fmt.Sprintf("%s_", pIM.ID))
+				pRE := newEvent(decoder, sp, fmt.Sprintf("%s_", pIM.ID))
 				if pRE != nil {
 					pIM.Events = append(pIM.Events, pRE)
 				}
 
 				///// -->confirmData
 			} else if v.Name.Local == "confirmData" {
-				pIM.ConfData = s.newConfirmData(decoder, &v, fmt.Sprintf("%s_%s_", pIM.ID, "CD"))
+				pIM.ConfData = newConfirmData(decoder, sp, fmt.Sprintf("%s_%s_", pIM.ID, "CD"))
 				fmt.Println(pIM.ConfData)
 
 			} else {
@@ -157,12 +151,11 @@ F:
 				inRecordingDuration = false
 			} else if v.Name.Local == "terminationCharacter" {
 				inRecordingDuration = false
-			} else if v.Name.Local == lastElement {
+			} else if v.Name.Local == cVoiceInput {
 				break F /// <----------------------------------- Return should be HERE!
 			}
 		}
 	}
 
-	s.VoiceInputModules = append(s.VoiceInputModules, pIM)
-	return nil
+	return pIM
 }

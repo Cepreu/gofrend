@@ -20,11 +20,7 @@ type confirmData struct {
 	Events               []*recoEvent
 }
 
-func (s *IVRScript) newConfirmData(decoder *xml.Decoder, v *xml.StartElement, prefix string) *confirmData {
-	var lastElement string
-	if v != nil {
-		lastElement = v.Name.Local
-	}
+func newConfirmData(decoder *xml.Decoder, sp scriptPrompts, prefix string) *confirmData {
 	var pCD = new(confirmData)
 
 F:
@@ -39,11 +35,11 @@ F:
 		case xml.StartElement:
 			///// prompts -->
 			if v.Name.Local == "prompt" {
-				if res, err := s.parseVoicePrompt(decoder, &v, prefix); err == nil {
+				if res, err := parseVoicePrompt(decoder, &v, sp, prefix); err == nil {
 					pCD.VoicePromptIDs, _ = newModulePrompts(1, res)
 				}
 			} else if v.Name.Local == "recoEvents" {
-				pRE := s.newEvent(decoder, &v, fmt.Sprintf("%s_", prefix))
+				pRE := newEvent(decoder, sp, fmt.Sprintf("%s_", prefix))
 				if pRE != nil {
 					pCD.Events = append(pCD.Events, pRE)
 				}
@@ -69,7 +65,7 @@ F:
 				}
 			}
 		case xml.EndElement:
-			if v.Name.Local == lastElement {
+			if v.Name.Local == cConfirmData {
 				break F /// <----------------------------------- Return should be HERE!
 			}
 		}

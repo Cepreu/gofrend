@@ -18,19 +18,19 @@ type playModule struct {
 	}
 }
 
-func (s *IVRScript) newPlayModule(decoder *xml.Decoder, v *xml.StartElement) error {
+func (module *playModule) normalize(s *IVRScript) error {
+	return s.normalizePrompt(module.VoicePromptIDs)
+}
+
+func newPlayModule(decoder *xml.Decoder, sp scriptPrompts) Module {
 	var pPM = new(playModule)
-	var lastElement string
-	if v != nil {
-		lastElement = v.Name.Local
-	}
 
 F:
 	for {
 		t, err := decoder.Token()
 		if err != nil {
 			fmt.Printf("decoder.Token() failed with '%s'\n", err)
-			return err
+			return nil
 		}
 
 		switch v := t.(type) {
@@ -52,8 +52,8 @@ F:
 				}
 
 				///// prompts -->
-			} else if v.Name.Local == "prompt" {
-				if res, err := s.parseVoicePrompt(decoder, &v, fmt.Sprintf("%s_%s_", pPM.ID, "P")); err == nil {
+			} else if v.Name.Local == cPrompt {
+				if res, err := parseVoicePrompt(decoder, &v, sp, fmt.Sprintf("%s_%s_", pPM.ID, "P")); err == nil {
 					pPM.VoicePromptIDs, _ = newModulePrompts(1, res)
 				}
 
@@ -61,13 +61,12 @@ F:
 				pPM.parseGeneralInfo(decoder, &v)
 			}
 		case xml.EndElement:
-			if v.Name.Local == lastElement {
+			if v.Name.Local == cPlay {
 				break F /// <----------------------------------- Return should be HERE!
 
 			}
 		}
 	}
 
-	s.PlayModules = append(s.PlayModules, pPM)
-	return nil
+	return pPM
 }

@@ -27,7 +27,6 @@ func getSkillsFromF9(name string) (string, error) {
 	}
 	m, _ := mxj.NewMapXml(contents, true)
 	PrettyPrint(m)
-	fmt.Println("============================================================")
 	skills, error := convertSkillsResults(&m)
 	if error != nil {
 		return "", error
@@ -48,7 +47,6 @@ func generateSkillsRequestContent(name string) string {
 	</soapenv:Body>
     </soapenv:Envelope>`
 
-	//	querydata := QueryData{PostalCode: postalCode}
 	querydata := QueryData{SkillName: name}
 	tmpl, err := template.New("skillsTemplate").Parse(getSkillsReq)
 	if err != nil {

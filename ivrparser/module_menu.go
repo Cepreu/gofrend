@@ -29,6 +29,15 @@ type menuModule struct {
 		NoInputTimeout        int
 	}
 }
+
+func (module *menuModule) normalize(s *IVRScript) error {
+	s.normalizePrompt(module.VoicePromptIDs)
+	for i := range module.Items {
+		s.normalizeAttemptPrompt(&module.Items[i].Prompt, false)
+	}
+	return nil
+}
+
 type actionType string
 
 type outputBranch struct {
@@ -40,13 +49,9 @@ type outputBranch struct {
 }
 
 //////////////////////////////////////
-func (s *IVRScript) newMenuModule(decoder *xml.Decoder, v *xml.StartElement) error {
-	var pMM = new(menuModule)
-	var lastElement string
-	if v != nil {
-		lastElement = v.Name.Local
-	}
+func newMenuModule(decoder *xml.Decoder, sp scriptPrompts) Module {
 	var (
+		pMM        = new(menuModule)
 		inBranches = false
 		pBranch    *outputBranch
 	)
@@ -55,14 +60,14 @@ F:
 		t, err := decoder.Token()
 		if err != nil {
 			fmt.Printf("decoder.Token() failed with '%s'\n", err)
-			return err
+			return nil
 		}
 
 		switch v := t.(type) {
 		case xml.StartElement:
 			///// prompts -->
 			if v.Name.Local == "prompts" {
-				if prmts, err := s.parseVoicePromptS(decoder, &v, fmt.Sprintf("%s_%s_", pMM.ID, "V")); err == nil {
+				if prmts, err := parseVoicePromptS(decoder, sp, fmt.Sprintf("%s_%s_", pMM.ID, "V")); err == nil {
 					pMM.VoicePromptIDs = append(pMM.VoicePromptIDs, prmts)
 				}
 			} else if v.Name.Local == "useSpeechRecognition" {
@@ -92,14 +97,14 @@ F:
 				}
 				// -->reco-events
 			} else if v.Name.Local == "recoEvents" {
-				pRE := s.newEvent(decoder, &v, fmt.Sprintf("%s_", pMM.ID))
+				pRE := newEvent(decoder, sp, fmt.Sprintf("%s_", pMM.ID))
 				if pRE != nil {
 					pMM.Events = append(pMM.Events, pRE)
 				}
 
 				// -->confirmData
-			} else if v.Name.Local == "confirmData" {
-				pMM.ConfData = s.newConfirmData(decoder, &v, fmt.Sprintf("%s_%s_", pMM.ID, "CD"))
+			} else if v.Name.Local == cConfirmData {
+				pMM.ConfData = newConfirmData(decoder, sp, fmt.Sprintf("%s_%s_", pMM.ID, "CD"))
 
 				// -->branches
 			} else if v.Name.Local == "branches" {
@@ -123,8 +128,9 @@ F:
 				}
 
 				// -->items
-			} else if v.Name.Local == "items" {
-				pItem := s.newMenuItem(decoder, &v, string(pMM.ID))
+			} else if v.Name.Local == cMenuItems {
+				pItem := newMenuItem(decoder, sp, getPromptID(string(pMM.ID), "A"))
+				//				fmt.Printf("Items: .......... %v\n", pItem)
 				if pItem != nil {
 					pMM.Items = append(pMM.Items, pItem)
 				}
@@ -136,12 +142,10 @@ F:
 				inBranches = false
 			} else if v.Name.Local == "entry" && inBranches {
 				pMM.Branches = append(pMM.Branches, pBranch)
-			} else if v.Name.Local == lastElement {
+			} else if v.Name.Local == cMenu {
 				break F /// <----------------------------------- Return should be HERE!
 			}
 		}
 	}
-
-	s.MenuModules = append(s.MenuModules, pMM)
-	return nil
+	return pMM
 }

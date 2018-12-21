@@ -22,19 +22,19 @@ type getDigitsModule struct {
 	}
 }
 
-func (s *IVRScript) newGetDigitsModule(decoder *xml.Decoder, v *xml.StartElement) error {
+func (module *getDigitsModule) normalize(s *IVRScript) error {
+	return s.normalizePrompt(module.VoicePromptIDs)
+}
+
+func newGetDigitsModule(decoder *xml.Decoder, sp scriptPrompts) Module {
 	var pModule = new(getDigitsModule)
-	var lastElement string
-	if v != nil {
-		lastElement = v.Name.Local
-	}
 
 F:
 	for {
 		t, err := decoder.Token()
 		if err != nil {
 			fmt.Printf("decoder.Token() failed with '%s'\n", err)
-			return err
+			return nil
 		}
 
 		switch v := t.(type) {
@@ -78,7 +78,7 @@ F:
 
 				///// prompts -->
 			} else if v.Name.Local == "prompt" {
-				if res, err := s.parseVoicePrompt(decoder, &v, fmt.Sprintf("%s_%s_", pModule.ID, "G")); err == nil {
+				if res, err := parseVoicePrompt(decoder, &v, sp, fmt.Sprintf("%s_%s_", pModule.ID, "G")); err == nil {
 					//					s.TempAPrompts[pModule.ID] = []*attemptPrompts{{res, 1}}
 					pModule.VoicePromptIDs, _ = newModulePrompts(1, res)
 				}
@@ -88,12 +88,11 @@ F:
 			}
 
 		case xml.EndElement:
-			if v.Name.Local == lastElement {
+			if v.Name.Local == cGetDigits {
 				break F /// <----------------------------------- Return should be HERE!
 			}
 		}
 	}
 
-	s.GetDigitsModules = append(s.GetDigitsModules, pModule)
-	return nil
+	return pModule
 }

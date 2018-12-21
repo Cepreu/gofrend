@@ -39,27 +39,27 @@ type inputModule struct {
 	ConfData *confirmData
 }
 
+func (module *inputModule) normalize(s *IVRScript) error {
+	return s.normalizePrompt(module.VoicePromptIDs)
+}
+
 //////////////////////////////////////
-func (s *IVRScript) parseInput2(decoder *xml.Decoder, v *xml.StartElement) error {
+func newInputModule(decoder *xml.Decoder, sp scriptPrompts) Module {
 	var pIM = new(inputModule)
-	var lastElement string
-	if v != nil {
-		lastElement = v.Name.Local
-	}
 
 F:
 	for {
 		t, err := decoder.Token()
 		if err != nil {
 			fmt.Printf("decoder.Token() failed with '%s'\n", err)
-			return err
+			return nil
 		}
 
 		switch v := t.(type) {
 		case xml.StartElement:
 			///// prompts -->
 			if v.Name.Local == "prompts" {
-				if prmts, err := s.parseVoicePromptS(decoder, &v, fmt.Sprintf("%s_%s_", pIM.ID, "V")); err == nil {
+				if prmts, err := parseVoicePromptS(decoder, sp, fmt.Sprintf("%s_%s_", pIM.ID, "V")); err == nil {
 					pIM.VoicePromptIDs = append(pIM.VoicePromptIDs, prmts)
 				}
 				///// -->grammar
@@ -72,25 +72,24 @@ F:
 
 				///// -->reco-events
 			} else if v.Name.Local == "recoEvents" {
-				pRE := s.newEvent(decoder, &v, fmt.Sprintf("%s_", pIM.ID))
+				pRE := newEvent(decoder, sp, fmt.Sprintf("%s_", pIM.ID))
 				if pRE != nil {
 					pIM.Events = append(pIM.Events, pRE)
 				}
 
 				///// -->confirmData
 			} else if v.Name.Local == "confirmData" {
-				pIM.ConfData = s.newConfirmData(decoder, &v, fmt.Sprintf("%s_%s_", pIM.ID, "CD"))
+				pIM.ConfData = newConfirmData(decoder, sp, fmt.Sprintf("%s_%s_", pIM.ID, "CD"))
 
 			} else {
 				pIM.parseGeneralInfo(decoder, &v)
 			}
 		case xml.EndElement:
-			if v.Name.Local == lastElement {
+			if v.Name.Local == cInput {
 				break F /// <----------------------------------- Return should be HERE!
 			}
 		}
 	}
 
-	s.InputModules = append(s.InputModules, pIM)
-	return nil
+	return pIM
 }
