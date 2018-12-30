@@ -16,13 +16,12 @@ type parametrized struct {
 	IsVarSelected bool
 }
 
-func (p *parametrized) parse(decoder *xml.Decoder, v *xml.StartElement) (err error) {
+func (p *parametrized) parse(decoder *xml.Decoder) (err error) {
 	var (
-		lastElement               = v.Name.Local
+		immersion                 = 1
 		inValue, inID, inVariable = false, false, false
 	)
-F:
-	for {
+	for immersion > 0 {
 		t, err := decoder.Token()
 		if err != nil {
 			return err
@@ -30,6 +29,7 @@ F:
 
 		switch v := t.(type) {
 		case xml.StartElement:
+			immersion++
 			if v.Name.Local == "isVarSelected" {
 				innerText, err := decoder.Token()
 				if err == nil {
@@ -58,10 +58,10 @@ F:
 			} else if inVariable {
 				p.VariableName = string(v)
 			}
+
 		case xml.EndElement:
-			if v.Name.Local == lastElement {
-				break F /// <----------------------------------- Return should be HERE!
-			} else if v.Name.Local == "value" {
+			immersion--
+			if v.Name.Local == "value" {
 				inValue = false
 			} else if v.Name.Local == "id" {
 				inID = false
@@ -72,4 +72,56 @@ F:
 	}
 
 	return err
+}
+
+///////////////////
+type keyValueParametrized struct {
+	Key   string
+	Value *parametrized
+}
+
+func parseKeyValueListParmetrized(decoder *xml.Decoder) (p []keyValueParametrized, err error) {
+	var (
+		immersion      = 1
+		inEntry, inKey = false, false
+		key            string
+		value          *parametrized
+	)
+
+	for immersion > 0 {
+		t, err := decoder.Token()
+		if err != nil {
+			return nil, err
+		}
+
+		switch v := t.(type) {
+		case xml.StartElement:
+			immersion++
+			if v.Name.Local == "entry" {
+				inEntry = true
+			} else if v.Name.Local == "key" && inEntry {
+				inKey = true
+			} else if v.Name.Local == "value" && inEntry {
+				value = new(parametrized)
+				value.parse(decoder)
+				immersion--
+			}
+
+		case xml.CharData:
+			if inKey {
+				key = string(v)
+			}
+
+		case xml.EndElement:
+			immersion--
+			if v.Name.Local == "entry" {
+				inEntry = false
+				p = append(p, keyValueParametrized{key, value})
+			} else if v.Name.Local == "key" && inEntry {
+				inKey = false
+			}
+		}
+	}
+
+	return p, nil
 }

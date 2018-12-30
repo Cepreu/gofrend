@@ -20,6 +20,7 @@ const (
 	cInput         string = "input"
 	cVoiceInput    string = "recording"
 	cMenu          string = "menu"
+	cQuery         string = "query"
 
 	cPrompt      string = "prompt"
 	cConfirmData string = "confirmData"
@@ -71,6 +72,8 @@ F:
 				m = newMenuModule(decoder, s.Prompts)
 			case cGetDigits:
 				m = newGetDigitsModule(decoder, s.Prompts)
+			case cQuery:
+				m = newQueryModule(decoder, s.Prompts)
 			default:
 				fmt.Printf("Warning: unsupported module '%s'\n", v.Name.Local)
 				m = newUnknownModule(decoder, &v)

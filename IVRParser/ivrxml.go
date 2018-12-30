@@ -29,15 +29,6 @@ func newIVRScript() *IVRScript {
 	}
 }
 
-type modules struct {
-	IncomingCall      *incomingCallModule
-	HangupModules     []*hangupModule
-	PlayModules       []*playModule
-	InputModules      []*inputModule
-	VoiceInputModules []*voiceInputModule
-	MenuModules       []*menuModule
-	GetDigitsModules  []*getDigitsModule
-}
 type modulesOnHangup struct {
 	StartOnHangup *incomingCallModule
 	HangupModules []*hangupModule
@@ -100,7 +91,7 @@ func NewIVRScript(src io.Reader) (*IVRScript, error) {
 			} else if v.Name.Local == "multiLanguagesPrompts" {
 				inMLPrompts = true
 			} else if v.Name.Local == "value" && inMLPrompts {
-				mlp, err := s.parseMultilanguagePrompts(decoder, &v)
+				mlp, err := s.parseMultilanguagePrompts(decoder)
 				if err != nil {
 					fmt.Printf("parseMLPrompt() failed with '%s'\n", err)
 					break

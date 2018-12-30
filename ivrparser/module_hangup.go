@@ -36,9 +36,9 @@ F:
 					pHM.Return2Caller = string(innerText.(xml.CharData)) == "true"
 				}
 			} else if v.Name.Local == "errCode" {
-				pHM.ErrCode.parse(decoder, &v)
+				pHM.ErrCode.parse(decoder)
 			} else if v.Name.Local == "errDescription" {
-				pHM.ErrDescr.parse(decoder, &v)
+				pHM.ErrDescr.parse(decoder)
 			} else if v.Name.Local == "overwriteDisposition" {
 				innerText, err := decoder.Token()
 				if err == nil {

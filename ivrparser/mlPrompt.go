@@ -29,15 +29,12 @@ type multilanguageMenuChoice struct {
 	//	IsPersistent bool       `xml:"isPersistent"`
 }
 
-func (s *IVRScript) parseMultilanguagePrompts(decoder *xml.Decoder, v *xml.StartElement) (*multilingualPrompt, error) {
+func (s *IVRScript) parseMultilanguagePrompts(decoder *xml.Decoder) (*multilingualPrompt, error) {
 	pml := new(multilingualPrompt)
 	pml.Prompts = make(map[langCode][]promptID)
-	var lastElement string
-	if v != nil {
-		lastElement = v.Name.Local
-	}
 	inDescription, inType, inName, inPromptID, inPrompts, inDefaultLanguage := false, false, false, false, false, false
 
+	var immersion = 1
 F:
 	for {
 		t, err := decoder.Token()
@@ -48,6 +45,7 @@ F:
 
 		switch v := t.(type) {
 		case xml.StartElement:
+			immersion++
 			if v.Name.Local == "promptId" {
 				inPromptID = true
 			} else if v.Name.Local == "name" {
@@ -61,19 +59,18 @@ F:
 			} else if v.Name.Local == "prompts" {
 				inPrompts = true
 			} else if v.Name.Local == "entry" && inPrompts {
-				for _, attr := range v.Attr {
-					if attr.Name.Local == "key" {
-						lang := langCode(attr.Value)
-						pids, err := parseVoicePrompt(decoder, &v, s.Prompts, fmt.Sprintf("%s_%s", pml.ID, lang))
-						if err == nil {
-							pml.Prompts[lang] = pids
-						}
-						break
-					}
+				lang := langCode(v.Attr[0].Value)
+				pids, err := parseVoicePrompt(decoder, &v, s.Prompts, fmt.Sprintf("%s_%s", pml.ID, lang))
+				if err == nil {
+					pml.Prompts[lang] = pids
+					immersion--
 				}
 			}
 		case xml.EndElement:
-			if v.Name.Local == "promptId" {
+			immersion--
+			if immersion == 0 {
+				break F /// <----------------------------------- Return should be HERE!
+			} else if v.Name.Local == "promptId" {
 				inPromptID = false
 			} else if v.Name.Local == "name" {
 				inName = false
@@ -83,8 +80,6 @@ F:
 				inDescription = false
 			} else if v.Name.Local == "defaultLanguage" {
 				inDefaultLanguage = false
-			} else if v.Name.Local == lastElement {
-				break F /// <----------------------------------- Return should be HERE!
 			}
 		case xml.CharData:
 			if inPromptID {
@@ -110,6 +105,7 @@ func (s *IVRScript) parseMultilanguageMenuElements(decoder *xml.Decoder) (*multi
 	pml.TxtPrompts = make(map[langCode][]promptID)
 
 	var immersion = 1
+
 	var lang langCode
 	var prefix promptID
 	var pp prompt
@@ -201,6 +197,5 @@ F:
 			}
 		}
 	}
-	fmt.Println("~~~~~~~~~~ ", pml.Name, " ~~~~ ", pml.DefLanguage)
 	return pml, nil
 }

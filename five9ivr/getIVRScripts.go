@@ -78,10 +78,8 @@ func convertIVRResults(soapResponse *mxj.Map) (*IvrScriptDef, error) {
 	if err := decoder.Decode(ivrResult); err != nil {
 		return nil, err
 	}
-	fmt.Println("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
 	go func() {
 		IVR, err := ivrparser.NewIVRScript(strings.NewReader(result.XMLDefinition))
-		fmt.Println(">>>>>>>>>>>>>>>>>>>>>>>>", err)
 		err = PrettyPrint(IVR)
 		fmt.Println(">========== PrettyPrint =========>>>", err)
 	}()
