@@ -1,4 +1,4 @@
-package variables
+package vars
 
 import (
 	"errors"
@@ -9,7 +9,7 @@ import (
 
 const timeRe = "^((0?[1-9])|(1[0-2])):([0-5][0-9]) ?(AM|PM|am|pm)$|(([01][0-9])|(2[0-3])):([0-5][0-9]$)"
 
-func vuStringToMinutes(strValue string) (int32, error) {
+func vuStringToMinutes(strValue string) (int, error) {
 	var minutes int64
 	r, _ := regexp.Compile(timeRe)
 	res := r.FindAllStringSubmatch(strValue, -1)
@@ -26,7 +26,7 @@ func vuStringToMinutes(strValue string) (int32, error) {
 		minutes += i64
 		i64, _ = strconv.ParseInt(res[0][9], 10, 32)
 		minutes += i64
-		return int32(minutes), nil
+		return int(minutes), nil
 	}
 	return 0, errors.New("Cannot convert string to time")
 }

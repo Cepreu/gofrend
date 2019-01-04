@@ -1,4 +1,4 @@
-package variables
+package vars
 
 import (
 	"errors"
@@ -7,48 +7,56 @@ import (
 )
 
 type IntegerValue struct {
-	defaultValueImpl
-	value int64
+	secure bool
+	value  int
+}
+
+//NewIntegerValue - returns pointer to a new IntegerValue struct, or <nil> for an error
+func NewIntegerValue(v int) *IntegerValue {
+	return &IntegerValue{secure: false, value: v}
 }
 
 func (ival *IntegerValue) isSecure() bool { return ival.secure }
 
-func (ival *IntegerValue) assign(that Value) error {
-	ival.defaultValueImpl.assign(that)
-	v, err := that.toLong()
-	ival.value = v
-	return err
-}
+// func (ival *IntegerValue) assign(that *Value) error {
+// 	ival.defaultValueImpl.assign(that)
+// 	v, err := (*that).toLong()
+// 	ival.value = v
+// 	return err
+// }
 
 func (ival *IntegerValue) new(secure bool, strValue string) error {
 	ival.secure = secure
-	i64, err := strconv.ParseInt(strValue, 10, 64)
+	i, err := strconv.Atoi(strValue)
 	if err != nil {
 		return errors.New("Cannot convert string to long")
 	}
-	ival.value = i64
+	ival.value = i
 	return nil
 }
 
-func (ival *IntegerValue) compareTo(value2 Value) (int, error) {
-	if value2.getType() == NUMERIC {
-		return value2.compareTo(ival)
-	}
-	res := 0
-	toCompare, err := value2.toLong()
-	if err != nil {
-		return res, errors.New("Variable to compare must be of IntegerValue type")
-	}
-	if ival.value > toCompare {
-		res = 1
-	} else if ival.value < toCompare {
-		res = -1
-	}
-	return res, nil
-}
+// func (ival *IntegerValue) CompareTo(value2 Value) (int, error) {
+// 	if value2.getType() == NUMERIC {
+// 		return value2.CompareTo(ival)
+// 	}
+// 	res := 0
+// 	toCompare, err := value2.toLong()
+// 	if err != nil {
+// 		return res, errors.New("Variable to compare must be of IntegerValue type")
+// 	}
+// 	if ival.value > toCompare {
+// 		res = 1
+// 	} else if ival.value < toCompare {
+// 		res = -1
+// 	}
+// 	return res, nil
+// }
 
-func (ival *IntegerValue) toLong() (int64, error) {
+func (ival *IntegerValue) toLong() (int, error) {
 	return ival.value, nil
+}
+func (ival *IntegerValue) toDate() (DateValue, error) {
+	return DateValue{}, nil
 }
 
 func (ival *IntegerValue) String() string {
@@ -60,18 +68,18 @@ func (ival *IntegerValue) String() string {
 }
 
 func (ival *IntegerValue) convertToString() (string, error) {
-	return strconv.FormatInt(ival.value, 10), nil
+	return fmt.Sprintf("%d", ival.value), nil
 }
 
 func (ival *IntegerValue) toBigDecimal() (float64, error) {
 	return float64(ival.value), nil
 }
 
-func (*IntegerValue) getType() Type {
-	return INTEGER
+func (*IntegerValue) getType() VarType {
+	return VarInteger
 }
 
-///////////
+/*
 func getSum(args []Value) (IntegerValue, error) {
 	var val int64
 	scr := false
@@ -128,3 +136,4 @@ func getQuotation(arg1 Value, arg2 Value) (IntegerValue, error) {
 	}
 	return IntegerValue{}, err
 }
+*/

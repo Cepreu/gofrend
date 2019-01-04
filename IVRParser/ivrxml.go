@@ -17,15 +17,15 @@ type IVRScript struct {
 	Prompts         scriptPrompts
 	MLPrompts       []*multilingualPrompt
 	MLChoices       []*multilanguageMenuChoice
-	//Variables map[string]*Variable
-	Languages []language
+	Variables       variables
+	Languages       []language
 }
 type scriptPrompts map[promptID]prompt
 
 func newIVRScript() *IVRScript {
 	return &IVRScript{
-		Prompts: make(scriptPrompts),
-		//Variables: make(map[string]*Variable),
+		Prompts:   make(scriptPrompts),
+		Variables: make(variables),
 	}
 }
 
@@ -85,7 +85,7 @@ func NewIVRScript(src io.Reader) (*IVRScript, error) {
 			} else if v.Name.Local == "modulesOnHangup" {
 				s.ModulesOnHangup = s.parseModules(decoder, &v)
 			} else if v.Name.Local == "userVariables" {
-				//				inVariables = true
+				s.Variables.parse(decoder)
 			} else if v.Name.Local == "multiLanguagesVIVRPrompts" {
 				//				inMLVIVRPrompts = true
 			} else if v.Name.Local == "multiLanguagesPrompts" {
@@ -122,9 +122,7 @@ func NewIVRScript(src io.Reader) (*IVRScript, error) {
 				}
 			}
 		case xml.EndElement:
-			if v.Name.Local == "userVariables" {
-				//				inVariables = false
-			} else if v.Name.Local == "multiLanguagesVIVRPrompts" {
+			if v.Name.Local == "multiLanguagesVIVRPrompts" {
 				//				inMLVIVRPrompts = false
 			} else if v.Name.Local == "multiLanguagesPrompts" {
 				inMLPrompts = false
@@ -134,6 +132,11 @@ func NewIVRScript(src io.Reader) (*IVRScript, error) {
 		}
 	}
 	s.finalization()
+	///////TBD - debug, delete/////
+	for vname, vval := range s.Variables {
+		fmt.Println("=====", vname, vval)
+	}
+
 	return s, nil
 }
 
