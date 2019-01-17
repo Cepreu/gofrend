@@ -1,0 +1,5 @@
+package dialogflow
+
+//////////////////////////////////////////
+
+type agent struct{}

@@ -8,9 +8,9 @@ import (
 	"golang.org/x/net/html/charset"
 )
 
-//IVRScript - Unparsed IVR script structure
+//IVRScript - parsed IVR script
 type IVRScript struct {
-	Domain          int32
+	Domain          string
 	Properties      string
 	Modules         []Module
 	ModulesOnHangup []Module
@@ -65,6 +65,7 @@ func NewIVRScript(src io.Reader) (*IVRScript, error) {
 		inMLPrompts = false
 		//		inMLVIVRPrompts = false
 		inMLMenuChoices = false
+		inDomainID      = false
 	)
 	for {
 		t, err := decoder.Token()
@@ -80,7 +81,9 @@ func NewIVRScript(src io.Reader) (*IVRScript, error) {
 		switch v := t.(type) {
 
 		case xml.StartElement:
-			if v.Name.Local == "modules" {
+			if v.Name.Local == "domainId" {
+				inDomainID = true
+			} else if v.Name.Local == "modules" {
 				s.Modules = s.parseModules(decoder, &v)
 			} else if v.Name.Local == "modulesOnHangup" {
 				s.ModulesOnHangup = s.parseModules(decoder, &v)
@@ -121,6 +124,10 @@ func NewIVRScript(src io.Reader) (*IVRScript, error) {
 					}
 				}
 			}
+		case xml.CharData:
+			if inDomainID {
+				s.Domain = string(v)
+			}
 		case xml.EndElement:
 			if v.Name.Local == "multiLanguagesVIVRPrompts" {
 				//				inMLVIVRPrompts = false
@@ -128,6 +135,8 @@ func NewIVRScript(src io.Reader) (*IVRScript, error) {
 				inMLPrompts = false
 			} else if v.Name.Local == "multiLanguagesMenuChoices" {
 				inMLMenuChoices = false
+			} else if v.Name.Local == "domainId" {
+				inDomainID = false
 			}
 		}
 	}

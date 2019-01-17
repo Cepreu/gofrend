@@ -148,7 +148,7 @@ func (vs variables) parse(decoder *xml.Decoder) (err error) {
 
 			} else if v.Name.Local == "dateValue" {
 				inDateValue = false
-				val = vars.NewDateValue(date.y, date.m, date.d)
+				val = vars.NewDate(date.y, date.m, date.d)
 				date.m, date.d, date.y = 0, 0, 0
 			} else if v.Name.Local == "day" {
 				inDay = false
@@ -159,24 +159,24 @@ func (vs variables) parse(decoder *xml.Decoder) (err error) {
 
 			} else if v.Name.Local == "timeValue" {
 				inTimeValue = false
-				val = vars.NewTimeValue(minutes)
+				val = vars.NewTime(minutes)
 				minutes = 0
 			} else if v.Name.Local == "minutes" {
 				inMinutes = false
 
 			} else if v.Name.Local == "numericValue" {
 				inNumericValue = false
-				val = vars.NewNumericValue(numValue)
+				val = vars.NewNumeric(numValue)
 				numValue = 0
 
 			} else if v.Name.Local == "integerValue" {
 				inIntegerValue = false
-				val = vars.NewIntegerValue(intValue)
+				val = vars.NewInteger(intValue)
 				intValue = 0
 
 			} else if v.Name.Local == "stringValue" {
 				inStringValue = false
-				val = vars.NewStringValue(strValue, id)
+				val = vars.NewString(strValue, id)
 				strValue = ""
 				id = 0
 			} else if v.Name.Local == "id" {
@@ -184,12 +184,12 @@ func (vs variables) parse(decoder *xml.Decoder) (err error) {
 
 			} else if v.Name.Local == "currencyValue" {
 				inCurrencyValue = false
-				val = vars.NewCurrencyValue(currValue)
+				val = vars.NewCurrency(currValue)
 				currValue = 0.0
 
 			} else if v.Name.Local == "kvListValue" {
 				sDec, _ := base64.StdEncoding.DecodeString(strValue)
-				val = vars.NewKVListValue(string(sDec))
+				val = vars.NewKVList(string(sDec))
 
 				inKVListValue = false
 				strValue = ""

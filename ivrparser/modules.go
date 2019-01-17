@@ -21,6 +21,7 @@ const (
 	cVoiceInput    string = "recording"
 	cMenu          string = "menu"
 	cQuery         string = "query"
+	cSetVariables  string = "setVariable"
 
 	cPrompt      string = "prompt"
 	cConfirmData string = "confirmData"
@@ -74,6 +75,8 @@ F:
 				m = newGetDigitsModule(decoder, s.Prompts)
 			case cQuery:
 				m = newQueryModule(decoder, s.Prompts)
+			case cSetVariables:
+				m = newSetVariablesModule(decoder)
 			default:
 				fmt.Printf("Warning: unsupported module '%s'\n", v.Name.Local)
 				m = newUnknownModule(decoder, &v)

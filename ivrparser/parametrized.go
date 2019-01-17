@@ -2,24 +2,25 @@ package ivrparser
 
 import (
 	"encoding/xml"
-	"strconv"
+
+	"github.com/Cepreu/gofrend/vars"
 )
 
 type parametrized struct {
-	DataType    string
-	IntValue    int
-	IntID       string
-	StringValue string
-	StringID    string
-
-	VariableName  string
-	IsVarSelected bool
+	VariableName string
+	Value        vars.Value
 }
+
+func (p *parametrized) IsVarSelected() bool { return p.VariableName != "" }
 
 func (p *parametrized) parse(decoder *xml.Decoder) (err error) {
 	var (
-		immersion                 = 1
-		inValue, inID, inVariable = false, false, false
+		immersion                                  = 1
+		inValue, inID, inVariable, inIsVarSelected = false, false, false, false
+		inYear, inMonth, inDay, inMinutes          = false, false, false, false
+		IsVarSelected                              = false
+
+		val vars.Value
 	)
 	for immersion > 0 {
 		t, err := decoder.Token()
@@ -31,46 +32,77 @@ func (p *parametrized) parse(decoder *xml.Decoder) (err error) {
 		case xml.StartElement:
 			immersion++
 			if v.Name.Local == "isVarSelected" {
-				innerText, err := decoder.Token()
-				if err == nil {
-					p.IsVarSelected = string(innerText.(xml.CharData)) == "true"
-				}
+				inIsVarSelected = true
 			} else if v.Name.Local == "integerValue" {
-				p.DataType = "INTEGER"
+				val = new(vars.Integer)
+			} else if v.Name.Local == "currencyValue" {
+				val = new(vars.Currency)
+			} else if v.Name.Local == "numericValue" {
+				val = new(vars.Numeric)
 			} else if v.Name.Local == "stringValue" {
-				p.DataType = "STRING"
+				val = new(vars.String)
+			} else if v.Name.Local == "dateValue" {
+				val = new(vars.Date)
+			} else if v.Name.Local == "timeValue" {
+				val = new(vars.Time)
 			} else if v.Name.Local == "value" {
 				inValue = true
 			} else if v.Name.Local == "id" {
 				inID = true
+			} else if v.Name.Local == "year" {
+				inYear = true
+			} else if v.Name.Local == "month" {
+				inMonth = true
+			} else if v.Name.Local == "day" {
+				inDay = true
+			} else if v.Name.Local == "minutes" {
+				inMinutes = true
 			} else if v.Name.Local == "variableName" {
 				inVariable = true
 			}
 		case xml.CharData:
-			if inValue && p.DataType == "STRING" {
-				p.StringValue = string(v)
-			} else if inValue && p.DataType == "INTEGER" {
-				p.IntValue, err = strconv.Atoi(string(v))
-			} else if inID && p.DataType == "STRING" {
-				p.StringID = string(v)
-			} else if inID && p.DataType == "INTEGER" {
-				p.IntID = string(v)
-			} else if inVariable {
+			if inValue {
+				val.SetValue("value", string(v))
+			} else if inID {
+				val.SetValue("id", string(v))
+			} else if inYear {
+				val.SetValue("year", string(v))
+			} else if inMonth {
+				val.SetValue("month", string(v))
+			} else if inDay {
+				val.SetValue("day", string(v))
+			} else if inMinutes {
+				val.SetValue("minutes", string(v))
+			} else if inVariable && IsVarSelected {
 				p.VariableName = string(v)
+			} else if inIsVarSelected {
+				IsVarSelected = string(v) == "true"
 			}
 
 		case xml.EndElement:
 			immersion--
-			if v.Name.Local == "value" {
+			if v.Name.Local == "isVarSelected" {
+				inIsVarSelected = false
+			} else if v.Name.Local == "value" {
 				inValue = false
 			} else if v.Name.Local == "id" {
 				inID = false
+			} else if v.Name.Local == "year" {
+				inYear = false
+			} else if v.Name.Local == "month" {
+				inMonth = false
+			} else if v.Name.Local == "day" {
+				inDay = false
+			} else if v.Name.Local == "minutes" {
+				inMinutes = false
 			} else if v.Name.Local == "variableName" {
 				inVariable = false
 			}
 		}
 	}
-
+	if !IsVarSelected {
+		p.Value = val
+	}
 	return err
 }
 

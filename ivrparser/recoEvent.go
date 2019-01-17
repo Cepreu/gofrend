@@ -6,21 +6,25 @@ import (
 	"strconv"
 )
 
-const (
-	EVENT_NO_MATCH string = "NO_MATCH"
-	EVENT_NO_INPUT string = "NO_INPUT"
-	EVENT_HELP     string = "HELP"
-)
+type recoevent string
 
 const (
-	ACTION_CONTINUE string = "CONTINUE"
-	RACTION_EPROMPT string = "REPROMPT"
-	EACTION_XIT     string = "EXIT"
+	eventNoMatch recoevent = "NO_MATCH"
+	eventNoInput recoevent = "NO_INPUT"
+	eventHelp    recoevent = "HELP"
+)
+
+type recoaction string
+
+const (
+	actionContinue recoaction = "CONTINUE"
+	actionReprompt recoaction = "REPROMPT"
+	actionExit     recoaction = "EXIT"
 )
 
 type recoEvent struct {
-	Event          string
-	Action         string
+	Event          recoevent
+	Action         recoaction
 	CountAndPrompt attemptPrompts
 }
 
@@ -45,12 +49,12 @@ F:
 			} else if v.Name.Local == "event" {
 				innerText, err := decoder.Token()
 				if err == nil {
-					pRE.Event = string(innerText.(xml.CharData))
+					pRE.Event = recoevent(innerText.(xml.CharData))
 				}
 			} else if v.Name.Local == "action" {
 				innerText, err := decoder.Token()
 				if err == nil {
-					pRE.Action = string(innerText.(xml.CharData))
+					pRE.Action = recoaction(innerText.(xml.CharData))
 				}
 			} else if v.Name.Local == "count" {
 				innerText, err := decoder.Token()

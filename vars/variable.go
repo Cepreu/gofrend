@@ -45,6 +45,27 @@ func typeName(t VarType) string {
 	return TypeStr[t]
 }
 
+// Value - interface type for internal ivr values
+type Value interface {
+	new(bool, string) error
+	SetValue(string, string) error
+	SetSecured(bool)
+	IsSecured() bool
+	fmt.Stringer
+}
+
+type secured struct {
+	secured bool
+}
+
+func (s secured) IsSecured() bool {
+	return s.secured
+}
+func (s secured) SetSecured(v bool) {
+	s.secured = v
+}
+
+// Variable - ivr variable description
 type Variable struct {
 	name        string
 	value       Value
