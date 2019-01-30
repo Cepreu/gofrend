@@ -4,7 +4,6 @@ package main
 
 import (
 	"bytes"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"io/ioutil"
@@ -52,12 +51,4 @@ func queryF9(generateRequestContent func() string) ([]byte, error) {
 	}
 	contents, err := ioutil.ReadAll(resp.Body)
 	return contents, err
-}
-
-func PrettyPrint(v interface{}) (err error) {
-	b, err := json.MarshalIndent(v, "", "  ")
-	if err == nil {
-		fmt.Println(string(b))
-	}
-	return
 }

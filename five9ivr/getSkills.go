@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"text/template"
 
+	"github.com/Cepreu/gofrend/utils"
 	"github.com/clbanning/mxj"
 	"github.com/davecgh/go-spew/spew"
 	"github.com/mitchellh/mapstructure"
@@ -26,7 +27,7 @@ func getSkillsFromF9(name string) (string, error) {
 		return "", err
 	}
 	m, _ := mxj.NewMapXml(contents, true)
-	PrettyPrint(m)
+	utils.PrettyPrint(m)
 	skills, error := convertSkillsResults(&m)
 	if error != nil {
 		return "", error

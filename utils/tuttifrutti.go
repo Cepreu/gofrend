@@ -1,14 +1,17 @@
 package utils
 
 import (
+	"encoding/base64"
+	"encoding/json"
 	"fmt"
 	"hash/crc32"
 	"io/ioutil"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"runtime"
 
-	"github.com/satori/go.uuid"
+	uuid "github.com/satori/go.uuid"
 )
 
 // HashCode calculates hash for a string in Java manner
@@ -31,9 +34,9 @@ func getHash(filename string) (uint32, error) {
 }
 
 // GenUUIDv4 - returns a generated ID
-func GenUUIDv4() (string, error) {
-	uid, err := uuid.NewV4()
-	return uid.String(), err
+func GenUUIDv4() string {
+	uid, _ := uuid.NewV4()
+	return uid.String()
 }
 
 func userHomeDir() string {
@@ -71,4 +74,28 @@ func CreateAgentDirectory(domainID string, ivrName string) bool {
 	}
 
 	return false
+}
+
+// PrettyPrint - prints golang structures
+func PrettyPrint(v interface{}) (err error) {
+	b, err := json.MarshalIndent(v, "", "  ")
+	if err == nil {
+		fmt.Println(string(b))
+	}
+	return
+}
+
+func CmdUnzip(encoded string) (string, error) {
+	base64Text := make([]byte, base64.StdEncoding.DecodedLen(len(encoded)))
+	base64.StdEncoding.Decode(base64Text, []byte(encoded))
+
+	grepCmd := exec.Command("gunzip")
+	grepIn, _ := grepCmd.StdinPipe()
+	grepOut, _ := grepCmd.StdoutPipe()
+	grepCmd.Start()
+	grepIn.Write(base64Text)
+	grepIn.Close()
+	grepBytes, _ := ioutil.ReadAll(grepOut)
+	grepCmd.Wait()
+	return string(grepBytes), nil
 }

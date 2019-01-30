@@ -3,6 +3,8 @@ package ivrparser
 import (
 	"encoding/xml"
 	"fmt"
+
+	"github.com/Cepreu/gofrend/utils"
 )
 
 type langCode string
@@ -144,7 +146,7 @@ F:
 			} else if v.Name.Local == "xml" {
 				innerText, err := decoder.Token()
 				if err == nil {
-					p, err := cmdUnzip(string(innerText.(xml.CharData)))
+					p, err := utils.CmdUnzip(string(innerText.(xml.CharData)))
 					if err == nil {
 						pp = &ttsPrompt{TTSPromptXML: p}
 					}

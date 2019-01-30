@@ -1,12 +1,11 @@
 package ivrparser
 
 import (
-	"encoding/base64"
 	"encoding/xml"
 	"fmt"
-	"io/ioutil"
-	"os/exec"
 	"strconv"
+
+	"github.com/Cepreu/gofrend/utils"
 )
 
 const defaultLang = "Default"
@@ -256,7 +255,7 @@ F:
 			}
 		case xml.CharData:
 			if inTTS && inXML {
-				p, err := cmdUnzip(string(v))
+				p, err := utils.CmdUnzip(string(v))
 				if err == nil {
 					pid := getPromptID(prefix, "T")
 					pids = append(pids, pid)
@@ -267,19 +266,4 @@ F:
 		}
 	}
 	return pids, nil
-}
-
-func cmdUnzip(encoded string) (string, error) {
-	base64Text := make([]byte, base64.StdEncoding.DecodedLen(len(encoded)))
-	base64.StdEncoding.Decode(base64Text, []byte(encoded))
-
-	grepCmd := exec.Command("gunzip")
-	grepIn, _ := grepCmd.StdinPipe()
-	grepOut, _ := grepCmd.StdoutPipe()
-	grepCmd.Start()
-	grepIn.Write(base64Text)
-	grepIn.Close()
-	grepBytes, _ := ioutil.ReadAll(grepOut)
-	grepCmd.Wait()
-	return string(grepBytes), nil
 }

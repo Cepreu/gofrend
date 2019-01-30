@@ -4,6 +4,8 @@ import (
 	"encoding/xml"
 	"fmt"
 	"strconv"
+
+	"github.com/Cepreu/gofrend/utils"
 )
 
 type (
@@ -65,7 +67,7 @@ func (module *queryModule) normalize(s *IVRScript) error {
 	if err != nil {
 		return err
 	}
-	module.RequestInfo.Template, err = cmdUnzip(module.RequestInfo.base64)
+	module.RequestInfo.Template, err = utils.CmdUnzip(module.RequestInfo.base64)
 	return err
 }
 

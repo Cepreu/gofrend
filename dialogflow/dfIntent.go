@@ -1,21 +1,38 @@
-package dialogflow
+package main
 
 import (
-	"context"
+	"fmt"
+	"log"
 
-	dialogflow "cloud.google.com/go/dialogflow/apiv2"
+	"github.com/Cepreu/gofrend/utils"
+	"github.com/davecgh/go-spew/spew"
 	dialogflowpb "google.golang.org/genproto/googleapis/cloud/dialogflow/v2"
 )
 
-func CreateIntent() {
-	ctx := context.Background()
-	c, err := dialogflow.NewIntentsClient(ctx)
-	if err != nil {
-		//TODO
+func (dp *DialogflowProcessor) GetIntent(intentID string) string {
+	req := dialogflowpb.GetIntentRequest{
+		// Required. The name of the intent.
+		// Format: `projects/<Project ID>/agent/intents/<Intent ID>`.
+		Name: fmt.Sprintf("projects/%s/agent/intents/%s", dp.projectID, intentID),
+		// Optional. The language to retrieve training phrases, parameters and rich
+		// messages for. If not specified, the agent's default language is used.
+		LanguageCode: "en",
+		// // Optional. The resource view to apply to the returned intent.
+		// IntentView: IntentView{},
 	}
-	req := &dialogflowpb.CreateIntentRequest{
+	response, err := dp.intentClient.GetIntent(dp.ctx, &req)
+	if err != nil {
+		log.Fatalf("Error in communication with Dialogflow %s", err.Error())
+		return ""
+	}
+	utils.PrettyPrint(response)
+	return spew.Sdump(response)
+}
+
+func (dp *DialogflowProcessor) CreateIntent() string {
+	req := dialogflowpb.CreateIntentRequest{
 		//TODO: fill request struct fields
-		Parent: `projects/123abc4d4e-fdlc-4274-99c3-e781f16b17e9/agent`,
+		Parent: `projects/marysbikeshop-f198d/agent`,
 		Intent: &dialogflowpb.Intent{
 			DisplayName: "Menu1",
 			// Required. Indicates whether webhooks are enabled for the intent.
@@ -38,10 +55,53 @@ func CreateIntent() {
 			// Optional. The collection of event names that trigger the intent.
 			// If the collection of input contexts is not empty, all of the contexts must
 			// be present in the active user session for an event to trigger this intent.
-			Events: []string{"WELCOME"},
+			Events: []string{"MENU2"},
 			// Optional. The collection of examples/templates that the agent is
 			// trained on.
-			TrainingPhrases: []*dialogflowpb.Intent_TrainingPhrase{},
+			TrainingPhrases: []*dialogflowpb.Intent_TrainingPhrase{
+				&dialogflowpb.Intent_TrainingPhrase{
+					Name: utils.GenUUIDv4(),
+					Type: dialogflowpb.Intent_TrainingPhrase_Type(1),
+					Parts: []*dialogflowpb.Intent_TrainingPhrase_Part{
+						&dialogflowpb.Intent_TrainingPhrase_Part{Text: "Book me a sedan tomorrow"},
+					},
+				},
+				&dialogflowpb.Intent_TrainingPhrase{
+					Name: utils.GenUUIDv4(),
+					Type: dialogflowpb.Intent_TrainingPhrase_Type(1),
+					Parts: []*dialogflowpb.Intent_TrainingPhrase_Part{
+						&dialogflowpb.Intent_TrainingPhrase_Part{Text: "I need an SUV in Moscow"},
+					},
+				},
+				&dialogflowpb.Intent_TrainingPhrase{
+					Name: utils.GenUUIDv4(),
+					Type: dialogflowpb.Intent_TrainingPhrase_Type(1),
+					Parts: []*dialogflowpb.Intent_TrainingPhrase_Part{
+						&dialogflowpb.Intent_TrainingPhrase_Part{Text: "I need a sports car today in London"},
+					},
+				},
+				&dialogflowpb.Intent_TrainingPhrase{
+					Name: utils.GenUUIDv4(),
+					Type: dialogflowpb.Intent_TrainingPhrase_Type(1),
+					Parts: []*dialogflowpb.Intent_TrainingPhrase_Part{
+						&dialogflowpb.Intent_TrainingPhrase_Part{Text: "Reserve a sports car"},
+					},
+				},
+				&dialogflowpb.Intent_TrainingPhrase{
+					Name: utils.GenUUIDv4(),
+					Type: dialogflowpb.Intent_TrainingPhrase_Type(1),
+					Parts: []*dialogflowpb.Intent_TrainingPhrase_Part{
+						&dialogflowpb.Intent_TrainingPhrase_Part{Text: "Book me a convertible tomorrow"},
+					},
+				},
+				&dialogflowpb.Intent_TrainingPhrase{
+					Name: utils.GenUUIDv4(),
+					Type: dialogflowpb.Intent_TrainingPhrase_Type(1),
+					Parts: []*dialogflowpb.Intent_TrainingPhrase_Part{
+						&dialogflowpb.Intent_TrainingPhrase_Part{Text: "Can you book me a car in Berlin?"},
+					},
+				},
+			},
 			// Optional. The name of the action associated with the intent.
 			Action: "input.welcome",
 			// Optional. The collection of contexts that are activated when the intent
@@ -87,10 +147,11 @@ func CreateIntent() {
 			FollowupIntentInfo: []*dialogflowpb.Intent_FollowupIntentInfo{},
 		},
 	}
-	resp, err := c.CreateIntent(ctx, req)
+	response, err := dp.intentClient.CreateIntent(dp.ctx, &req)
 	if err != nil {
-		//TODO: Handle error
+		log.Fatalf("Error in communication with Dialogflow %s", err.Error())
+		return ""
 	}
-	//TODO: use resp
-	_ = resp
+	utils.PrettyPrint(response)
+	return spew.Sdump(response)
 }
