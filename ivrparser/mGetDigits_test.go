@@ -87,10 +87,8 @@ ckTTpV5Mvv8HvZuE1kYCAAA=</xml>
 
 	expected := &getDigitsModule{
 		generalInfo: generalInfo{
-			ID: "F1E142D8CF27471D8940713A637A1C1D",
-			Ascendants: []moduleID{
-				"B612F85EA52D4B2586CE5F57579D6EC7",
-			},
+			ID:              "F1E142D8CF27471D8940713A637A1C1D",
+			Ascendants:      []moduleID{"B612F85EA52D4B2586CE5F57579D6EC7"},
 			Descendant:      "A96A2609FDDE4C499773122F6C6296A1",
 			ExceptionalDesc: "ED132095BE1E4F47B51DA0BB842C3EEF",
 			Name:            "GetDigits6",

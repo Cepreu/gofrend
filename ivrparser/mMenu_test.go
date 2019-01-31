@@ -2,6 +2,7 @@ package ivrparser
 
 import (
 	"encoding/xml"
+	"reflect"
 	"strings"
 	"testing"
 
@@ -9,13 +10,13 @@ import (
 )
 
 func TestMenu(t *testing.T) {
-	var xmlData = `
-<menu>
+	var xmlData = `<menu>
 	<ascendants>35EBEC8BD6294BA2B6CF4C96D54BE72D</ascendants>
-	<moduleName>Menu5</moduleName>
-	<locationX>303</locationX>
+	<exceptionalDescendant>C4BA62EF0F3F406A819ADE2CABD1669C</exceptionalDescendant>
+	<moduleName>Copy of Menu5</moduleName>
+	<locationX>294</locationX>
 	<locationY>91</locationY>
-	<moduleId>8029B610A9434229BC299E52FDC4D2E2</moduleId>
+	<moduleId>0B19BD7CEE3E4B85BA6C6631F1CCA222</moduleId>
 	<data>
 		<dispo>
 			<id>-17</id>
@@ -350,6 +351,363 @@ hS0CAAA=</xml>
 	if res == nil {
 		t.Fatalf("Menu module wasn't parsed...")
 	}
-	t.Log("Play module parsed successfully.")
-	// more sanity checking...
+
+	var mmm = res.(*menuModule)
+
+	expected := &menuModule{
+		generalInfo: generalInfo{
+			ID:              "0B19BD7CEE3E4B85BA6C6631F1CCA222",
+			Ascendants:      []moduleID{"35EBEC8BD6294BA2B6CF4C96D54BE72D"},
+			ExceptionalDesc: "C4BA62EF0F3F406A819ADE2CABD1669C",
+			Name:            "Copy of Menu5",
+			Dispo:           "Caller Disconnected",
+			Collapsible:     false,
+		},
+		VoicePromptIDs: modulePrompts{
+			attemptPrompts{
+				LangPrArr: []languagePrompts{
+					{
+						PrArr:    []promptID{"0B19BD7CEE3E4B85BA6C6631F1CCA222_V__T_21"},
+						Language: "Default",
+					},
+					{
+						PrArr:    []promptID{"0B19BD7CEE3E4B85BA6C6631F1CCA222_V__T_21"},
+						Language: "en-US",
+					},
+					{
+						PrArr:    []promptID{"0B19BD7CEE3E4B85BA6C6631F1CCA222_V__T_21"},
+						Language: "uk",
+					},
+				},
+				Count: 1,
+			},
+			attemptPrompts{
+				LangPrArr: []languagePrompts{
+					{
+						PrArr:    []promptID{"FCD392D339FB4A20B95105FAFF8AC7ED_en-US_T_36"},
+						Language: "Default",
+					},
+					{
+						PrArr:    []promptID{"FCD392D339FB4A20B95105FAFF8AC7ED_en-US_T_36"},
+						Language: "en-US",
+					},
+					{
+						PrArr:    []promptID{},
+						Language: "uk",
+					},
+				},
+				Count: 2,
+			},
+		},
+		Branches: []*outputBranch{
+			&outputBranch{
+				Key: "No Match",
+				Value: struct {
+					Name string
+					Desc string
+				}{"No Match", "C4BA62EF0F3F406A819ADE2CABD1669C"},
+			},
+			&outputBranch{
+				Key: "apples",
+				Value: struct {
+					Name string
+					Desc string
+				}{"apples", "C4BA62EF0F3F406A819ADE2CABD1669C"},
+			},
+			&outputBranch{
+				Key: "plums",
+				Value: struct {
+					Name string
+					Desc string
+				}{"plums", "C4BA62EF0F3F406A819ADE2CABD1669C"},
+			},
+			&outputBranch{
+				Key: "appricots",
+				Value: struct {
+					Name string
+					Desc string
+				}{"appricots", "C4BA62EF0F3F406A819ADE2CABD1669C"},
+			},
+			&outputBranch{
+				Key: "tutti frutti",
+				Value: struct {
+					Name string
+					Desc string
+				}{"tutti frutti", "C4BA62EF0F3F406A819ADE2CABD1669C"},
+			},
+		},
+		Items: []*menuItem{
+			{
+				Prompt: attemptPrompts{
+					LangPrArr: []languagePrompts{
+						{
+							PrArr:    []promptID{"0B19BD7CEE3E4B85BA6C6631F1CCA222_A_24"},
+							Language: "Default",
+						},
+						{
+							PrArr:    []promptID{"0B19BD7CEE3E4B85BA6C6631F1CCA222_A_24"},
+							Language: "en-US",
+						},
+						{
+							PrArr:    []promptID{"0B19BD7CEE3E4B85BA6C6631F1CCA222_A_24"},
+							Language: "uk",
+						},
+					},
+					Count: 1,
+				},
+				ShowInVivr: true,
+				MatchExact: false,
+				Dtmf:       "DTMF_AUTO",
+				Action: struct {
+					Type actionType
+					Name string
+				}{"BRANCH", "apples"},
+			},
+			{
+				Prompt: attemptPrompts{
+					LangPrArr: []languagePrompts{
+						{
+							PrArr:    []promptID{"0B19BD7CEE3E4B85BA6C6631F1CCA222_A_25"},
+							Language: "Default",
+						},
+						{
+							PrArr:    []promptID{"0B19BD7CEE3E4B85BA6C6631F1CCA222_A_25"},
+							Language: "en-US",
+						},
+						{
+							PrArr:    []promptID{"0B19BD7CEE3E4B85BA6C6631F1CCA222_A_25"},
+							Language: "uk",
+						},
+					},
+					Count: 1,
+				},
+				ShowInVivr: true,
+				MatchExact: false,
+				Dtmf:       "DTMF_AUTO",
+				Action: struct {
+					Type actionType
+					Name string
+				}{"BRANCH", "appricots"},
+			},
+			{
+				Prompt: attemptPrompts{
+					LangPrArr: []languagePrompts{
+						{
+							PrArr:    []promptID{"0B19BD7CEE3E4B85BA6C6631F1CCA222_A_26"},
+							Language: "Default",
+						},
+						{
+							PrArr:    []promptID{"0B19BD7CEE3E4B85BA6C6631F1CCA222_A_26"},
+							Language: "en-US",
+						},
+						{
+							PrArr:    []promptID{"0B19BD7CEE3E4B85BA6C6631F1CCA222_A_26"},
+							Language: "uk",
+						},
+					},
+					Count: 1,
+				},
+				ShowInVivr: true,
+				MatchExact: false,
+				Dtmf:       "DTMF_AUTO",
+				Action: struct {
+					Type actionType
+					Name string
+				}{"BRANCH", "plums"},
+			},
+			{
+				Prompt: attemptPrompts{
+					LangPrArr: []languagePrompts{
+						{
+							PrArr:    []promptID{"FFBEE18B77834E10B034889F5457DEB4_en-US_A"},
+							Language: "Default",
+						},
+						{
+							PrArr:    []promptID{"FFBEE18B77834E10B034889F5457DEB4_en-US_A"},
+							Language: "en-US",
+						},
+						{
+							PrArr:    []promptID{"FFBEE18B77834E10B034889F5457DEB4_uk_A"},
+							Language: "uk",
+						},
+					},
+					Count: 1,
+				},
+				ShowInVivr: true,
+				MatchExact: false,
+				Dtmf:       "DTMF_AUTO",
+				Action: struct {
+					Type actionType
+					Name string
+				}{"BRANCH", "tutti frutti"},
+			},
+			{
+				Prompt: attemptPrompts{
+					LangPrArr: []languagePrompts{
+						{
+							PrArr:    []promptID{"7D0A23161B1B47CEA640C61D490D6FEF_en-US_A"},
+							Language: "Default",
+						},
+						{
+							PrArr:    []promptID{"7D0A23161B1B47CEA640C61D490D6FEF_en-US_A"},
+							Language: "en-US",
+						},
+						{
+							PrArr:    []promptID{"7D0A23161B1B47CEA640C61D490D6FEF_uk_A"},
+							Language: "uk",
+						},
+					},
+					Count: 1,
+				},
+				ShowInVivr: true,
+				MatchExact: false,
+				Dtmf:       "DTMF_AUTO",
+				Action: struct {
+					Type actionType
+					Name string
+				}{"BRANCH", "appricots"},
+			},
+			{
+				Prompt: attemptPrompts{
+					LangPrArr: []languagePrompts{
+						{
+							PrArr:    []promptID{"3EF9450C730E462FB97E9ADA7A0E37AE_en-US_A"},
+							Language: "Default",
+						},
+						{
+							PrArr:    []promptID{"3EF9450C730E462FB97E9ADA7A0E37AE_en-US_A"},
+							Language: "en-US",
+						},
+						{
+							PrArr:    []promptID{"3EF9450C730E462FB97E9ADA7A0E37AE_uk_A"},
+							Language: "uk",
+						},
+					},
+					Count: 1,
+				},
+				ShowInVivr: true,
+				MatchExact: false,
+				Dtmf:       "DTMF_AUTO",
+				Action: struct {
+					Type actionType
+					Name string
+				}{"BRANCH", "plums"},
+			},
+		},
+		UseASR:  true,
+		UseDTMF: true,
+		Events: []*recoEvent{
+			{
+				Event:  "NO_MATCH",
+				Action: "CONTINUE",
+				CountAndPrompt: attemptPrompts{
+					LangPrArr: []languagePrompts{
+						{
+							PrArr:    []promptID{"0B19BD7CEE3E4B85BA6C6631F1CCA222__RE__T_19"},
+							Language: "Default",
+						},
+					},
+					Count: 1,
+				},
+			},
+			{
+				Event:  "NO_INPUT",
+				Action: "REPROMPT",
+				CountAndPrompt: attemptPrompts{
+					LangPrArr: []languagePrompts{
+						{
+							PrArr:    []promptID{"0B19BD7CEE3E4B85BA6C6631F1CCA222__RE__T_20"},
+							Language: "Default",
+						},
+					},
+					Count: 1,
+				},
+			},
+			{
+				Event:  "NO_INPUT",
+				Action: "REPROMPT",
+				CountAndPrompt: attemptPrompts{
+					LangPrArr: []languagePrompts{
+						{
+							PrArr:    []promptID{"DAA16853152C4EBFA4DEEDAB00227C2A"},
+							Language: "Default",
+						},
+					},
+					Count: 2,
+				},
+			},
+		},
+		ConfData: &confirmData{
+			ConfirmRequired:      "REQUIRED",
+			RequiredConfidence:   75,
+			MaxAttemptsToConfirm: 3,
+			NoInputTimeout:       3,
+			VoicePromptIDs: modulePrompts{
+				attemptPrompts{
+					LangPrArr: []languagePrompts{
+						{
+							PrArr:    []promptID{"87F5501915CA4ACC874D8767B8C4369E"},
+							Language: "Default",
+						},
+					},
+					Count: 1,
+				},
+			},
+			Events: []*recoEvent{
+				{
+					Event:  "NO_MATCH",
+					Action: "REPROMPT",
+					CountAndPrompt: attemptPrompts{
+						LangPrArr: []languagePrompts{
+							{
+								PrArr:    []promptID{"0B19BD7CEE3E4B85BA6C6631F1CCA222_CD___RE__T_22"},
+								Language: "Default",
+							},
+						},
+						Count: 1,
+					},
+				},
+				{
+					Event:  "NO_INPUT",
+					Action: "REPROMPT",
+					CountAndPrompt: attemptPrompts{
+						LangPrArr: []languagePrompts{
+							{
+								PrArr:    []promptID{"0B19BD7CEE3E4B85BA6C6631F1CCA222_CD___RE__T_23"},
+								Language: "Default",
+							},
+						},
+						Count: 1,
+					},
+				},
+				{
+					Event:  "HELP",
+					Action: "REPROMPT",
+					CountAndPrompt: attemptPrompts{
+						LangPrArr: []languagePrompts{
+							{
+								PrArr:    []promptID{},
+								Language: "Default",
+							},
+						},
+						Count: 1,
+					},
+				},
+			},
+		},
+		RecoParams: struct {
+			SpeechCompleteTimeout int
+			MaxTimeToEnter        int
+			NoInputTimeout        int
+		}{1, 5, 5},
+	}
+
+	//   if false == reflect.DeepEqual(expected.InputInfo, mmm.InputInfo) {
+	// 	t.Errorf("\nHangup module: \n%v \nwas expected, in reality: \n%v", expected.InputInfo, mmm.InputInfo)
+	// }
+	if false == reflect.DeepEqual(expected.generalInfo, mmm.generalInfo) {
+		t.Errorf("\nHangup module, general info: \n%v \nwas expected, in reality: \n%v",
+			expected.generalInfo, mmm.generalInfo)
+	}
+
 }
