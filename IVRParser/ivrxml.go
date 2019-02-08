@@ -14,17 +14,17 @@ type IVRScript struct {
 	Properties      string
 	Modules         []Module
 	ModulesOnHangup []Module
-	Prompts         scriptPrompts
+	Prompts         ScriptPrompts
 	MLPrompts       []*multilingualPrompt
 	MLChoices       []*multilanguageMenuChoice
 	Variables       variables
 	Languages       []language
 }
-type scriptPrompts map[promptID]prompt
+type ScriptPrompts map[PromptID]prompt
 
 func newIVRScript() *IVRScript {
 	return &IVRScript{
-		Prompts:   make(scriptPrompts),
+		Prompts:   make(ScriptPrompts),
 		Variables: make(variables),
 	}
 }

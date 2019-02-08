@@ -7,10 +7,10 @@ import (
 )
 
 type getDigitsModule struct {
-	generalInfo
-	VoicePromptIDs     modulePrompts
-	VisualPromptIDs    []promptID
-	TextPromptIDs      []promptID
+	GeneralInfo
+	VoicePromptIDs     ModulePrompts
+	VisualPromptIDs    []PromptID
+	TextPromptIDs      []PromptID
 	TargetVariableName string
 	InputInfo          struct {
 		NumberOfDigits   int
@@ -26,7 +26,7 @@ func (module *getDigitsModule) normalize(s *IVRScript) error {
 	return s.normalizePrompt(module.VoicePromptIDs)
 }
 
-func newGetDigitsModule(decoder *xml.Decoder, sp scriptPrompts) Module {
+func newGetDigitsModule(decoder *xml.Decoder, sp ScriptPrompts) Module {
 	var pModule = new(getDigitsModule)
 
 F:
@@ -79,7 +79,7 @@ F:
 				///// prompts -->
 			} else if v.Name.Local == "prompt" {
 				if res, err := parseVoicePrompt(decoder, &v, sp, fmt.Sprintf("%s_%s_", pModule.ID, "G")); err == nil {
-					//					s.TempAPrompts[pModule.ID] = []*attemptPrompts{{res, 1}}
+					//					s.TempAPrompts[pModule.ID] = []*AttemptPrompts{{res, 1}}
 					pModule.VoicePromptIDs, _ = newModulePrompts(1, res)
 				}
 

@@ -24,17 +24,19 @@ const (
 	cSetVariables  string = "setVariable"
 
 	cPrompt      string = "prompt"
-	cConfirmData string = "confirmData"
+	cConfirmData string = "ConfirmData"
 	cMenuItems   string = "items"
 )
 
-type moduleID string
+// ModuleID - the IVR module's ID, string
+type ModuleID string
 
-type generalInfo struct {
-	ID              moduleID
-	Ascendants      []moduleID
-	Descendant      moduleID
-	ExceptionalDesc moduleID
+// GeneralInfo - Set of fields common for all modules
+type GeneralInfo struct {
+	ID              ModuleID
+	Ascendants      []ModuleID
+	Descendant      ModuleID
+	ExceptionalDesc ModuleID
 	Name            string
 	Dispo           string
 	Collapsible     bool
@@ -93,21 +95,21 @@ F:
 	return ms
 }
 
-func (gi *generalInfo) parseGeneralInfo(decoder *xml.Decoder, v *xml.StartElement) (bool, error) {
+func (gi *GeneralInfo) parseGeneralInfo(decoder *xml.Decoder, v *xml.StartElement) (bool, error) {
 	if v.Name.Local == "ascendants" {
 		innerText, err := decoder.Token()
 		if err == nil {
-			gi.Ascendants = append(gi.Ascendants, moduleID(innerText.(xml.CharData)))
+			gi.Ascendants = append(gi.Ascendants, ModuleID(innerText.(xml.CharData)))
 		}
 	} else if v.Name.Local == "singleDescendant" {
 		innerText, err := decoder.Token()
 		if err == nil {
-			gi.Descendant = moduleID(innerText.(xml.CharData))
+			gi.Descendant = ModuleID(innerText.(xml.CharData))
 		}
 	} else if v.Name.Local == "exceptionalDescendant" {
 		innerText, err := decoder.Token()
 		if err == nil {
-			gi.ExceptionalDesc = moduleID(innerText.(xml.CharData))
+			gi.ExceptionalDesc = ModuleID(innerText.(xml.CharData))
 		}
 	} else if v.Name.Local == "moduleName" {
 		innerText, err := decoder.Token()
@@ -117,7 +119,7 @@ func (gi *generalInfo) parseGeneralInfo(decoder *xml.Decoder, v *xml.StartElemen
 	} else if v.Name.Local == "moduleId" {
 		innerText, err := decoder.Token()
 		if err == nil {
-			gi.ID = moduleID(innerText.(xml.CharData))
+			gi.ID = ModuleID(innerText.(xml.CharData))
 		}
 	} else if v.Name.Local == "collapsible" {
 		innerText, err := decoder.Token()
@@ -154,7 +156,7 @@ func (gi *generalInfo) parseGeneralInfo(decoder *xml.Decoder, v *xml.StartElemen
 
 ////////////////
 type unknownModule struct {
-	generalInfo
+	GeneralInfo
 }
 
 func (*unknownModule) normalize(*IVRScript) error {

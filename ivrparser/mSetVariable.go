@@ -7,7 +7,7 @@ import (
 
 type (
 	setVariableModule struct {
-		generalInfo
+		GeneralInfo
 		Exprs []*expression
 	}
 

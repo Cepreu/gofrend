@@ -30,13 +30,13 @@ type xGrammPropList struct {
 ///////////////////////////////////////////////
 
 type inputModule struct {
-	generalInfo
-	VoicePromptIDs modulePrompts
+	GeneralInfo
+	VoicePromptIDs ModulePrompts
 	//	VisualPromptIDs  modulePrompt
 	//	TextPromptIDs    modulePrompt
 	Grammar  xInputGrammar
-	Events   []*recoEvent
-	ConfData *confirmData
+	Events   []*RecoEvent
+	ConfData *ConfirmData
 }
 
 func (module *inputModule) normalize(s *IVRScript) error {
@@ -44,7 +44,7 @@ func (module *inputModule) normalize(s *IVRScript) error {
 }
 
 //////////////////////////////////////
-func newInputModule(decoder *xml.Decoder, sp scriptPrompts) Module {
+func newInputModule(decoder *xml.Decoder, sp ScriptPrompts) Module {
 	var pIM = new(inputModule)
 
 F:
@@ -77,8 +77,8 @@ F:
 					pIM.Events = append(pIM.Events, pRE)
 				}
 
-				///// -->confirmData
-			} else if v.Name.Local == "confirmData" {
+				///// -->ConfirmData
+			} else if v.Name.Local == "ConfirmData" {
 				pIM.ConfData = newConfirmData(decoder, sp, fmt.Sprintf("%s_%s_", pIM.ID, "CD"))
 
 			} else {

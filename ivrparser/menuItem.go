@@ -19,28 +19,28 @@ const (
 	menuEventNOMATCH string = "NO_MATCH"
 )
 
-type menuItem struct {
-	Prompt     attemptPrompts
+type MenuItem struct {
+	Prompt     AttemptPrompts
 	ShowInVivr bool
 	MatchExact bool
 	Dtmf       string
 	Action     struct {
-		Type actionType
+		Type ActionType
 		Name string
 	}
 }
 
-func newMenuItem(decoder *xml.Decoder, sp scriptPrompts, itemPromptID promptID) *menuItem {
+func newMenuItem(decoder *xml.Decoder, sp ScriptPrompts, itemPromptID PromptID) *MenuItem {
 	var (
 		choice struct {
 			cType        string
 			cValue       string
 			cVarName     string
-			cMlItem      promptID
-			cModule      moduleID
+			cMlItem      PromptID
+			cModule      ModuleID
 			cModuleField string
 		}
-		pItem    = new(menuItem)
+		pItem    = new(MenuItem)
 		inChoice = false
 		//		inThumbnail = false
 	)
@@ -89,7 +89,7 @@ F:
 				innerText, err := decoder.Token()
 				if err == nil && reflect.TypeOf(innerText).String() == "xml.CharData" {
 					if inChoice {
-						choice.cModule = moduleID(innerText.(xml.CharData))
+						choice.cModule = ModuleID(innerText.(xml.CharData))
 					}
 				}
 			} else if v.Name.Local == "moduleField" {
@@ -103,7 +103,7 @@ F:
 				innerText, err := decoder.Token()
 				if err == nil && reflect.TypeOf(innerText).String() == "xml.CharData" {
 					if inChoice {
-						choice.cMlItem = promptID(innerText.(xml.CharData))
+						choice.cMlItem = PromptID(innerText.(xml.CharData))
 						// } else if inThumbnail {
 						// 	pItem.Thumbnail.cMlItem = string(innerText.(xml.CharData))
 					}
@@ -127,10 +127,10 @@ F:
 				if err == nil {
 					pItem.Dtmf = string(innerText.(xml.CharData))
 				}
-			} else if v.Name.Local == "actionType" {
+			} else if v.Name.Local == "ActionType" {
 				innerText, err := decoder.Token()
 				if err == nil {
-					pItem.Action.Type = actionType(string(innerText.(xml.CharData)))
+					pItem.Action.Type = ActionType(string(innerText.(xml.CharData)))
 				}
 			} else if v.Name.Local == "actionName" {
 				innerText, err := decoder.Token()
@@ -200,7 +200,7 @@ F:
 		PromptVariable string
 	}
 
-	var pp *ttsPrompt
+	var pp *TtsPrompt
 	switch choice.cType {
 	case "VALUE":
 		promptdata := PromptData{Language: "en-US", PromptValue: choice.cValue}
@@ -213,7 +213,7 @@ F:
 		if err != nil {
 			panic(err)
 		}
-		pp = &ttsPrompt{TTSPromptXML: doc.String()}
+		pp = &TtsPrompt{TTSPromptXML: doc.String()}
 		sp[itemPromptID] = pp
 	case "VARIABLE":
 		promptdata := PromptData{Language: "en-US", PromptVariable: choice.cVarName}
@@ -226,7 +226,7 @@ F:
 		if err != nil {
 			panic(err)
 		}
-		pp = &ttsPrompt{TTSPromptXML: doc.String()}
+		pp = &TtsPrompt{TTSPromptXML: doc.String()}
 		sp[itemPromptID] = pp
 	case "MODULE":
 		promptdata := PromptData{Language: "en-US", PromptVariable: string(choice.cModule) + ":" + choice.cModuleField}
@@ -240,11 +240,11 @@ F:
 		if err != nil {
 			panic(err)
 		}
-		pp = &ttsPrompt{TTSPromptXML: doc.String()}
+		pp = &TtsPrompt{TTSPromptXML: doc.String()}
 		sp[itemPromptID] = pp
 	case "ML_ITEM":
 		itemPromptID = choice.cMlItem
 	}
-	pItem.Prompt = attemptPrompts{[]languagePrompts{{PrArr: []promptID{itemPromptID}, Language: defaultLang}}, 1}
+	pItem.Prompt = AttemptPrompts{[]LanguagePrompts{{PrArr: []PromptID{itemPromptID}, Language: defaultLang}}, 1}
 	return pItem
 }

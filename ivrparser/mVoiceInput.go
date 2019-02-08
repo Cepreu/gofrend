@@ -8,12 +8,12 @@ import (
 )
 
 type voiceInputModule struct {
-	generalInfo
-	VoicePromptIDs modulePrompts
+	GeneralInfo
+	VoicePromptIDs ModulePrompts
 	//	VisualPromptIDs  modulePrompt
 	//	TextPromptIDs    modulePrompt
-	Events   []*recoEvent
-	ConfData *confirmData
+	Events   []*RecoEvent
+	ConfData *ConfirmData
 
 	RecordingParams struct {
 		MaxTime                           int
@@ -40,7 +40,7 @@ func (module *voiceInputModule) normalize(s *IVRScript) error {
 }
 
 //////////////////////////////////////
-func newVoiceInput(decoder *xml.Decoder, sp scriptPrompts) Module {
+func newVoiceInput(decoder *xml.Decoder, sp ScriptPrompts) Module {
 	var inRecordingDuration, inTerminationCharacter, inVarToAccessRecording = false, false, false
 
 	var pIM = new(voiceInputModule)
@@ -136,8 +136,8 @@ F:
 					pIM.Events = append(pIM.Events, pRE)
 				}
 
-				///// -->confirmData
-			} else if v.Name.Local == "confirmData" {
+				///// -->ConfirmData
+			} else if v.Name.Local == "ConfirmData" {
 				pIM.ConfData = newConfirmData(decoder, sp, fmt.Sprintf("%s_%s_", pIM.ID, "CD"))
 				fmt.Println(pIM.ConfData)
 

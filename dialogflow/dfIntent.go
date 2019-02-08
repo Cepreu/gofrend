@@ -1,9 +1,10 @@
-package main
+package dialogflow
 
 import (
 	"fmt"
 	"log"
 
+	ivr "github.com/Cepreu/gofrend/ivrparser"
 	"github.com/Cepreu/gofrend/utils"
 	"github.com/davecgh/go-spew/spew"
 	dialogflowpb "google.golang.org/genproto/googleapis/cloud/dialogflow/v2"
@@ -154,4 +155,58 @@ func (dp *DialogflowProcessor) CreateIntent() string {
 	}
 	utils.PrettyPrint(response)
 	return spew.Sdump(response)
+}
+
+func menu2intents(menu *ivr.MenuModule, prompts ivr.ScriptPrompts) (intents []*dialogflowpb.Intent, err error) {
+
+	mainIntent := &dialogflowpb.Intent{
+		DisplayName: menu.Name,
+		WebhookState: (dialogflowpb.Intent_WebhookState(
+			dialogflowpb.Intent_WebhookState_value["WEBHOOK_STATE_UNSPECIFIED"])),
+		Priority:          500000,
+		IsFallback:        false,
+		MlDisabled:        false,
+		InputContextNames: []string{},
+		Events:            []string{"MENU2"},
+		TrainingPhrases:   []*dialogflowpb.Intent_TrainingPhrase{},
+		// &dialogflowpb.Intent_TrainingPhrase{
+		// 	Name: utils.GenUUIDv4(),
+		// 	Type: dialogflowpb.Intent_TrainingPhrase_Type(1),
+		// 	Parts: []*dialogflowpb.Intent_TrainingPhrase_Part{
+		// 		&dialogflowpb.Intent_TrainingPhrase_Part{Text: "Book me a sedan tomorrow"},
+		// 	},
+		// },
+		Action:         "input.welcome",
+		OutputContexts: []*dialogflowpb.Context{},
+		ResetContexts:  false,
+		Parameters:     []*dialogflowpb.Intent_Parameter{},
+		// Messages: []*dialogflowpb.Intent_Message{
+		// 	{
+		// 		Message: &dialogflowpb.Intent_Message_Text_{
+		// 			Text: &dialogflowpb.Intent_Message_Text{
+		// 				Text: []string{
+		// 					"Welcome. I can tell you the shop hours, or I can set up an appointment. Which would you like?",
+		// 					"Welcome. I can tell you the shop hours, or I can make an appointment. What can I do for you?",
+		// 					"Hello there. I can tell you the shop hours, or I can schedule an appointment. How may I help you today?",
+		// 				},
+		// 			},
+		// 		},
+		// 	},
+		// },
+		DefaultResponsePlatforms: []dialogflowpb.Intent_Message_Platform{},
+		RootFollowupIntentName:   "",
+		ParentFollowupIntentName: "",
+		FollowupIntentInfo:       []*dialogflowpb.Intent_FollowupIntentInfo{},
+	}
+
+	im := dialogflowpb.Intent_Message{
+		Message: &dialogflowpb.Intent_Message_Text_{
+			Text: &dialogflowpb.Intent_Message_Text{
+				Text: menu.VoicePromptIDs.TransformToAI(prompts),
+			},
+		},
+	}
+	mainIntent.Messages = append(mainIntent.Messages, &im)
+	intents = append(intents, mainIntent)
+	return
 }

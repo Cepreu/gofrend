@@ -53,9 +53,9 @@ func TestHangup(t *testing.T) {
 	}
 	var mhu = res.(*hangupModule)
 	var expected = hangupModule{
-		generalInfo: generalInfo{
+		GeneralInfo: GeneralInfo{
 			ID: "A96A2609FDDE4C499773122F6C6296A1",
-			Ascendants: []moduleID{
+			Ascendants: []ModuleID{
 				"ED132095BE1E4F47B51DA0BB842C3EEF",
 				"F1E142D8CF27471D8940713A637A1C1D"},
 			Descendant:      "",

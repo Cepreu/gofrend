@@ -11,17 +11,17 @@ const (
 	CONF_NOT_REQUIRED string = "NOT_REQUIRED"
 )
 
-type confirmData struct {
+type ConfirmData struct {
 	ConfirmRequired      string
 	RequiredConfidence   int
 	MaxAttemptsToConfirm int
 	NoInputTimeout       int
-	VoicePromptIDs       modulePrompts
-	Events               []*recoEvent
+	VoicePromptIDs       ModulePrompts
+	Events               []*RecoEvent
 }
 
-func newConfirmData(decoder *xml.Decoder, sp scriptPrompts, prefix string) *confirmData {
-	var pCD = new(confirmData)
+func newConfirmData(decoder *xml.Decoder, sp ScriptPrompts, prefix string) *ConfirmData {
+	var pCD = new(ConfirmData)
 
 F:
 	for {

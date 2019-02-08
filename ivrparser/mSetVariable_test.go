@@ -134,9 +134,9 @@ func TestSetVariables(t *testing.T) {
 	}
 	var mhu = res.(*setVariableModule)
 	var expected = setVariableModule{
-		generalInfo: generalInfo{
+		GeneralInfo: GeneralInfo{
 			ID:              "05FDBF862B6F493AAAAFEC26E9FC8733",
-			Ascendants:      []moduleID{"7E06FB60DFAA4F3E89946625F8677CB3"},
+			Ascendants:      []ModuleID{"7E06FB60DFAA4F3E89946625F8677CB3"},
 			Descendant:      "4065B9160FE54714AEFAB56B9F9CB9C6",
 			ExceptionalDesc: "",
 			Name:            "SetVariable107",

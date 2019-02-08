@@ -93,14 +93,14 @@ func TestMenu(t *testing.T) {
 			<event>NO_MATCH</event>
 			<count>1</count>
 			<compoundPrompt>
-				<ttsPrompt>
+				<TtsPrompt>
 					<xml>H4sIAAAAAAAAAIWRQYvCMBCF7/6KkLs7602WtKKg4Fnd+2gHCZtOpTMV++83dqFrWsWcku+F9x4z
 bnErg7lSLb7izM4+Pq0hPlWF53NmD/vNdG6NKHKBoWLKbEtiF/nEyYXwZx2oJNZ8YuJxqFr7Y6Mk
 f6CDAfm8jMI/6jBjSXmM/rrrDrpn+qN3+8bQ0AqFzPV+yyzx9LCz8BACaYqDYRXnlcrHWoLtUpL6
 42CBgTIw6bnSTZ96vfdMvV+Jx6po821cS13TSY3nS6MOOjpuAy/rOBiOAcZz6D9FMdnxL2oN76or
 AgAA</xml>
 					<promptTTSEnumed>true</promptTTSEnumed>
-				</ttsPrompt>
+				</TtsPrompt>
 				<interruptible>false</interruptible>
 				<canChangeInterruptableOption>true</canChangeInterruptableOption>
 				<ttsEnumed>true</ttsEnumed>
@@ -112,14 +112,14 @@ AgAA</xml>
 			<event>NO_INPUT</event>
 			<count>1</count>
 			<compoundPrompt>
-				<ttsPrompt>
+				<TtsPrompt>
 					<xml>H4sIAAAAAAAAAIWRQYvCMBCF7/6KkLs7602WtKKg4Fnd+2gHCZtOpTMV++83dqFrWsWcku+F9x4z
 bnErg7lSLb7izM4+Pq0hPlWF53NmD/vNdG6NKHKBoWLKbEtiF/nEyYXwZx2oJNZ8YuJxqFr7Y6Mk
 f6CDAfm8jMI/6jBjSXmM/rrrDrpn+qN3+8bQ0AqFzPV+yyzx9LCz8BACaYqDYRXnlcrHWoLtUpL6
 42CBgTIw6bnSTZ96vfdMvV+Jx6po821cS13TSY3nS6MOOjpuAy/rOBiOAcZz6D9FMdnxL2oN76or
 AgAA</xml>
 					<promptTTSEnumed>true</promptTTSEnumed>
-				</ttsPrompt>
+				</TtsPrompt>
 				<interruptible>false</interruptible>
 				<canChangeInterruptableOption>true</canChangeInterruptableOption>
 				<ttsEnumed>true</ttsEnumed>
@@ -143,14 +143,14 @@ AgAA</xml>
 		</recoEvents>
 		<prompts>
 			<prompt>
-				<ttsPrompt>
+				<TtsPrompt>
 					<xml>H4sIAAAAAAAAAIVRQW7CMBC88wrLd3B7qyoniErtuVIL96VZkIWzrrybiPweJ0gBJ0X1aT2znhmN
 7fpce9ViZBeo0M+rJ62QfkLl6Fjo7ffH8kUrFqAKfCAsdIes1+XC8i/C6d1jjSTlQqVjQSS6fSPI
 V2AAPdBxk4gbNMAENZbJ+rXnrRmu+caotgPf4BswqrafCo203H5pc2dichdrplGsE6zvYzF0G87i
 z43ZTJiJyIgLnuVPrf81c+1H5D5UXfnpsS+hr0p1oYnqAG2I6Z06xMbJypphbR7PPMxnzbQXMy9m
 XEpk9ukXyjrBtTwCAAA=</xml>
 					<promptTTSEnumed>true</promptTTSEnumed>
-				</ttsPrompt>
+				</TtsPrompt>
 				<interruptible>true</interruptible>
 				<canChangeInterruptableOption>true</canChangeInterruptableOption>
 				<ttsEnumed>true</ttsEnumed>
@@ -170,7 +170,7 @@ XEpk9ukXyjrBtTwCAAA=</xml>
 			</prompt>
 			<count>2</count>
 		</prompts>
-		<confirmData>
+		<ConfirmData>
 			<confirmRequired>REQUIRED</confirmRequired>
 			<requiredConfidence>75</requiredConfidence>
 			<maxAttemptsToConfirm>3</maxAttemptsToConfirm>
@@ -188,14 +188,14 @@ XEpk9ukXyjrBtTwCAAA=</xml>
 				<event>NO_MATCH</event>
 				<count>1</count>
 				<compoundPrompt>
-					<ttsPrompt>
+					<TtsPrompt>
 						<xml>H4sIAAAAAAAAAIWRQYvCMBCF7/6KkLs7602WtKKg4Fnd+2gHCZtOpTMV++83dqFrWsWcku+F9x4z
 bnErg7lSLb7izM4+Pq0hPlWF53NmD/vNdG6NKHKBoWLKbEtiF/nEyYXwZx2oJNZ8YuJxqFr7Y6Mk
 f6CDAfm8jMI/6jBjSXmM/rrrDrpn+qN3+8bQ0AqFzPV+yyzx9LCz8BACaYqDYRXnlcrHWoLtUpL6
 42CBgTIw6bnSTZ96vfdMvV+Jx6po821cS13TSY3nS6MOOjpuAy/rOBiOAcZz6D9FMdnxL2oN76or
 AgAA</xml>
 						<promptTTSEnumed>true</promptTTSEnumed>
-					</ttsPrompt>
+					</TtsPrompt>
 					<interruptible>false</interruptible>
 					<canChangeInterruptableOption>true</canChangeInterruptableOption>
 					<ttsEnumed>true</ttsEnumed>
@@ -207,14 +207,14 @@ AgAA</xml>
 				<event>NO_INPUT</event>
 				<count>1</count>
 				<compoundPrompt>
-					<ttsPrompt>
+					<TtsPrompt>
 						<xml>H4sIAAAAAAAAAIWRT4vCMBDF736KkHsdvcmSVlxQ8Oyf+2gHLZtOpDMV++23dqFr2pXNKfm94b3H
 xC0fpTd3qqQInNr5dGYN8TnkBV9Se9hvkoU1osg5+sCU2obELrOJkxvh19pTSazZxLTHoWpVnGol
 +QEd9MiXVSv8og4zlpS10R9P3UH3jCd6tyP6mj5RyNyft9QSJ4edhZcQiFMcDKu4Qql8rSXYrCSq
 Pw4WGCgDk54rPfRPr/89Y+934inkTbY1Z2QOaq6ElWlC7aDj4z7wtpCD4SJgvIl+qBWjX/4GAU/u
 hS0CAAA=</xml>
 						<promptTTSEnumed>true</promptTTSEnumed>
-					</ttsPrompt>
+					</TtsPrompt>
 					<interruptible>false</interruptible>
 					<canChangeInterruptableOption>true</canChangeInterruptableOption>
 					<ttsEnumed>true</ttsEnumed>
@@ -233,7 +233,7 @@ hS0CAAA=</xml>
 				</compoundPrompt>
 				<action>REPROMPT</action>
 			</recoEvents>
-		</confirmData>
+		</ConfirmData>
 		<items>
 			<choice>
 				<type>VALUE</type>
@@ -247,7 +247,7 @@ hS0CAAA=</xml>
 				<showInVivr>true</showInVivr>
 			</thumbnail>
 			<dtmf>DTMF_AUTO</dtmf>
-			<actionType>BRANCH</actionType>
+			<ActionType>BRANCH</ActionType>
 			<actionName>apples</actionName>
 		</items>
 		<items>
@@ -264,7 +264,7 @@ hS0CAAA=</xml>
 				<showInVivr>true</showInVivr>
 			</thumbnail>
 			<dtmf>DTMF_AUTO</dtmf>
-			<actionType>BRANCH</actionType>
+			<ActionType>BRANCH</ActionType>
 			<actionName>appricots</actionName>
 		</items>
 		<items>
@@ -282,7 +282,7 @@ hS0CAAA=</xml>
 				<showInVivr>true</showInVivr>
 			</thumbnail>
 			<dtmf>DTMF_AUTO</dtmf>
-			<actionType>BRANCH</actionType>
+			<ActionType>BRANCH</ActionType>
 			<actionName>plums</actionName>
 		</items>
 		<items>
@@ -299,7 +299,7 @@ hS0CAAA=</xml>
 				<showInVivr>true</showInVivr>
 			</thumbnail>
 			<dtmf>DTMF_AUTO</dtmf>
-			<actionType>BRANCH</actionType>
+			<ActionType>BRANCH</ActionType>
 			<actionName>tutti frutti</actionName>
 		</items>
 		<items>
@@ -316,7 +316,7 @@ hS0CAAA=</xml>
 				<showInVivr>true</showInVivr>
 			</thumbnail>
 			<dtmf>DTMF_AUTO</dtmf>
-			<actionType>BRANCH</actionType>
+			<ActionType>BRANCH</ActionType>
 			<actionName>appricots</actionName>
 		</items>
 		<items>
@@ -333,7 +333,7 @@ hS0CAAA=</xml>
 				<showInVivr>true</showInVivr>
 			</thumbnail>
 			<dtmf>DTMF_AUTO</dtmf>
-			<actionType>BRANCH</actionType>
+			<ActionType>BRANCH</ActionType>
 			<actionName>plums</actionName>
 		</items>
 		<maxTimeToEnter>5</maxTimeToEnter>
@@ -346,110 +346,100 @@ hS0CAAA=</xml>
 	decoder := xml.NewDecoder(strings.NewReader(xmlData))
 	decoder.CharsetReader = charset.NewReaderLabel
 
-	prompts := make(scriptPrompts)
+	prompts := make(ScriptPrompts)
 	res := newMenuModule(decoder, prompts)
 	if res == nil {
 		t.Fatalf("Menu module wasn't parsed...")
 	}
 
-	var mmm = res.(*menuModule)
+	var mmm = res.(*MenuModule)
 
-	expected := &menuModule{
-		generalInfo: generalInfo{
+	expected := &MenuModule{
+		GeneralInfo: GeneralInfo{
 			ID:              "0B19BD7CEE3E4B85BA6C6631F1CCA222",
-			Ascendants:      []moduleID{"35EBEC8BD6294BA2B6CF4C96D54BE72D"},
+			Ascendants:      []ModuleID{"35EBEC8BD6294BA2B6CF4C96D54BE72D"},
 			ExceptionalDesc: "C4BA62EF0F3F406A819ADE2CABD1669C",
 			Name:            "Copy of Menu5",
 			Dispo:           "Caller Disconnected",
 			Collapsible:     false,
 		},
-		VoicePromptIDs: modulePrompts{
-			attemptPrompts{
-				LangPrArr: []languagePrompts{
+		VoicePromptIDs: ModulePrompts{
+			AttemptPrompts{
+				LangPrArr: []LanguagePrompts{
 					{
-						PrArr:    []promptID{"0B19BD7CEE3E4B85BA6C6631F1CCA222_V__T_21"},
+						PrArr:    []PromptID{"0B19BD7CEE3E4B85BA6C6631F1CCA222_V__T_21"},
 						Language: "Default",
-					},
-					{
-						PrArr:    []promptID{"0B19BD7CEE3E4B85BA6C6631F1CCA222_V__T_21"},
+					}, {
+						PrArr:    []PromptID{"0B19BD7CEE3E4B85BA6C6631F1CCA222_V__T_21"},
 						Language: "en-US",
-					},
-					{
-						PrArr:    []promptID{"0B19BD7CEE3E4B85BA6C6631F1CCA222_V__T_21"},
+					}, {
+						PrArr:    []PromptID{"0B19BD7CEE3E4B85BA6C6631F1CCA222_V__T_21"},
 						Language: "uk",
 					},
 				},
 				Count: 1,
 			},
-			attemptPrompts{
-				LangPrArr: []languagePrompts{
+			AttemptPrompts{
+				LangPrArr: []LanguagePrompts{
 					{
-						PrArr:    []promptID{"FCD392D339FB4A20B95105FAFF8AC7ED_en-US_T_36"},
+						PrArr:    []PromptID{"FCD392D339FB4A20B95105FAFF8AC7ED_en-US_T_36"},
 						Language: "Default",
-					},
-					{
-						PrArr:    []promptID{"FCD392D339FB4A20B95105FAFF8AC7ED_en-US_T_36"},
+					}, {
+						PrArr:    []PromptID{"FCD392D339FB4A20B95105FAFF8AC7ED_en-US_T_36"},
 						Language: "en-US",
-					},
-					{
-						PrArr:    []promptID{},
+					}, {
+						PrArr:    []PromptID{},
 						Language: "uk",
 					},
 				},
 				Count: 2,
 			},
 		},
-		Branches: []*outputBranch{
-			&outputBranch{
+		Branches: []*OutputBranch{
+			{
 				Key: "No Match",
 				Value: struct {
-					Name string
-					Desc string
+					Name       string
+					Descendant ModuleID
 				}{"No Match", "C4BA62EF0F3F406A819ADE2CABD1669C"},
-			},
-			&outputBranch{
+			}, {
 				Key: "apples",
 				Value: struct {
-					Name string
-					Desc string
+					Name       string
+					Descendant ModuleID
 				}{"apples", "C4BA62EF0F3F406A819ADE2CABD1669C"},
-			},
-			&outputBranch{
+			}, {
 				Key: "plums",
 				Value: struct {
-					Name string
-					Desc string
+					Name       string
+					Descendant ModuleID
 				}{"plums", "C4BA62EF0F3F406A819ADE2CABD1669C"},
-			},
-			&outputBranch{
+			}, {
 				Key: "appricots",
 				Value: struct {
-					Name string
-					Desc string
+					Name       string
+					Descendant ModuleID
 				}{"appricots", "C4BA62EF0F3F406A819ADE2CABD1669C"},
-			},
-			&outputBranch{
+			}, {
 				Key: "tutti frutti",
 				Value: struct {
-					Name string
-					Desc string
+					Name       string
+					Descendant ModuleID
 				}{"tutti frutti", "C4BA62EF0F3F406A819ADE2CABD1669C"},
 			},
 		},
-		Items: []*menuItem{
+		Items: []*MenuItem{
 			{
-				Prompt: attemptPrompts{
-					LangPrArr: []languagePrompts{
+				Prompt: AttemptPrompts{
+					LangPrArr: []LanguagePrompts{
 						{
-							PrArr:    []promptID{"0B19BD7CEE3E4B85BA6C6631F1CCA222_A_24"},
+							PrArr:    []PromptID{"0B19BD7CEE3E4B85BA6C6631F1CCA222_A_24"},
 							Language: "Default",
-						},
-						{
-							PrArr:    []promptID{"0B19BD7CEE3E4B85BA6C6631F1CCA222_A_24"},
+						}, {
+							PrArr:    []PromptID{"0B19BD7CEE3E4B85BA6C6631F1CCA222_A_24"},
 							Language: "en-US",
-						},
-						{
-							PrArr:    []promptID{"0B19BD7CEE3E4B85BA6C6631F1CCA222_A_24"},
+						}, {
+							PrArr:    []PromptID{"0B19BD7CEE3E4B85BA6C6631F1CCA222_A_24"},
 							Language: "uk",
 						},
 					},
@@ -459,23 +449,20 @@ hS0CAAA=</xml>
 				MatchExact: false,
 				Dtmf:       "DTMF_AUTO",
 				Action: struct {
-					Type actionType
+					Type ActionType
 					Name string
 				}{"BRANCH", "apples"},
-			},
-			{
-				Prompt: attemptPrompts{
-					LangPrArr: []languagePrompts{
+			}, {
+				Prompt: AttemptPrompts{
+					LangPrArr: []LanguagePrompts{
 						{
-							PrArr:    []promptID{"0B19BD7CEE3E4B85BA6C6631F1CCA222_A_25"},
+							PrArr:    []PromptID{"0B19BD7CEE3E4B85BA6C6631F1CCA222_A_25"},
 							Language: "Default",
-						},
-						{
-							PrArr:    []promptID{"0B19BD7CEE3E4B85BA6C6631F1CCA222_A_25"},
+						}, {
+							PrArr:    []PromptID{"0B19BD7CEE3E4B85BA6C6631F1CCA222_A_25"},
 							Language: "en-US",
-						},
-						{
-							PrArr:    []promptID{"0B19BD7CEE3E4B85BA6C6631F1CCA222_A_25"},
+						}, {
+							PrArr:    []PromptID{"0B19BD7CEE3E4B85BA6C6631F1CCA222_A_25"},
 							Language: "uk",
 						},
 					},
@@ -485,23 +472,20 @@ hS0CAAA=</xml>
 				MatchExact: false,
 				Dtmf:       "DTMF_AUTO",
 				Action: struct {
-					Type actionType
+					Type ActionType
 					Name string
 				}{"BRANCH", "appricots"},
-			},
-			{
-				Prompt: attemptPrompts{
-					LangPrArr: []languagePrompts{
+			}, {
+				Prompt: AttemptPrompts{
+					LangPrArr: []LanguagePrompts{
 						{
-							PrArr:    []promptID{"0B19BD7CEE3E4B85BA6C6631F1CCA222_A_26"},
+							PrArr:    []PromptID{"0B19BD7CEE3E4B85BA6C6631F1CCA222_A_26"},
 							Language: "Default",
-						},
-						{
-							PrArr:    []promptID{"0B19BD7CEE3E4B85BA6C6631F1CCA222_A_26"},
+						}, {
+							PrArr:    []PromptID{"0B19BD7CEE3E4B85BA6C6631F1CCA222_A_26"},
 							Language: "en-US",
-						},
-						{
-							PrArr:    []promptID{"0B19BD7CEE3E4B85BA6C6631F1CCA222_A_26"},
+						}, {
+							PrArr:    []PromptID{"0B19BD7CEE3E4B85BA6C6631F1CCA222_A_26"},
 							Language: "uk",
 						},
 					},
@@ -511,23 +495,20 @@ hS0CAAA=</xml>
 				MatchExact: false,
 				Dtmf:       "DTMF_AUTO",
 				Action: struct {
-					Type actionType
+					Type ActionType
 					Name string
 				}{"BRANCH", "plums"},
-			},
-			{
-				Prompt: attemptPrompts{
-					LangPrArr: []languagePrompts{
+			}, {
+				Prompt: AttemptPrompts{
+					LangPrArr: []LanguagePrompts{
 						{
-							PrArr:    []promptID{"FFBEE18B77834E10B034889F5457DEB4_en-US_A"},
+							PrArr:    []PromptID{"FFBEE18B77834E10B034889F5457DEB4_en-US_A"},
 							Language: "Default",
-						},
-						{
-							PrArr:    []promptID{"FFBEE18B77834E10B034889F5457DEB4_en-US_A"},
+						}, {
+							PrArr:    []PromptID{"FFBEE18B77834E10B034889F5457DEB4_en-US_A"},
 							Language: "en-US",
-						},
-						{
-							PrArr:    []promptID{"FFBEE18B77834E10B034889F5457DEB4_uk_A"},
+						}, {
+							PrArr:    []PromptID{"FFBEE18B77834E10B034889F5457DEB4_uk_A"},
 							Language: "uk",
 						},
 					},
@@ -537,23 +518,20 @@ hS0CAAA=</xml>
 				MatchExact: false,
 				Dtmf:       "DTMF_AUTO",
 				Action: struct {
-					Type actionType
+					Type ActionType
 					Name string
 				}{"BRANCH", "tutti frutti"},
-			},
-			{
-				Prompt: attemptPrompts{
-					LangPrArr: []languagePrompts{
+			}, {
+				Prompt: AttemptPrompts{
+					LangPrArr: []LanguagePrompts{
 						{
-							PrArr:    []promptID{"7D0A23161B1B47CEA640C61D490D6FEF_en-US_A"},
+							PrArr:    []PromptID{"7D0A23161B1B47CEA640C61D490D6FEF_en-US_A"},
 							Language: "Default",
-						},
-						{
-							PrArr:    []promptID{"7D0A23161B1B47CEA640C61D490D6FEF_en-US_A"},
+						}, {
+							PrArr:    []PromptID{"7D0A23161B1B47CEA640C61D490D6FEF_en-US_A"},
 							Language: "en-US",
-						},
-						{
-							PrArr:    []promptID{"7D0A23161B1B47CEA640C61D490D6FEF_uk_A"},
+						}, {
+							PrArr:    []PromptID{"7D0A23161B1B47CEA640C61D490D6FEF_uk_A"},
 							Language: "uk",
 						},
 					},
@@ -563,23 +541,20 @@ hS0CAAA=</xml>
 				MatchExact: false,
 				Dtmf:       "DTMF_AUTO",
 				Action: struct {
-					Type actionType
+					Type ActionType
 					Name string
 				}{"BRANCH", "appricots"},
-			},
-			{
-				Prompt: attemptPrompts{
-					LangPrArr: []languagePrompts{
+			}, {
+				Prompt: AttemptPrompts{
+					LangPrArr: []LanguagePrompts{
 						{
-							PrArr:    []promptID{"3EF9450C730E462FB97E9ADA7A0E37AE_en-US_A"},
+							PrArr:    []PromptID{"3EF9450C730E462FB97E9ADA7A0E37AE_en-US_A"},
 							Language: "Default",
-						},
-						{
-							PrArr:    []promptID{"3EF9450C730E462FB97E9ADA7A0E37AE_en-US_A"},
+						}, {
+							PrArr:    []PromptID{"3EF9450C730E462FB97E9ADA7A0E37AE_en-US_A"},
 							Language: "en-US",
-						},
-						{
-							PrArr:    []promptID{"3EF9450C730E462FB97E9ADA7A0E37AE_uk_A"},
+						}, {
+							PrArr:    []PromptID{"3EF9450C730E462FB97E9ADA7A0E37AE_uk_A"},
 							Language: "uk",
 						},
 					},
@@ -589,47 +564,45 @@ hS0CAAA=</xml>
 				MatchExact: false,
 				Dtmf:       "DTMF_AUTO",
 				Action: struct {
-					Type actionType
+					Type ActionType
 					Name string
 				}{"BRANCH", "plums"},
 			},
 		},
 		UseASR:  true,
 		UseDTMF: true,
-		Events: []*recoEvent{
+		Events: []*RecoEvent{
 			{
 				Event:  "NO_MATCH",
 				Action: "CONTINUE",
-				CountAndPrompt: attemptPrompts{
-					LangPrArr: []languagePrompts{
+				CountAndPrompt: AttemptPrompts{
+					LangPrArr: []LanguagePrompts{
 						{
-							PrArr:    []promptID{"0B19BD7CEE3E4B85BA6C6631F1CCA222__RE__T_19"},
+							PrArr:    []PromptID{"0B19BD7CEE3E4B85BA6C6631F1CCA222__RE__T_19"},
 							Language: "Default",
 						},
 					},
 					Count: 1,
 				},
-			},
-			{
+			}, {
 				Event:  "NO_INPUT",
 				Action: "REPROMPT",
-				CountAndPrompt: attemptPrompts{
-					LangPrArr: []languagePrompts{
+				CountAndPrompt: AttemptPrompts{
+					LangPrArr: []LanguagePrompts{
 						{
-							PrArr:    []promptID{"0B19BD7CEE3E4B85BA6C6631F1CCA222__RE__T_20"},
+							PrArr:    []PromptID{"0B19BD7CEE3E4B85BA6C6631F1CCA222__RE__T_20"},
 							Language: "Default",
 						},
 					},
 					Count: 1,
 				},
-			},
-			{
+			}, {
 				Event:  "NO_INPUT",
 				Action: "REPROMPT",
-				CountAndPrompt: attemptPrompts{
-					LangPrArr: []languagePrompts{
+				CountAndPrompt: AttemptPrompts{
+					LangPrArr: []LanguagePrompts{
 						{
-							PrArr:    []promptID{"DAA16853152C4EBFA4DEEDAB00227C2A"},
+							PrArr:    []PromptID{"DAA16853152C4EBFA4DEEDAB00227C2A"},
 							Language: "Default",
 						},
 					},
@@ -637,56 +610,54 @@ hS0CAAA=</xml>
 				},
 			},
 		},
-		ConfData: &confirmData{
+		ConfData: &ConfirmData{
 			ConfirmRequired:      "REQUIRED",
 			RequiredConfidence:   75,
 			MaxAttemptsToConfirm: 3,
 			NoInputTimeout:       3,
-			VoicePromptIDs: modulePrompts{
-				attemptPrompts{
-					LangPrArr: []languagePrompts{
+			VoicePromptIDs: ModulePrompts{
+				AttemptPrompts{
+					LangPrArr: []LanguagePrompts{
 						{
-							PrArr:    []promptID{"87F5501915CA4ACC874D8767B8C4369E"},
+							PrArr:    []PromptID{"87F5501915CA4ACC874D8767B8C4369E"},
 							Language: "Default",
 						},
 					},
 					Count: 1,
 				},
 			},
-			Events: []*recoEvent{
+			Events: []*RecoEvent{
 				{
 					Event:  "NO_MATCH",
 					Action: "REPROMPT",
-					CountAndPrompt: attemptPrompts{
-						LangPrArr: []languagePrompts{
+					CountAndPrompt: AttemptPrompts{
+						LangPrArr: []LanguagePrompts{
 							{
-								PrArr:    []promptID{"0B19BD7CEE3E4B85BA6C6631F1CCA222_CD___RE__T_22"},
+								PrArr:    []PromptID{"0B19BD7CEE3E4B85BA6C6631F1CCA222_CD___RE__T_22"},
 								Language: "Default",
 							},
 						},
 						Count: 1,
 					},
-				},
-				{
+				}, {
 					Event:  "NO_INPUT",
 					Action: "REPROMPT",
-					CountAndPrompt: attemptPrompts{
-						LangPrArr: []languagePrompts{
+					CountAndPrompt: AttemptPrompts{
+						LangPrArr: []LanguagePrompts{
 							{
-								PrArr:    []promptID{"0B19BD7CEE3E4B85BA6C6631F1CCA222_CD___RE__T_23"},
+								PrArr:    []PromptID{"0B19BD7CEE3E4B85BA6C6631F1CCA222_CD___RE__T_23"},
 								Language: "Default",
 							},
 						},
 						Count: 1,
 					},
-				},
-				{
+				}, {
 					Event:  "HELP",
 					Action: "REPROMPT",
-					CountAndPrompt: attemptPrompts{
-						LangPrArr: []languagePrompts{
+					CountAndPrompt: AttemptPrompts{
+						LangPrArr: []LanguagePrompts{
 							{
-								PrArr:    []promptID{},
+								PrArr:    []PromptID{},
 								Language: "Default",
 							},
 						},
@@ -705,9 +676,9 @@ hS0CAAA=</xml>
 	//   if false == reflect.DeepEqual(expected.InputInfo, mmm.InputInfo) {
 	// 	t.Errorf("\nHangup module: \n%v \nwas expected, in reality: \n%v", expected.InputInfo, mmm.InputInfo)
 	// }
-	if false == reflect.DeepEqual(expected.generalInfo, mmm.generalInfo) {
+	if false == reflect.DeepEqual(expected.GeneralInfo, mmm.GeneralInfo) {
 		t.Errorf("\nHangup module, general info: \n%v \nwas expected, in reality: \n%v",
-			expected.generalInfo, mmm.generalInfo)
+			expected.GeneralInfo, mmm.GeneralInfo)
 	}
 
 }

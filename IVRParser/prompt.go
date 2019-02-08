@@ -10,32 +10,48 @@ import (
 
 const defaultLang = "Default"
 
-type promptID string
+// PromptID - Unique prompt ID
+type PromptID string
 
-type modulePrompts []attemptPrompts
+// ModulePrompts - Complete prompt structure
+type ModulePrompts []AttemptPrompts
 
-type attemptPrompts struct {
-	LangPrArr []languagePrompts
+// AttemptPrompts - Single-attempt prompt structure
+type AttemptPrompts struct {
+	LangPrArr []LanguagePrompts
 	Count     int
 }
 
-type languagePrompts struct {
-	PrArr    []promptID
+// TransformToAI - Transforms to a form suitable for Dialogflow
+func (mp ModulePrompts) TransformToAI(sp ScriptPrompts) (res []string) {
+	for _, ap := range mp {
+		txt := ""
+		for _, id := range ap.LangPrArr[0].PrArr {
+			txt = txt + sp[id].TransformToAI()
+		}
+		res = append(res, txt)
+	}
+	return res
+}
+
+// LanguagePrompts - prompt for a specified language
+type LanguagePrompts struct {
+	PrArr    []PromptID
 	Language langCode
 }
 
-func newModulePrompts(c int, p []promptID) (modulePrompts, error) {
-	return modulePrompts{newAttemptPrompts(c, p)}, nil
+func newModulePrompts(c int, p []PromptID) (ModulePrompts, error) {
+	return ModulePrompts{newAttemptPrompts(c, p)}, nil
 }
-func newAttemptPrompts(c int, p []promptID) attemptPrompts {
-	pmp := attemptPrompts{Count: c, LangPrArr: []languagePrompts{{Language: defaultLang, PrArr: p}}}
+func newAttemptPrompts(c int, p []PromptID) AttemptPrompts {
+	pmp := AttemptPrompts{Count: c, LangPrArr: []LanguagePrompts{{Language: defaultLang, PrArr: p}}}
 	return pmp
 }
 
-func (s *IVRScript) normalizeAttemptPrompt(ap *attemptPrompts, mlPrompTrueMlItemFalse bool) error {
-	var prsdef = []promptID{}
+func (s *IVRScript) normalizeAttemptPrompt(ap *AttemptPrompts, mlPrompTrueMlItemFalse bool) error {
+	var prsdef = []PromptID{}
 	for _, l := range s.Languages {
-		ap.LangPrArr = append(ap.LangPrArr, languagePrompts{Language: l.Lang, PrArr: nil})
+		ap.LangPrArr = append(ap.LangPrArr, LanguagePrompts{Language: l.Lang, PrArr: nil})
 	}
 	for _, pid := range ap.LangPrArr[0].PrArr {
 		if _, found := s.Prompts[pid]; found {
@@ -72,7 +88,7 @@ func (s *IVRScript) normalizeAttemptPrompt(ap *attemptPrompts, mlPrompTrueMlItem
 	return nil
 }
 
-func (s *IVRScript) normalizePrompt(mp modulePrompts) error {
+func (s *IVRScript) normalizePrompt(mp ModulePrompts) error {
 	for i := range mp {
 		s.normalizeAttemptPrompt(&mp[i], true)
 	}
@@ -81,9 +97,9 @@ func (s *IVRScript) normalizePrompt(mp modulePrompts) error {
 
 var counter int32
 
-func getPromptID(prefix string, t string) promptID {
+func getPromptID(prefix string, t string) PromptID {
 	counter++
-	return promptID(fmt.Sprintf("%s_%s_%d", prefix, t, counter))
+	return PromptID(fmt.Sprintf("%s_%s_%d", prefix, t, counter))
 }
 
 type xFilePrompt struct {
@@ -112,13 +128,6 @@ type xMultiLanguagesPromptItem struct {
 }
 
 func (t xMultiLanguagesPromptItem) TransformToAI() string { return string(t.MLPromptID) }
-
-type ttsPrompt struct {
-	TTSPromptXML    string
-	PromptTTSEnumed bool
-}
-
-func (t ttsPrompt) TransformToAI() string { return t.TTSPromptXML }
 
 type xVivrPrompts struct {
 	VivrPrompts                  []xVivrPrompt  `xml:"vivrPrompt"`
@@ -162,9 +171,9 @@ type prompt interface {
 	TransformToAI() string
 }
 
-func parseVoicePromptS(decoder *xml.Decoder, sp scriptPrompts, prefix string) (attemptPrompts, error) {
+func parseVoicePromptS(decoder *xml.Decoder, sp ScriptPrompts, prefix string) (AttemptPrompts, error) {
 	var (
-		PrArr []promptID
+		PrArr []PromptID
 		count int
 	)
 F:
@@ -172,7 +181,7 @@ F:
 		t, err := decoder.Token()
 		if err != nil {
 			fmt.Printf("decoder.Token() failed with '%s'\n", err)
-			return attemptPrompts{}, err
+			return AttemptPrompts{}, err
 		}
 
 		switch v := t.(type) {
@@ -195,7 +204,7 @@ F:
 	return newAttemptPrompts(count, PrArr), nil
 }
 
-func parseVoicePrompt(decoder *xml.Decoder, v *xml.StartElement, sp scriptPrompts, prefix string) (pids []promptID, err error) {
+func parseVoicePrompt(decoder *xml.Decoder, v *xml.StartElement, sp ScriptPrompts, prefix string) (pids []PromptID, err error) {
 	var lastElement string
 	if v != nil {
 		lastElement = v.Name.Local
@@ -221,7 +230,7 @@ F:
 				pid := getPromptID(prefix, "F")
 				pids = append(pids, pid)
 				sp[pid] = fp
-			} else if v.Name.Local == "ttsPrompt" {
+			} else if v.Name.Local == "TtsPrompt" {
 				inTTS = true
 			} else if v.Name.Local == "pausePrompt" {
 				var pp xPausePrompt
@@ -240,13 +249,13 @@ F:
 					fmt.Printf("decoder.DecodeElement(multiLanguagesPromptItem>) failed with '%s'\n", err)
 					break
 				}
-				pids = append(pids, promptID(pp.MLPromptID))
+				pids = append(pids, PromptID(pp.MLPromptID))
 			} else if v.Name.Local == "xml" {
 				inXML = true
 			}
 
 		case xml.EndElement:
-			if v.Name.Local == "ttsPrompt" {
+			if v.Name.Local == "TtsPrompt" {
 				inTTS = false
 			} else if v.Name.Local == "xml" {
 				inXML = false
@@ -259,7 +268,7 @@ F:
 				if err == nil {
 					pid := getPromptID(prefix, "T")
 					pids = append(pids, pid)
-					var pp prompt = &ttsPrompt{TTSPromptXML: p}
+					var pp prompt = &TtsPrompt{TTSPromptXML: p}
 					sp[pid] = pp
 				}
 			}

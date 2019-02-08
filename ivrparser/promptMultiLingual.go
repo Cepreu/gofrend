@@ -14,7 +14,7 @@ type multilingualPrompt struct {
 	Name        string
 	Description string
 	Type        string
-	Prompts     map[langCode][]promptID
+	Prompts     map[langCode][]PromptID
 	DefLanguage langCode
 	//	IsPersistent bool       `xml:"isPersistent"`
 }
@@ -24,16 +24,16 @@ type multilanguageMenuChoice struct {
 	Name        string
 	Description string
 	Type        string
-	AudPrompts  map[langCode][]promptID
-	VisPrompts  map[langCode][]promptID
-	TxtPrompts  map[langCode][]promptID
+	AudPrompts  map[langCode][]PromptID
+	VisPrompts  map[langCode][]PromptID
+	TxtPrompts  map[langCode][]PromptID
 	DefLanguage langCode
 	//	IsPersistent bool       `xml:"isPersistent"`
 }
 
 func (s *IVRScript) parseMultilanguagePrompts(decoder *xml.Decoder) (*multilingualPrompt, error) {
 	pml := new(multilingualPrompt)
-	pml.Prompts = make(map[langCode][]promptID)
+	pml.Prompts = make(map[langCode][]PromptID)
 	inDescription, inType, inName, inPromptID, inPrompts, inDefaultLanguage := false, false, false, false, false, false
 
 	var immersion = 1
@@ -102,14 +102,14 @@ F:
 
 func (s *IVRScript) parseMultilanguageMenuElements(decoder *xml.Decoder) (*multilanguageMenuChoice, error) {
 	pml := new(multilanguageMenuChoice)
-	pml.AudPrompts = make(map[langCode][]promptID)
-	pml.VisPrompts = make(map[langCode][]promptID)
-	pml.TxtPrompts = make(map[langCode][]promptID)
+	pml.AudPrompts = make(map[langCode][]PromptID)
+	pml.VisPrompts = make(map[langCode][]PromptID)
+	pml.TxtPrompts = make(map[langCode][]PromptID)
 
 	var immersion = 1
 
 	var lang langCode
-	var prefix promptID
+	var prefix PromptID
 	var pp prompt
 
 	inDescription, inType, inName, inPromptID := false, false, false, false
@@ -148,7 +148,7 @@ F:
 				if err == nil {
 					p, err := utils.CmdUnzip(string(innerText.(xml.CharData)))
 					if err == nil {
-						pp = &ttsPrompt{TTSPromptXML: p}
+						pp = &TtsPrompt{TTSPromptXML: p}
 					}
 				}
 			}
@@ -166,19 +166,19 @@ F:
 				inDescription = false
 			} else if v.Name.Local == "voicePrompt" {
 				if pp != nil {
-					prefix = promptID(fmt.Sprintf("%s_%s_%s", pml.ID, lang, "A"))
+					prefix = PromptID(fmt.Sprintf("%s_%s_%s", pml.ID, lang, "A"))
 					s.Prompts[prefix] = pp
 					pml.AudPrompts[lang] = append(pml.AudPrompts[lang], prefix)
 				}
 			} else if v.Name.Local == "vivrPrompt" {
 				if pp != nil {
-					prefix = promptID(fmt.Sprintf("%s_%s_%s", pml.ID, lang, "V"))
+					prefix = PromptID(fmt.Sprintf("%s_%s_%s", pml.ID, lang, "V"))
 					s.Prompts[prefix] = pp
 					pml.VisPrompts[lang] = append(pml.VisPrompts[lang], prefix)
 				}
 			} else if v.Name.Local == "textPrompt" {
 				if pp != nil {
-					prefix = promptID(fmt.Sprintf("%s_%s_%s", pml.ID, lang, "T"))
+					prefix = PromptID(fmt.Sprintf("%s_%s_%s", pml.ID, lang, "T"))
 					s.Prompts[prefix] = pp
 					pml.TxtPrompts[lang] = append(pml.TxtPrompts[lang], prefix)
 				}

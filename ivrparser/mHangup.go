@@ -6,7 +6,7 @@ import (
 )
 
 type hangupModule struct {
-	generalInfo
+	GeneralInfo
 	Return2Caller bool
 
 	ErrCode       parametrized

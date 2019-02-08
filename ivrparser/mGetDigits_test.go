@@ -21,14 +21,14 @@ func TestGetDigits(t *testing.T) {
 	<moduleId>F1E142D8CF27471D8940713A637A1C1D</moduleId>
 	<data>
 		<prompt>
-			<ttsPrompt>
+			<TtsPrompt>
 				<xml>H4sIAAAAAAAAAIWRzW7CMBCE73mKlc+ELT1VlRNEpfIClN6XZoWi+k9ZB5G3b5JKASdF9cn+xp4Z
 rfX2ag1cuJHau0Jt1k8K2H35qnbnQh0/9vmLAonkKjLecaE6FrUtMy2B6fvdsGUXywz6pSnGpj61
 keUXjNCQO+964YZG7Mhy2Ue/DrrG8ZjemNw+ybT8RsJwGXaFYpcfDwrvQjBN0TivouvI9r6WULeT
 pP4yWHCmzEwmHvka//T63zP1fiSefNWVe98AhWBYIIfQsAhsVtlAg2ntDT6vNY4PlkXxYVON8wnh
 ckTTpV5Mvv8HvZuE1kYCAAA=</xml>
 				<promptTTSEnumed>false</promptTTSEnumed>
-			</ttsPrompt>
+			</TtsPrompt>
 			<multiLanguagesPromptItem>
 				<prompt>8917F7BDD985458F9E9D33445F4D941D</prompt>
 			</multiLanguagesPromptItem>
@@ -77,7 +77,7 @@ ckTTpV5Mvv8HvZuE1kYCAAA=</xml>
 	decoder := xml.NewDecoder(strings.NewReader(xmlData))
 	decoder.CharsetReader = charset.NewReaderLabel
 
-	prompts := make(scriptPrompts)
+	prompts := make(ScriptPrompts)
 	res := newGetDigitsModule(decoder, prompts)
 	if res == nil {
 		t.Errorf("Play module wasn't parsed...")
@@ -86,30 +86,30 @@ ckTTpV5Mvv8HvZuE1kYCAAA=</xml>
 	var mhu = res.(*getDigitsModule)
 
 	expected := &getDigitsModule{
-		generalInfo: generalInfo{
+		GeneralInfo: GeneralInfo{
 			ID:              "F1E142D8CF27471D8940713A637A1C1D",
-			Ascendants:      []moduleID{"B612F85EA52D4B2586CE5F57579D6EC7"},
+			Ascendants:      []ModuleID{"B612F85EA52D4B2586CE5F57579D6EC7"},
 			Descendant:      "A96A2609FDDE4C499773122F6C6296A1",
 			ExceptionalDesc: "ED132095BE1E4F47B51DA0BB842C3EEF",
 			Name:            "GetDigits6",
 			Dispo:           "Caller Disconnected",
 			Collapsible:     true,
 		},
-		VoicePromptIDs: modulePrompts{
-			attemptPrompts{
-				LangPrArr: []languagePrompts{
+		VoicePromptIDs: ModulePrompts{
+			AttemptPrompts{
+				LangPrArr: []LanguagePrompts{
 					{
-						PrArr: []promptID{"F1E142D8CF27471D8940713A637A1C1D_G__T_24",
+						PrArr: []PromptID{"F1E142D8CF27471D8940713A637A1C1D_G__T_24",
 							"8917F7BDD985458F9E9D33445F4D941D_en-US_T_31"},
 						Language: "Default",
 					},
 					{
-						PrArr: []promptID{"F1E142D8CF27471D8940713A637A1C1D_G__T_24",
+						PrArr: []PromptID{"F1E142D8CF27471D8940713A637A1C1D_G__T_24",
 							"8917F7BDD985458F9E9D33445F4D941D_en-US_T_31"},
 						Language: "en-US",
 					},
 					{
-						PrArr: []promptID{
+						PrArr: []PromptID{
 							"F1E142D8CF27471D8940713A637A1C1D_G__T_24",
 						},
 						Language: "ru",
@@ -134,9 +134,9 @@ ckTTpV5Mvv8HvZuE1kYCAAA=</xml>
 	if false == reflect.DeepEqual(expected.InputInfo, mhu.InputInfo) {
 		t.Errorf("\nHangup module: \n%v \nwas expected, in reality: \n%v", expected.InputInfo, mhu.InputInfo)
 	}
-	if false == reflect.DeepEqual(expected.generalInfo, mhu.generalInfo) {
+	if false == reflect.DeepEqual(expected.GeneralInfo, mhu.GeneralInfo) {
 		t.Errorf("\nHangup module, general info: \n%v \nwas expected, in reality: \n%v",
-			expected.generalInfo, mhu.generalInfo)
+			expected.GeneralInfo, mhu.GeneralInfo)
 	}
 	// more sanity checking...
 }

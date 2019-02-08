@@ -124,14 +124,14 @@ y4ox1pT1Z6gOgbZ49N1nkgkRRI90e2pjomRs8Tkb8aIsriolBCf5rqE/LJNoO6qabbNz/Ze7yC/U
             <moduleId>503CA41490AC4093824A918616931560</moduleId>
             <data>
                 <prompt>
-                    <ttsPrompt>
+                    <TtsPrompt>
                         <xml>H4sIAAAAAAAAAO1TQWrDMBC85xVC92TTWylrhwTiYw9tnatZ10sQldfFkk3y+9ouuJYTU3qvLpJm
 xMzsgHB3Ka1quXamkkg/bLZasbxXhZFzpNO3ZP2olfMkBdlKONJXdnoXr9B9Mn0cLZcsPl6pbiF5
 X5u88ey+gQG0JOd9R/xAAyxUctxZP/U8wnANX4xqJ7INH8ixavtTpFnW6auGiQmELgjzKGg8l9NY
 LdWGcsvBBLfeDmbMTGfEPV/8Xa3fNUPtJTKvimuMMGy39rDoj3An8jj+c997lh3SJDm+ZBlCQEwK
 Xuzrv8lJYY3j+o8djqoI4Zf6An73hcSaAwAA</xml>
                         <promptTTSEnumed>false</promptTTSEnumed>
-                    </ttsPrompt>
+                    </TtsPrompt>
                     <interruptible>false</interruptible>
                     <canChangeInterruptableOption>true</canChangeInterruptableOption>
                     <ttsEnumed>false</ttsEnumed>
@@ -168,14 +168,14 @@ Xuzrv8lJYY3j+o8djqoI4Zf6An73hcSaAwAA</xml>
             <moduleId>0A1982A4334549D790B4DA73DED0023C</moduleId>
             <data>
                 <prompt>
-                    <ttsPrompt>
+                    <TtsPrompt>
                         <xml>H4sIAAAAAAAAAIVSQWrDMBC85xVC92SbWylrhxYS6KWHNsm1rOMliMqrICkm+X1sF1zLcagukmbE
 zOwgXF0qq2r2wTjJ9HLxpBXLwZVGjpnebTfzZ61CJCnJOuFMXznoVT7DcGL6WVuuWGI+U81CitGb
 4hw5/AIdaEmOrw3xB3WwUMV5Y/3S8gjdNX3Rq+3JnvmNAqu6PWWaZb770jAwgdQFYRwFTeRqGKsm
 b6iwnExw7x1gxIx0ejzyJU5q/a+Zaj8iC1dec4Ruu7eHh/4IE5H78T/a3t/3nwv23vnvksMBISEH
 JU921usjpF/iBhlviuJaAgAA</xml>
                         <promptTTSEnumed>false</promptTTSEnumed>
-                    </ttsPrompt>
+                    </TtsPrompt>
                     <interruptible>false</interruptible>
                     <canChangeInterruptableOption>true</canChangeInterruptableOption>
                     <ttsEnumed>false</ttsEnumed>
@@ -273,14 +273,14 @@ JU921usjpF/iBhlviuJaAgAA</xml>
                 </recoEvents>
                 <prompts>
                     <prompt>
-                        <ttsPrompt>
+                        <TtsPrompt>
                             <xml>H4sIAAAAAAAAAIWRQUvDQBCF7/0Vy97r6E3KJqWCngWt92nzKMHNRDKT0vx7kwixm1jc0+77hvce
 s2F7qaI7o9Gylsw/3N17BznWRSmnzO/fX9aP3qmxFBxrQeY7qN/mq6Bf4M/niApi+cr1J7BZUx5a
 g/4IoxhZTrse/EqjLFwh76M3Aw80PtOJye2DY4snVrjzcMs8ZL1/83QVQmlKoHmVUBqq61rK3U6T
 +stgpRmZmUy64WJ/ev3vmXrfgoe66PLXiGEJioijOXatotkEGtmyE90sFWi+DFpuYxrqYfLT39wU
 +qExAgAA</xml>
                             <promptTTSEnumed>true</promptTTSEnumed>
-                        </ttsPrompt>
+                        </TtsPrompt>
                         <interruptible>false</interruptible>
                         <canChangeInterruptableOption>true</canChangeInterruptableOption>
                         <ttsEnumed>true</ttsEnumed>
@@ -288,7 +288,7 @@ g/4IoxhZTrse/EqjLFwh76M3Aw80PtOJye2DY4snVrjzcMs8ZL1/83QVQmlKoHmVUBqq61rK3U6T
                     </prompt>
                     <count>1</count>
                 </prompts>
-                <confirmData>
+                <ConfirmData>
                     <confirmRequired>NOT_REQUIRED</confirmRequired>
                     <requiredConfidence>75</requiredConfidence>
                     <maxAttemptsToConfirm>3</maxAttemptsToConfirm>
@@ -330,7 +330,7 @@ g/4IoxhZTrse/EqjLFwh76M3Aw80PtOJye2DY4snVrjzcMs8ZL1/83QVQmlKoHmVUBqq61rK3U6T
                         </compoundPrompt>
                         <action>REPROMPT</action>
                     </recoEvents>
-                </confirmData>
+                </ConfirmData>
                 <items>
                     <choice>
                         <type>MODULE</type>
@@ -346,7 +346,7 @@ g/4IoxhZTrse/EqjLFwh76M3Aw80PtOJye2DY4snVrjzcMs8ZL1/83QVQmlKoHmVUBqq61rK3U6T
                         <showInVivr>true</showInVivr>
                     </thumbnail>
                     <dtmf>DTMF_AUTO</dtmf>
-                    <actionType>BRANCH</actionType>
+                    <ActionType>BRANCH</ActionType>
                     <actionName>No Match</actionName>
                 </items>
                 <maxTimeToEnter>5</maxTimeToEnter>
@@ -670,20 +670,20 @@ aTuV9wcNmHfIFWS9IPiKfbS0SXD6AQLT2xmtAAAA</tcpaConsentText>
                 <type>AUDIO</type>
                 <prompts>
                     <entry key="en-US">
-                        <ttsPrompt>
+                        <TtsPrompt>
                             <xml>H4sIAAAAAAAAAIVRywrCQAy8+xXr3jV6E9lWFBQPggcf92hDKW5TabZi/95aobqtYk7JTJiZEDO7
 p1bdKJck40CPhyOtiM9ZlHAc6MN+NZhoJQ45QpsxBbok0bOwZ+RKeFlaSold2FNVGXQuT06FI3kB
 NWiR43lFvKEaZkwprKynT95APfobjdoRbUELFFK3Zxdo4sFhp+HDBHwXA+0oJnGUfsYSLOfixe8a
 C7SYlkiDO7q7r1r/NX3tX+Qpi8pwvdxstn0D9dANAT9TGGhfD93zm6WK9F77AN7XmcAiAgAA</xml>
                             <promptTTSEnumed>false</promptTTSEnumed>
-                        </ttsPrompt>
-                        <ttsPrompt>
+                        </TtsPrompt>
+                        <TtsPrompt>
                             <xml>H4sIAAAAAAAAAIVRywrCQAy8+xXr3jV6E9lWFPQHfJ2jDVLcZqVZS/v31grVbRVzSmbCzISYRZlZ
 VVAuqeNIT8cTrYjPLkn5Eun9bjOaaSUeOUHrmCJdkehFPDByI7yuLWXEPh6ougx6n6enuyd5AQ1o
 kS/LmnhDDcyYUVxbz5+8gWYMN1q1A9o7rVBIFc8u0sSj/VbDhwmELga6UUzqKfuMJVgtJYjfNxbo
 MB2RFvdU+q9a/zVD7V/kySVVfHS5TYYGmqEfAn6mMNC9Hvrnt0s1Gbz2AZdt1mEiAgAA</xml>
                             <promptTTSEnumed>false</promptTTSEnumed>
-                        </ttsPrompt>
+                        </TtsPrompt>
                         <filePrompt>
                             <promptData>
                                 <promptSelected>true</promptSelected>
@@ -706,14 +706,14 @@ MB2RFvdU+q9a/zVD7V/kySVVfHS5TYYGmqEfAn6mMNC9Hvrnt0s1Gbz2AZdt1mEiAgAA</xml>
                         </pausePrompt>
                     </entry>
                     <entry key="ru">
-                        <ttsPrompt>
+                        <TtsPrompt>
                             <xml>H4sIAAAAAAAAANVTwUrEMBC971fE3NfoTWTaZRe2Nz2IK97K1A5LME2lky3bn1m8CH5OP8m2Qm3a
 LV68GAhJ3hvem3kQWB0zI0oqWOc2kNeXV1KQfclTbfeB3D1Gyxsp2KFN0eSWAlkRy1W4AH4jfN0a
 ysi6cCGaBehcoZODI/4GOtCg3a8b4gfqYIsZhY31bcuD6p5+Ra/2hOZAG2QSZXsLJPHy7lmqgYny
 XUCNWwHtKBu2VWKhMTHkTTD1ZjViRjo97ujozmr9rulrz5FJnlYhqO6Y2qtZf1BnWu7Hv29zj+PN
 Loq2D3EMyiMGAc/mBYzVmv9XjPVHfarfm/1Zny7+IlNQ0xT6oob0/soXU3ioK3MDAAA=</xml>
                             <promptTTSEnumed>false</promptTTSEnumed>
-                        </ttsPrompt>
+                        </TtsPrompt>
                         <filePrompt>
                             <promptData>
                                 <promptSelected>true</promptSelected>
@@ -739,14 +739,14 @@ Loq2D3EMyiMGAc/mBYzVmv9XjPVHfarfm/1Zny7+IlNQ0xT6oob0/soXU3ioK3MDAAA=</xml>
                 <type>AUDIO</type>
                 <prompts>
                     <entry key="en-US">
-                        <ttsPrompt>
+                        <TtsPrompt>
                             <xml>H4sIAAAAAAAAAIWRQYvCMBCF7/6KkLvO7k0krSis4Fnd+2gHCZtOpTMV++83VqimXdmcku+F9x4z
 bnkrg7lSLb7izH7OPqwhPlWF53NmD/vNdG6NKHKBoWLKbEtil/nEyYXw5ytQSaz5xMTjULX2x0ZJ
 HqCDAfm8isITdZixpDxGL+66g+6Z/ujdvjE0tEYhc73fMks8PewsvIRAmuJgWMV5pfK1lmC7kqT+
 OFhgoAxMeq500z+9/vdMvd+Jx6po821cS13TSY3nS6MzBx0e14G3fRwM5wDjQfSfopgs+RfRtLpi
 LAIAAA==</xml>
                             <promptTTSEnumed>false</promptTTSEnumed>
-                        </ttsPrompt>
+                        </TtsPrompt>
                     </entry>
                 </prompts>
                 <defaultLanguage>en-US</defaultLanguage>
@@ -774,14 +774,14 @@ LAIAAA==</xml>
                         </filePrompt>
                     </entry>
                     <entry key="ru">
-                        <ttsPrompt>
+                        <TtsPrompt>
                             <xml>H4sIAAAAAAAAAIVRQW7CMBC88wrLd9j2hionCCR640YrelzirTE4TsU6Ef59k1RKcVJUS5a8M6OZ
 0VqtbqUTDV3ZVj6Tz4snKcgXlbbeZPJt/zpfSsEBvUZXecpkJJarfKb4i/CydVSSD/lMtEdhCFd7
 rAPxD9CDDr1Zt8Qv1MMeS8rb6JeOV9CPqWJwe0dX0waZRNO9Mkk83x0k3IVAmqJgXEXZQOV9Lca4
 5qT+NJhhxIxMBjzQLfzp9b9n6v2IPFY65vuPYGvT3XNxMkVzMqxRmGjNJX6iZq2g1037wcOCCsaL
 gelmBlFLJr/+DZ/Bje89AgAA</xml>
                             <promptTTSEnumed>false</promptTTSEnumed>
-                        </ttsPrompt>
+                        </TtsPrompt>
                     </entry>
                 </prompts>
                 <defaultLanguage>en-US</defaultLanguage>
@@ -797,7 +797,7 @@ gelmBlFLJr/+DZ/Bje89AgAA</xml>
                 <type>AUDIO</type>
                 <prompts>
                     <entry key="en-US">
-                        <ttsPrompt>
+                        <TtsPrompt>
                             <xml>H4sIAAAAAAAAANVT0UrDMBR931eEvK9xPslIOypMGAwVtyk+lbS9bsE0GUla17837bA23YYg+GDJ
 Q3PO5ZyTexM6OxQCVaANVzLEk+AKI5CZyrnchnizvhvfYGQskzkTSkKIazB4Fo2o2QN7nwsoQNpo
 hNxHmbWap6UFcwRaUDC5jR3xDbWwZAVEznra8JS0W7+iU3tmooRbZgBVzV+IQY43K0x6JsR3oWQY
@@ -805,7 +805,7 @@ hXILRT+WYXVsvPinxoYMmIFIh1s42LNaP2v62pfIVOV19KpKNxoLGvKpO2KLnWYhF8NQMmwCOd8F
 WjHNWSrgV/0Zgl9i982Ik2T1skiWi/X8KV4mCSUe20t2McJ/nFyAHjUYg/AEI/6G7I4b5FamtIbM
 BujB7kB/cHfD98e6a/xX8+2KHOm94E/oteYzCQQAAA==</xml>
                             <promptTTSEnumed>false</promptTTSEnumed>
-                        </ttsPrompt>
+                        </TtsPrompt>
                     </entry>
                 </prompts>
                 <defaultLanguage>en-US</defaultLanguage>
@@ -821,14 +821,14 @@ BujB7kB/cHfD98e6a/xX8+2KHOm94E/oteYzCQQAAA==</xml>
                 <type>AUDIO</type>
                 <prompts>
                     <entry key="en-US">
-                        <ttsPrompt>
+                        <TtsPrompt>
                             <xml>H4sIAAAAAAAAAIWRQYvCMBCF7/6KkHsdvS1LWnFhBc+7eh/toMV0Ip2p2H9vrVBNu7I5Je8b3ntM
 3OJaenOhSorAqZ1PZ9YQ70Ne8CG1m99V8mGNKHKOPjCltiGxi2zi5Ex4+vZUEms2Me1xqFoVu1pJ
 HkIneuTDsgVPqZMZS8ra6M87d9A944nebYu+pi8UMpf7LbXEyebHwksIxCkOhlVcoVS+1hJslhLV
 HwcLDMjApNeVrvqn1/+esfc7uAt5k63NHpmDmiNhZZpQTx10YFwI3jZyMNwEjFfRD7Uw+uYbQw31
 uC4CAAA=</xml>
                             <promptTTSEnumed>false</promptTTSEnumed>
-                        </ttsPrompt>
+                        </TtsPrompt>
                     </entry>
                 </prompts>
                 <defaultLanguage>en-US</defaultLanguage>
@@ -844,7 +844,7 @@ uC4CAAA=</xml>
                 <type>AUDIO</type>
                 <prompts>
                     <entry key="en-US">
-                        <ttsPrompt>
+                        <TtsPrompt>
                             <xml>H4sIAAAAAAAAANVTUWvCMBB+91ccebeZexqSVhw4EMTB1A2fSrQ3DWsTyaXO/vulHXNttQwGe1jI
 Q/J9ue++3CVidMpSOKIlZXTIBsENA9Rbkyi9C9lq+dC/Y0BO6kSmRmPICiQ2inqCDijfJilmqF3U
 Az+EdM6qTe6QPoEKTKXejT3xDVWwlhlGPvWw5AWvts0TZ7VnmeZ4LwnhWK5Chrq/WjBeS8KbWQRv
@@ -852,7 +852,7 @@ WxHKYVa3RbIYU8P+ZWLiLaYlcsYdntxVrZ81m9pd5MYkRbQ2uW+NQ4vJ0F+xwi698E4zgreLwK9X
 QRylVXKT4q/q0wa/xOZli+N48TKNZ9Pl5Gk8i2PBG2zNWaeF/9i5ABayALb2XweMhYNFImADBuoV
 3F4R+Lk11uLWBfDo9mjflX/uVAbNTT3mlv1V48+HPNn42h9LoLssIgQAAA==</xml>
                             <promptTTSEnumed>false</promptTTSEnumed>
-                        </ttsPrompt>
+                        </TtsPrompt>
                     </entry>
                 </prompts>
                 <defaultLanguage>en-US</defaultLanguage>

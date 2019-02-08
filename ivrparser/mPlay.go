@@ -7,8 +7,8 @@ import (
 )
 
 type playModule struct {
-	generalInfo
-	VoicePromptIDs modulePrompts
+	GeneralInfo
+	VoicePromptIDs ModulePrompts
 	//	VisualPromptIDs modulePrompt
 	//	TextPromptIDs   modulePrompt
 	AuxInfo struct {
@@ -22,7 +22,7 @@ func (module *playModule) normalize(s *IVRScript) error {
 	return s.normalizePrompt(module.VoicePromptIDs)
 }
 
-func newPlayModule(decoder *xml.Decoder, sp scriptPrompts) Module {
+func newPlayModule(decoder *xml.Decoder, sp ScriptPrompts) Module {
 	var pPM = new(playModule)
 
 F:

@@ -22,16 +22,17 @@ const (
 	actionExit     recoaction = "EXIT"
 )
 
-type recoEvent struct {
+// RecoEvent - recognition event
+type RecoEvent struct {
 	Event          recoevent
 	Action         recoaction
-	CountAndPrompt attemptPrompts
+	CountAndPrompt AttemptPrompts
 }
 
-func newEvent(decoder *xml.Decoder, sp scriptPrompts, prefix string) *recoEvent {
+func newEvent(decoder *xml.Decoder, sp ScriptPrompts, prefix string) *RecoEvent {
 	var (
-		pRE    = new(recoEvent)
-		prompt []promptID
+		pRE    = new(RecoEvent)
+		prompt []PromptID
 		count  int
 	)
 F:

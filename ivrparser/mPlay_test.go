@@ -20,7 +20,7 @@ func TestPlay(t *testing.T) {
 <moduleId>ED132095BE1E4F47B51DA0BB842C3EEF</moduleId>
 <data>
 	<prompt>
-		<ttsPrompt>
+		<TtsPrompt>
 			<xml>H4sIAAAAAAAAANVUsW7DIBTc8xUWe0K7VRV2lEqp1KWV3CZrhcOTiwq4AmzFf19MFddgrC5d4gm/
 Q/fu3T1Btmcpsg604Y3K0e3mBmWgTg3jqs7R4e1xfYcyY6liVDQKctSDQdtiRcwX0M+9AAnKFqvM
 fYRaq3nVWjA/BV8UVNU7B/yWfFlRCYVrfT/gBPvf8MbIdqSihQdqIOuGU45ArQ+vCE+a4LALwbEU
@@ -28,7 +28,7 @@ wi3IqSxD+50J5M8bGxwhEclYt3C2Sa6/OUPuJbBqWF/sy/KlJNif5xrwogiC4+FxenpS6TjTxACJ
 3sZqULX9mOc8XvEBX+6l8k6S+egvsUtgvJUo4ZEbaFHBfBdGJLbceZs0gHRUc1oJuK59+Y9VCcZ/
 HkJ7OpYb0LrR7wzMieAAnFiZ9Gzkd4kF78c3S60nzIcEAAA=</xml>
 			<promptTTSEnumed>false</promptTTSEnumed>
-		</ttsPrompt>
+		</TtsPrompt>
 		<interruptible>false</interruptible>
 		<canChangeInterruptableOption>true</canChangeInterruptableOption>
 		<ttsEnumed>false</ttsEnumed>
@@ -70,7 +70,7 @@ HkJ7OpYb0LrR7wzMieAAnFiZ9Gzkd4kF78c3S60nzIcEAAA=</xml>
 	decoder := xml.NewDecoder(strings.NewReader(xmlData))
 	decoder.CharsetReader = charset.NewReaderLabel
 
-	prompts := make(scriptPrompts)
+	prompts := make(ScriptPrompts)
 	res := newPlayModule(decoder, prompts)
 	if res == nil {
 		t.Errorf("Play module wasn't parsed...")

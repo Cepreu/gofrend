@@ -10,8 +10,8 @@ import (
 
 type (
 	queryModule struct {
-		generalInfo
-		VoicePromptIDs modulePrompts
+		GeneralInfo
+		VoicePromptIDs ModulePrompts
 		//	VisualPromptIDs modulePrompt
 		//	TextPromptIDs   modulePrompt
 
@@ -71,7 +71,7 @@ func (module *queryModule) normalize(s *IVRScript) error {
 	return err
 }
 
-func newQueryModule(decoder *xml.Decoder, sp scriptPrompts) Module {
+func newQueryModule(decoder *xml.Decoder, sp ScriptPrompts) Module {
 	var (
 		immersion      = 1
 		pQM            = new(queryModule)

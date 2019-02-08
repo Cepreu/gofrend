@@ -6,22 +6,23 @@ import (
 	"strconv"
 )
 
-type menuModule struct {
-	generalInfo
+//MenuModule - Menu module definition
+type MenuModule struct {
+	GeneralInfo
 
-	VoicePromptIDs modulePrompts
-	//	VisualPromptIDs  []promptID
-	//	TextPromptIDs    []promptID
+	VoicePromptIDs ModulePrompts
+	//	VisualPromptIDs  []PromptID
+	//	TextPromptIDs    []PromptID
 
-	Branches []*outputBranch
-	Items    []*menuItem
+	Branches []*OutputBranch
+	Items    []*MenuItem
 
 	UseASR  bool
 	UseDTMF bool
 	//	RecordUserInput bool
 
-	Events   []*recoEvent
-	ConfData *confirmData
+	Events   []*RecoEvent
+	ConfData *ConfirmData
 
 	RecoParams struct {
 		SpeechCompleteTimeout int
@@ -30,7 +31,7 @@ type menuModule struct {
 	}
 }
 
-func (module *menuModule) normalize(s *IVRScript) error {
+func (module *MenuModule) normalize(s *IVRScript) error {
 	s.normalizePrompt(module.VoicePromptIDs)
 	for i := range module.Items {
 		s.normalizeAttemptPrompt(&module.Items[i].Prompt, false)
@@ -38,22 +39,24 @@ func (module *menuModule) normalize(s *IVRScript) error {
 	return nil
 }
 
-type actionType string
+// ActionType - Menu module item's action
+type ActionType string
 
-type outputBranch struct {
+// OutputBranch - the Menu module's branch
+type OutputBranch struct {
 	Key   string
 	Value struct {
-		Name string
-		Desc string
+		Name       string
+		Descendant ModuleID
 	}
 }
 
 //////////////////////////////////////
-func newMenuModule(decoder *xml.Decoder, sp scriptPrompts) Module {
+func newMenuModule(decoder *xml.Decoder, sp ScriptPrompts) Module {
 	var (
-		pMM        = new(menuModule)
+		pMM        = new(MenuModule)
 		inBranches = false
-		pBranch    *outputBranch
+		pBranch    *OutputBranch
 	)
 F:
 	for {
@@ -102,7 +105,7 @@ F:
 					pMM.Events = append(pMM.Events, pRE)
 				}
 
-				// -->confirmData
+				// -->ConfirmData
 			} else if v.Name.Local == cConfirmData {
 				pMM.ConfData = newConfirmData(decoder, sp, fmt.Sprintf("%s_%s_", pMM.ID, "CD"))
 
@@ -110,7 +113,7 @@ F:
 			} else if v.Name.Local == "branches" {
 				inBranches = true
 			} else if v.Name.Local == "entry" && inBranches {
-				pBranch = new(outputBranch)
+				pBranch = new(OutputBranch)
 			} else if v.Name.Local == "key" && inBranches {
 				innerText, err := decoder.Token()
 				if err == nil {
@@ -124,7 +127,7 @@ F:
 			} else if v.Name.Local == "desc" && inBranches {
 				innerText, err := decoder.Token()
 				if err == nil {
-					pBranch.Value.Desc = string(innerText.(xml.CharData))
+					pBranch.Value.Descendant = ModuleID(innerText.(xml.CharData))
 				}
 
 				// -->items

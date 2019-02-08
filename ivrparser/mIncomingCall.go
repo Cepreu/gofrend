@@ -6,7 +6,7 @@ import (
 )
 
 type incomingCallModule struct {
-	generalInfo
+	GeneralInfo
 }
 
 func (*incomingCallModule) normalize(*IVRScript) error {

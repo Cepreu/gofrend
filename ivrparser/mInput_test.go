@@ -84,7 +84,7 @@ func TestInput(t *testing.T) {
 		</grammar>
 		<prompts>
 			<prompt>
-				<ttsPrompt>
+				<TtsPrompt>
 					<xml>H4sIAAAAAAAAANVUzU6EMBi871OQ3tfqzZjCZjdZvHlQ8UqKfFkb+2PaQpa3t9Qs0lLixctygplm
 vum0A9mdBc960IYpmaO7m1uUgXxXLZOnHFWv5fYeZcZS2VKuJORoAIN2xYaYL6CfRw4CpC02mXsI
 tVazprNgfgAPcipPe0f8Qh6WVEDhRj+MPMH+M1wxqb1R3sGBGsj68S1HILfVC8KzITicQnBshTAL
@@ -92,7 +92,7 @@ Ym7L0GFvAvvLwQZHTCQy4RbONqn1t2aovUY2qh2KR6XaTCgt2ZiYh5ZW8KoXguMMcDoE0lPNaMPh
 uuL5j0iC7T+Nd7KuD1VZHp/rmuCAmMW4mhdpdFySxJYTlo3VIE/2Y1mcaYlvzGVdqkBJMd+lS48E
 tKwTKJGquxqrDpblmpj4kNyRLAKYMnczgl/IN7AoSF2KBAAA</xml>
 					<promptTTSEnumed>false</promptTTSEnumed>
-				</ttsPrompt>
+				</TtsPrompt>
 				<pausePrompt>
 					<timeout>1000</timeout>
 				</pausePrompt>
@@ -232,7 +232,7 @@ tKwTKJGquxqrDpblmpj4kNyRLAKYMnczgl/IN7AoSF2KBAAA</xml>
 			</compoundPrompt>
 			<action>CONTINUE</action>
 		</recoEvents>
-		<confirmData>
+		<ConfirmData>
 			<confirmRequired>REQUIRED</confirmRequired>
 			<requiredConfidence>75</requiredConfidence>
 			<maxAttemptsToConfirm>3</maxAttemptsToConfirm>
@@ -274,7 +274,7 @@ tKwTKJGquxqrDpblmpj4kNyRLAKYMnczgl/IN7AoSF2KBAAA</xml>
 				</compoundPrompt>
 				<action>REPROMPT</action>
 			</recoEvents>
-		</confirmData>
+		</ConfirmData>
 		<confidenceTreshold>5</confidenceTreshold>
 		<maxTimeToEnter>15</maxTimeToEnter>
 		<noInputTimeout>5</noInputTimeout>
@@ -297,7 +297,7 @@ tKwTKJGquxqrDpblmpj4kNyRLAKYMnczgl/IN7AoSF2KBAAA</xml>
 	decoder := xml.NewDecoder(strings.NewReader(xmlData))
 	decoder.CharsetReader = charset.NewReaderLabel
 
-	prompts := make(scriptPrompts)
+	prompts := make(ScriptPrompts)
 	res := newInputModule(decoder, prompts)
 	if res == nil {
 		t.Errorf("Input module wasn't decoded...")
