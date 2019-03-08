@@ -6,7 +6,7 @@ import (
 	"strconv"
 )
 
-type playModule struct {
+type PlayModule struct {
 	GeneralInfo
 	VoicePromptIDs ModulePrompts
 	//	VisualPromptIDs modulePrompt
@@ -18,12 +18,12 @@ type playModule struct {
 	}
 }
 
-func (module *playModule) normalize(s *IVRScript) error {
+func (module *PlayModule) normalize(s *IVRScript) error {
 	return s.normalizePrompt(module.VoicePromptIDs)
 }
 
 func newPlayModule(decoder *xml.Decoder, sp ScriptPrompts) Module {
-	var pPM = new(playModule)
+	var pPM = new(PlayModule)
 
 F:
 	for {

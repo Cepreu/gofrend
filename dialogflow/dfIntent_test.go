@@ -1,10 +1,32 @@
 package dialogflow
 
 import (
+	"bufio"
+	"os"
 	"testing"
 
 	ivr "github.com/Cepreu/gofrend/ivrparser"
+	"github.com/Cepreu/gofrend/utils"
 )
+
+func check(e error) {
+	if e != nil {
+		panic(e)
+	}
+}
+func TestScript(t *testing.T) {
+	var fname = "test_files/demo_dialogflow_3.five9ivr"
+	f, err := os.Open(fname)
+	check(err)
+	s, err := ivr.NewIVRScript(bufio.NewReader(f))
+	check(err)
+	//	utils.PrettyPrint(s)
+
+	i, err := intentsGenerator(s)
+	check(err)
+	utils.PrettyPrint(i)
+	t.Errorf("\nTestScript : \n%v \nwas expected", i)
+}
 
 func TestMenu(t *testing.T) {
 	Menu := &ivr.MenuModule{
@@ -397,7 +419,10 @@ func TestMenu(t *testing.T) {
 			TTSPromptXML: "\u003c?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?\u003e\n\u003cspeakElement\u003e\n    \u003cattributes\u003e\n        \u003clangAttr\u003e\n            \u003cname\u003exml:lang\u003c/name\u003e\n       \u003cattributeValueBase value=\"es-MX\"/\u003e\n        \u003c/langAttr\u003e\n    \u003c/attributes\u003e\n    \u003citems\u003e\n        \u003csayAsElement\u003e\n            \u003cattributes/\u003e\n            \u003citems\u003e\n                \u003ctextElement\u003e\n                    \u003cattributes/\u003e\n                    \u003citems/\u003e\n                    \u003cbody\u003e  Черешнi\u003c/body\u003e\n                \u003c/textElement\u003e\n     \u003c/items\u003e\n        \u003c/sayAsElement\u003e\n    \u003c/items\u003e\n\u003c/speakElement\u003e\n",
 		},
 	}
-	intent, _ := menu2intents(Menu, Prompts)
+	i := &ivr.IVRScript{Modules: []ivr.Module{Menu}, Prompts: Prompts}
+	intent, _ := menu2intents(i, Menu)
+
+	utils.PrettyPrint(intent)
 
 	t.Errorf("\nMenuToIntents conversation: \n%v \nwas expected, in reality: \n%v", Menu, intent)
 }

@@ -25,13 +25,17 @@ type AttemptPrompts struct {
 // TransformToAI - Transforms to a form suitable for Dialogflow
 func (mp ModulePrompts) TransformToAI(sp ScriptPrompts) (res []string) {
 	for _, ap := range mp {
-		txt := ""
-		for _, id := range ap.LangPrArr[0].PrArr {
-			txt = txt + sp[id].TransformToAI()
-		}
-		res = append(res, txt)
+		res = append(res, ap.TransformToAI(sp))
 	}
-	return res
+	return
+}
+
+// TransformToAI - Transforms to a form suitable for Dialogflow
+func (ap AttemptPrompts) TransformToAI(sp ScriptPrompts) (txt string) {
+	for _, id := range ap.LangPrArr[0].PrArr {
+		txt = txt + sp[id].TransformToAI()
+	}
+	return
 }
 
 // LanguagePrompts - prompt for a specified language
@@ -187,7 +191,12 @@ F:
 		switch v := t.(type) {
 		case xml.StartElement:
 			if v.Name.Local == "prompt" {
-				PrArr, _ = parseVoicePrompt(decoder, &v, sp, prefix)
+				PrArr, err = parseVoicePrompt(decoder, &v, sp, prefix)
+				if err != nil {
+					fmt.Printf("parseVoicePrompt failed with '%s'\n", err)
+					return AttemptPrompts{}, err
+				}
+
 			} else if v.Name.Local == "count" {
 				innerText, err := decoder.Token()
 				if err == nil {
@@ -230,7 +239,7 @@ F:
 				pid := getPromptID(prefix, "F")
 				pids = append(pids, pid)
 				sp[pid] = fp
-			} else if v.Name.Local == "TtsPrompt" {
+			} else if v.Name.Local == "ttsPrompt" {
 				inTTS = true
 			} else if v.Name.Local == "pausePrompt" {
 				var pp xPausePrompt
@@ -255,7 +264,7 @@ F:
 			}
 
 		case xml.EndElement:
-			if v.Name.Local == "TtsPrompt" {
+			if v.Name.Local == "ttsPrompt" {
 				inTTS = false
 			} else if v.Name.Local == "xml" {
 				inXML = false

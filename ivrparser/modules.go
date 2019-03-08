@@ -8,6 +8,8 @@ import (
 // Module - represents IVR modules
 //
 type Module interface {
+	GetID() ModuleID
+	GetDescendant() ModuleID
 	normalize(*IVRScript) error
 }
 
@@ -40,6 +42,16 @@ type GeneralInfo struct {
 	Name            string
 	Dispo           string
 	Collapsible     bool
+}
+
+// GetID - returns ID if the module
+func (i *GeneralInfo) GetID() ModuleID {
+	return i.ID
+}
+
+// GetDescendant - returns ID if the module's descendant
+func (i *GeneralInfo) GetDescendant() ModuleID {
+	return i.Descendant
 }
 
 func (s *IVRScript) parseModules(decoder *xml.Decoder, v *xml.StartElement) (ms []Module) {

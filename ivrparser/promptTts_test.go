@@ -486,5 +486,4 @@ func TestTtsPromptToAI(t *testing.T) {
 	if s := expected.transformToAI(); s != "" {
 		t.Fatal(s)
 	}
-
 }

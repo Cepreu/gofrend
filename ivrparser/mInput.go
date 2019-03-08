@@ -29,7 +29,7 @@ type xGrammPropList struct {
 
 ///////////////////////////////////////////////
 
-type inputModule struct {
+type InputModule struct {
 	GeneralInfo
 	VoicePromptIDs ModulePrompts
 	//	VisualPromptIDs  modulePrompt
@@ -39,13 +39,13 @@ type inputModule struct {
 	ConfData *ConfirmData
 }
 
-func (module *inputModule) normalize(s *IVRScript) error {
+func (module *InputModule) normalize(s *IVRScript) error {
 	return s.normalizePrompt(module.VoicePromptIDs)
 }
 
 //////////////////////////////////////
 func newInputModule(decoder *xml.Decoder, sp ScriptPrompts) Module {
-	var pIM = new(inputModule)
+	var pIM = new(InputModule)
 
 F:
 	for {
