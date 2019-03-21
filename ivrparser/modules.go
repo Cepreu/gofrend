@@ -24,34 +24,38 @@ const (
 	cMenu          string = "menu"
 	cQuery         string = "query"
 	cSetVariables  string = "setVariable"
+	cIfElse        string = "ifElse"
+	cCase          string = "case"
 
 	cPrompt      string = "prompt"
 	cConfirmData string = "ConfirmData"
 	cMenuItems   string = "items"
 )
 
-// ModuleID - the IVR module's ID, string
-type ModuleID string
+type (
+	// ModuleID - the IVR module's ID, string
+	ModuleID string
 
-// GeneralInfo - Set of fields common for all modules
-type GeneralInfo struct {
-	ID              ModuleID
-	Ascendants      []ModuleID
-	Descendant      ModuleID
-	ExceptionalDesc ModuleID
-	Name            string
-	Dispo           string
-	Collapsible     bool
-}
+	// GeneralInfo - Set of fields common for all modules
+	GeneralInfo struct {
+		ID              ModuleID
+		Ascendants      []ModuleID
+		Descendant      ModuleID
+		ExceptionalDesc ModuleID
+		Name            string
+		Dispo           string
+		Collapsible     bool
+	}
+)
 
 // GetID - returns ID if the module
-func (i *GeneralInfo) GetID() ModuleID {
-	return i.ID
+func (gi *GeneralInfo) GetID() ModuleID {
+	return gi.ID
 }
 
 // GetDescendant - returns ID if the module's descendant
-func (i *GeneralInfo) GetDescendant() ModuleID {
-	return i.Descendant
+func (gi *GeneralInfo) GetDescendant() ModuleID {
+	return gi.Descendant
 }
 
 func (s *IVRScript) parseModules(decoder *xml.Decoder, v *xml.StartElement) (ms []Module) {
@@ -91,6 +95,8 @@ F:
 				m = newQueryModule(decoder, s.Prompts)
 			case cSetVariables:
 				m = newSetVariablesModule(decoder)
+			case cIfElse:
+				m = newIfElseModule(decoder)
 			default:
 				fmt.Printf("Warning: unsupported module '%s'\n", v.Name.Local)
 				m = newUnknownModule(decoder, &v)

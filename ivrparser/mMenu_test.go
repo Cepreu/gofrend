@@ -396,37 +396,10 @@ hS0CAAA=</xml>
 			},
 		},
 		Branches: []*OutputBranch{
-			{
-				Key: "No Match",
-				Value: struct {
-					Name       string
-					Descendant ModuleID
-				}{"No Match", "C4BA62EF0F3F406A819ADE2CABD1669C"},
-			}, {
-				Key: "apples",
-				Value: struct {
-					Name       string
-					Descendant ModuleID
-				}{"apples", "C4BA62EF0F3F406A819ADE2CABD1669C"},
-			}, {
-				Key: "plums",
-				Value: struct {
-					Name       string
-					Descendant ModuleID
-				}{"plums", "C4BA62EF0F3F406A819ADE2CABD1669C"},
-			}, {
-				Key: "appricots",
-				Value: struct {
-					Name       string
-					Descendant ModuleID
-				}{"appricots", "C4BA62EF0F3F406A819ADE2CABD1669C"},
-			}, {
-				Key: "tutti frutti",
-				Value: struct {
-					Name       string
-					Descendant ModuleID
-				}{"tutti frutti", "C4BA62EF0F3F406A819ADE2CABD1669C"},
-			},
+			{"No Match", "C4BA62EF0F3F406A819ADE2CABD1669C", nil},
+			{"apples", "C4BA62EF0F3F406A819ADE2CABD1669C", nil},
+			{"plums", "C4BA62EF0F3F406A819ADE2CABD1669C", nil},
+			{"tutti frutti", "C4BA62EF0F3F406A819ADE2CABD1669C", nil},
 		},
 		Items: []*MenuItem{
 			{
@@ -677,7 +650,7 @@ hS0CAAA=</xml>
 	// 	t.Errorf("\nHangup module: \n%v \nwas expected, in reality: \n%v", expected.InputInfo, mmm.InputInfo)
 	// }
 	if false == reflect.DeepEqual(expected.GeneralInfo, mmm.GeneralInfo) {
-		t.Errorf("\nHangup module, general info: \n%v \nwas expected, in reality: \n%v",
+		t.Errorf("\nMenu module, general info: \n%v \nwas expected, in reality: \n%v",
 			expected.GeneralInfo, mmm.GeneralInfo)
 	}
 

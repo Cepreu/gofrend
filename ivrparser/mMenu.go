@@ -42,24 +42,14 @@ func (module *MenuModule) normalize(s *IVRScript) error {
 // ActionType - Menu module item's action
 type ActionType string
 
-// OutputBranch - the Menu module's branch
-type OutputBranch struct {
-	Key   string
-	Value struct {
-		Name       string
-		Descendant ModuleID
-	}
-}
-
 //////////////////////////////////////
 func newMenuModule(decoder *xml.Decoder, sp ScriptPrompts) Module {
 	var (
-		pMM        = new(MenuModule)
-		inBranches = false
-		pBranch    *OutputBranch
+		pMM      = new(MenuModule)
+		inModule = true
 	)
-F:
-	for {
+
+	for inModule {
 		t, err := decoder.Token()
 		if err != nil {
 			fmt.Printf("decoder.Token() failed with '%s'\n", err)
@@ -111,25 +101,7 @@ F:
 
 				// -->branches
 			} else if v.Name.Local == "branches" {
-				inBranches = true
-			} else if v.Name.Local == "entry" && inBranches {
-				pBranch = new(OutputBranch)
-			} else if v.Name.Local == "key" && inBranches {
-				innerText, err := decoder.Token()
-				if err == nil {
-					pBranch.Key = string(innerText.(xml.CharData))
-				}
-			} else if v.Name.Local == "name" && inBranches {
-				innerText, err := decoder.Token()
-				if err == nil {
-					pBranch.Value.Name = string(innerText.(xml.CharData))
-				}
-			} else if v.Name.Local == "desc" && inBranches {
-				innerText, err := decoder.Token()
-				if err == nil {
-					pBranch.Value.Descendant = ModuleID(innerText.(xml.CharData))
-				}
-
+				pMM.Branches = parseBranches(decoder)
 				// -->items
 			} else if v.Name.Local == cMenuItems {
 				pItem := newMenuItem(decoder, sp, getPromptID(string(pMM.ID), "A"))
@@ -141,12 +113,8 @@ F:
 				pMM.parseGeneralInfo(decoder, &v)
 			}
 		case xml.EndElement:
-			if v.Name.Local == "branches" {
-				inBranches = false
-			} else if v.Name.Local == "entry" && inBranches {
-				pMM.Branches = append(pMM.Branches, pBranch)
-			} else if v.Name.Local == cMenu {
-				break F /// <----------------------------------- Return should be HERE!
+			if v.Name.Local == cMenu {
+				inModule = false
 			}
 		}
 	}
