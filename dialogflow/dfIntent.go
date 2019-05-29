@@ -201,7 +201,7 @@ func menu2intents(ivrScript *ivr.IVRScript, menu *ivr.MenuModule) (intents []*di
 	}
 
 	for _, br := range menu.Branches {
-		b := br.Key
+		b := br.Name
 		tfs := []*dialogflowpb.Intent_TrainingPhrase{}
 		for _, t := range intntPerBranch[b] {
 			tfs = append(tfs,
@@ -234,62 +234,59 @@ func menu2intents(ivrScript *ivr.IVRScript, menu *ivr.MenuModule) (intents []*di
 			FollowupIntentInfo:       []*dialogflowpb.Intent_FollowupIntentInfo{},
 		}
 
-		buildIntentBranch(ivrScript, branchIntent, br.Value.Descendant)
+		buildIntentBranch(ivrScript, branchIntent, br.Descendant)
 		intents = append(intents, branchIntent)
 	}
 	return
 }
 
 func buildIntentBranch(ivrScript *ivr.IVRScript, branchIntent *dialogflowpb.Intent, nextModule ivr.ModuleID) {
-	for _, m := range ivrScript.Modules {
-		if m.GetID() == nextModule {
-			switch v := m.(type) {
-			case *ivr.InputModule:
-				var param = &dialogflowpb.Intent_Parameter{
-					Name:        utils.GenUUIDv4(),
-					DisplayName: v.Name,
-					// Optional. The definition of the parameter value. It can be:
-					// - a constant string,
-					// - a parameter value defined as `$parameter_name`,
-					// - an original parameter value defined as `$parameter_name.original`,
-					// - a parameter value from some context defined as
-					//   `#context_name.parameter_name`.
-					Value: "$" + v.Grammar.MRVvariable,
-					// Optional. The default value to use when the `value` yields an empty
-					// result.
-					// Default values can be extracted from contexts by using the following
-					// syntax: `#context_name.parameter_name`.
-					//DefaultValue string
-					// Optional. The name of the entity type, prefixed with `@`, that
-					// describes values of the parameter. If the parameter is
-					// required, this must be provided.
-					EntityTypeDisplayName: "@" + v.Grammar.MRVtype,
-					Mandatory:             true,
-					// Optional. The collection of prompts that the agent can present to the
-					// user in order to collect value for the parameter.
-					Prompts: v.VoicePromptIDs.TransformToAI(ivrScript.Prompts),
-					IsList:  false,
-				}
-				branchIntent.Parameters = append(branchIntent.Parameters, param)
-				//				if v.Collapsible {
-				// Recursively check the next module
-				buildIntentBranch(ivrScript, branchIntent, v.Descendant)
-				//				}
-
-			case *ivr.PlayModule:
-				msg := dialogflowpb.Intent_Message{
-					Message: &dialogflowpb.Intent_Message_Text_{
-						Text: &dialogflowpb.Intent_Message_Text{
-							Text: v.VoicePromptIDs.TransformToAI(ivrScript.Prompts),
-						},
-					},
-				}
-				branchIntent.Messages = append(branchIntent.Messages, &msg)
-				//				buildIntentBranch(ivrScript, branchIntent, im.GetDescendant())
-				fmt.Println("~~~~~~~~~~~~~~~~~~", v.VoicePromptIDs.TransformToAI(ivrScript.Prompts))
-			default:
-				buildIntentBranch(ivrScript, branchIntent, m.GetDescendant())
-			}
+	m := ivrScript.Modules[nextModule]
+	switch v := m.(type) {
+	case *ivr.InputModule:
+		var param = &dialogflowpb.Intent_Parameter{
+			Name:        utils.GenUUIDv4(),
+			DisplayName: v.Name,
+			// Optional. The definition of the parameter value. It can be:
+			// - a constant string,
+			// - a parameter value defined as `$parameter_name`,
+			// - an original parameter value defined as `$parameter_name.original`,
+			// - a parameter value from some context defined as
+			//   `#context_name.parameter_name`.
+			Value: "$" + v.Grammar.MRVvariable,
+			// Optional. The default value to use when the `value` yields an empty
+			// result.
+			// Default values can be extracted from contexts by using the following
+			// syntax: `#context_name.parameter_name`.
+			//DefaultValue string
+			// Optional. The name of the entity type, prefixed with `@`, that
+			// describes values of the parameter. If the parameter is
+			// required, this must be provided.
+			EntityTypeDisplayName: "@" + v.Grammar.MRVtype,
+			Mandatory:             true,
+			// Optional. The collection of prompts that the agent can present to the
+			// user in order to collect value for the parameter.
+			Prompts: v.VoicePromptIDs.TransformToAI(ivrScript.Prompts),
+			IsList:  false,
 		}
+		branchIntent.Parameters = append(branchIntent.Parameters, param)
+		//				if v.Collapsible {
+		// Recursively check the next module
+		buildIntentBranch(ivrScript, branchIntent, v.Descendant)
+		//				}
+
+	case *ivr.PlayModule:
+		msg := dialogflowpb.Intent_Message{
+			Message: &dialogflowpb.Intent_Message_Text_{
+				Text: &dialogflowpb.Intent_Message_Text{
+					Text: v.VoicePromptIDs.TransformToAI(ivrScript.Prompts),
+				},
+			},
+		}
+		branchIntent.Messages = append(branchIntent.Messages, &msg)
+		//				buildIntentBranch(ivrScript, branchIntent, im.GetDescendant())
+		fmt.Println("~~~~~~~~~~~~~~~~~~", v.VoicePromptIDs.TransformToAI(ivrScript.Prompts))
+	default:
+		buildIntentBranch(ivrScript, branchIntent, m.GetDescendant())
 	}
 }

@@ -71,37 +71,11 @@ func TestMenu(t *testing.T) {
 			},
 		},
 		Branches: []*ivr.OutputBranch{
-			{
-				Key: "No Match",
-				Value: struct {
-					Name       string
-					Descendant ivr.ModuleID
-				}{"No Match", "C4BA62EF0F3F406A819ADE2CABD1669C"},
-			}, {
-				Key: "apples",
-				Value: struct {
-					Name       string
-					Descendant ivr.ModuleID
-				}{"apples", "C4BA62EF0F3F406A819ADE2CABD1669C"},
-			}, {
-				Key: "plums",
-				Value: struct {
-					Name       string
-					Descendant ivr.ModuleID
-				}{"plums", "C4BA62EF0F3F406A819ADE2CABD1669C"},
-			}, {
-				Key: "appricots",
-				Value: struct {
-					Name       string
-					Descendant ivr.ModuleID
-				}{"appricots", "C4BA62EF0F3F406A819ADE2CABD1669C"},
-			}, {
-				Key: "tutti frutti",
-				Value: struct {
-					Name       string
-					Descendant ivr.ModuleID
-				}{"tutti frutti", "C4BA62EF0F3F406A819ADE2CABD1669C"},
-			},
+			{"No Match", "C4BA62EF0F3F406A819ADE2CABD1669C", nil},
+			{"apples", "C4BA62EF0F3F406A819ADE2CABD1669C", nil},
+			{"plums", "C4BA62EF0F3F406A819ADE2CABD1669C", nil},
+			{"appricots", "C4BA62EF0F3F406A819ADE2CABD1669C", nil},
+			{"tutti frutti", "C4BA62EF0F3F406A819ADE2CABD1669C", nil},
 		},
 		Items: []*ivr.MenuItem{
 			{

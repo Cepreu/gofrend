@@ -12,13 +12,14 @@ import (
 type IVRScript struct {
 	Domain          string
 	Properties      string
-	Modules         []Module
-	ModulesOnHangup []Module
+	Modules         map[ModuleID]Module
+	ModulesOnHangup map[ModuleID]Module
 	Prompts         ScriptPrompts
 	MLPrompts       []*multilingualPrompt
 	MLChoices       []*multilanguageMenuChoice
 	Variables       variables
 	Languages       []language
+	Menus           []ModuleID
 }
 type ScriptPrompts map[PromptID]prompt
 

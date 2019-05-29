@@ -58,12 +58,12 @@ func (gi *GeneralInfo) GetDescendant() ModuleID {
 	return gi.Descendant
 }
 
-func (s *IVRScript) parseModules(decoder *xml.Decoder, v *xml.StartElement) (ms []Module) {
+func (s *IVRScript) parseModules(decoder *xml.Decoder, v *xml.StartElement) (ms map[ModuleID]Module) {
 	var lastElement string
 	if v != nil {
 		lastElement = v.Name.Local
 	}
-
+	ms = make(map[ModuleID]Module)
 F:
 	for {
 		var m Module
@@ -89,6 +89,7 @@ F:
 				m = newVoiceInput(decoder, s.Prompts)
 			case cMenu:
 				m = newMenuModule(decoder, s.Prompts)
+				s.Menus = append(s.Menus, m.GetID())
 			case cGetDigits:
 				m = newGetDigitsModule(decoder, s.Prompts)
 			case cQuery:
@@ -102,7 +103,7 @@ F:
 				m = newUnknownModule(decoder, &v)
 			}
 			if m != nil {
-				ms = append(ms, m)
+				ms[m.GetID()] = m
 			}
 		case xml.EndElement:
 			if v.Name.Local == lastElement {
