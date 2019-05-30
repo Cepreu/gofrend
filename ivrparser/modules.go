@@ -26,6 +26,7 @@ const (
 	cSetVariables  string = "setVariable"
 	cIfElse        string = "ifElse"
 	cCase          string = "case"
+	cForeignScript string = "foreignScript"
 
 	cPrompt      string = "prompt"
 	cConfirmData string = "ConfirmData"
@@ -98,6 +99,8 @@ F:
 				m = newSetVariablesModule(decoder)
 			case cIfElse:
 				m = newIfElseModule(decoder)
+			case cForeignScript:
+				m = newForeignScriptModule(decoder)
 			default:
 				fmt.Printf("Warning: unsupported module '%s'\n", v.Name.Local)
 				m = newUnknownModule(decoder, &v)
