@@ -393,7 +393,7 @@ func TestMenu(t *testing.T) {
 			TTSPromptXML: "\u003c?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?\u003e\n\u003cspeakElement\u003e\n    \u003cattributes\u003e\n        \u003clangAttr\u003e\n            \u003cname\u003exml:lang\u003c/name\u003e\n       \u003cattributeValueBase value=\"es-MX\"/\u003e\n        \u003c/langAttr\u003e\n    \u003c/attributes\u003e\n    \u003citems\u003e\n        \u003csayAsElement\u003e\n            \u003cattributes/\u003e\n            \u003citems\u003e\n                \u003ctextElement\u003e\n                    \u003cattributes/\u003e\n                    \u003citems/\u003e\n                    \u003cbody\u003e  Черешнi\u003c/body\u003e\n                \u003c/textElement\u003e\n     \u003c/items\u003e\n        \u003c/sayAsElement\u003e\n    \u003c/items\u003e\n\u003c/speakElement\u003e\n",
 		},
 	}
-	i := &ivr.IVRScript{Modules: []ivr.Module{Menu}, Prompts: Prompts}
+	i := &ivr.IVRScript{Modules: map[ivr.ModuleID]ivr.Module{Menu.GetID(): Menu}, Prompts: Prompts}
 	intent, _ := menu2intents(i, Menu)
 
 	utils.PrettyPrint(intent)
