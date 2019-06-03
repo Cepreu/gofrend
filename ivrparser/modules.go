@@ -187,7 +187,7 @@ func (*unknownModule) normalize(*IVRScript) error {
 
 func newUnknownModule(decoder *xml.Decoder, v *xml.StartElement) Module {
 	var lastElement = v.Name.Local
-	var pUnknown = new(incomingCallModule)
+	var pUnknown = new(IncomingCallModule)
 
 F:
 	for {

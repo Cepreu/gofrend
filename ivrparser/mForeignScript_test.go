@@ -53,9 +53,9 @@ func TestForeignScript(t *testing.T) {
 		return
 	}
 	//res.normalize()
-	var m = res.(*foreignScriptModule)
+	var m = res.(*ForeignScriptModule)
 
-	expected := &foreignScriptModule{
+	expected := &ForeignScriptModule{
 		GeneralInfo: GeneralInfo{
 			ID:         "A39E830442574C8998F727E2171BFA1D",
 			Ascendants: []ModuleID{"EE46D4FA17844064B679BBCABB45CDE8"},

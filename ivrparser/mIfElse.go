@@ -7,21 +7,21 @@ import (
 
 type groupingType string //"ALL", "ANY", or "CUSTOM"
 
-type ifElseModule struct {
+type IfElseModule struct {
 	GeneralInfo
 	BranchIf   OutputBranch
 	BranchElse OutputBranch
 }
 
-func (*ifElseModule) transformToAI() string {
+func (*IfElseModule) transformToAI() string {
 	return ""
 }
 
-func (*ifElseModule) normalize(*IVRScript) error { return nil }
+func (*IfElseModule) normalize(*IVRScript) error { return nil }
 
 func newIfElseModule(decoder *xml.Decoder) Module {
 	var (
-		pIE      = new(ifElseModule)
+		pIE      = new(IfElseModule)
 		inModule = true
 
 		inCustomCondition = false

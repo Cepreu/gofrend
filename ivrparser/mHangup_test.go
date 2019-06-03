@@ -51,8 +51,8 @@ func TestHangup(t *testing.T) {
 	if res == nil {
 		t.Fatal("Hangup module wasn't parsed...")
 	}
-	var mhu = res.(*hangupModule)
-	var expected = hangupModule{
+	var mhu = res.(*HangupModule)
+	var expected = HangupModule{
 		GeneralInfo: GeneralInfo{
 			ID: "A96A2609FDDE4C499773122F6C6296A1",
 			Ascendants: []ModuleID{

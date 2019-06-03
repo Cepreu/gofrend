@@ -6,7 +6,7 @@ import (
 	"strconv"
 )
 
-type getDigitsModule struct {
+type GetDigitsModule struct {
 	GeneralInfo
 	VoicePromptIDs     ModulePrompts
 	VisualPromptIDs    []PromptID
@@ -22,12 +22,12 @@ type getDigitsModule struct {
 	}
 }
 
-func (module *getDigitsModule) normalize(s *IVRScript) error {
+func (module *GetDigitsModule) normalize(s *IVRScript) error {
 	return s.normalizePrompt(module.VoicePromptIDs)
 }
 
 func newGetDigitsModule(decoder *xml.Decoder, sp ScriptPrompts) Module {
-	var pModule = new(getDigitsModule)
+	var pModule = new(GetDigitsModule)
 
 F:
 	for {

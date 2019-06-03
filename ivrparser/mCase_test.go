@@ -93,8 +93,8 @@ func TestCase(t *testing.T) {
 	if res == nil {
 		t.Fatal("Case module wasn't parsed...")
 	}
-	var mCase = res.(*caseModule)
-	var expected = &caseModule{
+	var mCase = res.(*CaseModule)
+	var expected = &CaseModule{
 		GeneralInfo: GeneralInfo{
 			ID:         "D2CC05B0F6FC44F29B04C1C9E42DF732",
 			Ascendants: []ModuleID{"368A8C40D5AD48668FB2DC7ED894B3BA"},

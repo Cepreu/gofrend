@@ -5,16 +5,16 @@ import (
 	"fmt"
 )
 
-type incomingCallModule struct {
+type IncomingCallModule struct {
 	GeneralInfo
 }
 
-func (*incomingCallModule) normalize(*IVRScript) error {
+func (*IncomingCallModule) normalize(*IVRScript) error {
 	return nil
 }
 
 func newIncomingCallModule(decoder *xml.Decoder) Module {
-	var pICM = new(incomingCallModule)
+	var pICM = new(IncomingCallModule)
 
 F:
 	for {

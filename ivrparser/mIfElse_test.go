@@ -86,8 +86,8 @@ func TestIfElse(t *testing.T) {
 	if res == nil {
 		t.Fatal("IfElse module wasn't parsed...")
 	}
-	var mie = res.(*ifElseModule)
-	var expected = &ifElseModule{
+	var mie = res.(*IfElseModule)
+	var expected = &IfElseModule{
 		GeneralInfo: GeneralInfo{
 			ID:         "EEC8BE771FBC4E659AC3CA54F4FBEBF4",
 			Ascendants: []ModuleID{"E1149703A8E543BE93F142456FED91F6"},

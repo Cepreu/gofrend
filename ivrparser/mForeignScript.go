@@ -5,7 +5,7 @@ import (
 	"fmt"
 )
 
-type foreignScriptModule struct {
+type ForeignScriptModule struct {
 	GeneralInfo
 	IvrScript        string
 	PassCRM          bool
@@ -15,16 +15,16 @@ type foreignScriptModule struct {
 	IsConsistent     bool
 }
 
-func (*foreignScriptModule) transformToAI() string {
+func (*ForeignScriptModule) transformToAI() string {
 	return ""
 }
 
-func (*foreignScriptModule) normalize(*IVRScript) error { return nil }
+func (*ForeignScriptModule) normalize(*IVRScript) error { return nil }
 
 func newForeignScriptModule(decoder *xml.Decoder) Module {
 	var (
 		inModule       = true
-		pFSM           = new(foreignScriptModule)
+		pFSM           = new(ForeignScriptModule)
 		inIvrScript    = false
 		inName         = false
 		inPassCRM      = false

@@ -31,8 +31,8 @@ func newIVRScript() *IVRScript {
 }
 
 type modulesOnHangup struct {
-	StartOnHangup *incomingCallModule
-	HangupModules []*hangupModule
+	StartOnHangup *IncomingCallModule
+	HangupModules []*HangupModule
 }
 
 type xUserVariable struct {
