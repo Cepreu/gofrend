@@ -6,21 +6,21 @@ import (
 )
 
 type (
-	caseModule struct {
+	CaseModule struct {
 		GeneralInfo
 		Branches []*OutputBranch
 	}
 )
 
-func (*caseModule) transformToAI() string {
+func (*CaseModule) transformToAI() string {
 	return ""
 }
 
-func (*caseModule) normalize(*IVRScript) error { return nil }
+func (*CaseModule) normalize(*IVRScript) error { return nil }
 
 func newCaseModule(decoder *xml.Decoder) Module {
 	var (
-		pCase    = new(caseModule)
+		pCase    = new(CaseModule)
 		inModule = true
 	)
 	for inModule {

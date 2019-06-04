@@ -5,7 +5,7 @@ import (
 	"fmt"
 )
 
-type hangupModule struct {
+type HangupModule struct {
 	GeneralInfo
 	Return2Caller bool
 
@@ -14,14 +14,14 @@ type hangupModule struct {
 	OverwriteDisp bool
 }
 
-func (*hangupModule) normalize(*IVRScript) error {
+func (*HangupModule) normalize(*IVRScript) error {
 	return nil
 }
 
 func newHangupModule(decoder *xml.Decoder) Module {
 	var (
 		inModule = true
-		pHM      = new(hangupModule)
+		pHM      = new(HangupModule)
 	)
 	for inModule {
 		t, err := decoder.Token()

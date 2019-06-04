@@ -7,7 +7,7 @@ import (
 	"strconv"
 )
 
-type voiceInputModule struct {
+type VoiceInputModule struct {
 	GeneralInfo
 	VoicePromptIDs ModulePrompts
 	//	VisualPromptIDs  modulePrompt
@@ -35,7 +35,7 @@ type voiceInputModule struct {
 	}
 }
 
-func (module *voiceInputModule) normalize(s *IVRScript) error {
+func (module *VoiceInputModule) normalize(s *IVRScript) error {
 	return s.normalizePrompt(module.VoicePromptIDs)
 }
 
@@ -43,7 +43,7 @@ func (module *voiceInputModule) normalize(s *IVRScript) error {
 func newVoiceInput(decoder *xml.Decoder, sp ScriptPrompts) Module {
 	var inRecordingDuration, inTerminationCharacter, inVarToAccessRecording = false, false, false
 
-	var pIM = new(voiceInputModule)
+	var pIM = new(VoiceInputModule)
 F:
 	for {
 		t, err := decoder.Token()

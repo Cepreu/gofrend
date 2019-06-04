@@ -9,7 +9,7 @@ import (
 )
 
 type (
-	queryModule struct {
+	QueryModule struct {
 		GeneralInfo
 		VoicePromptIDs ModulePrompts
 		//	VisualPromptIDs modulePrompt
@@ -62,7 +62,7 @@ type (
 	}
 )
 
-func (module *queryModule) normalize(s *IVRScript) error {
+func (module *QueryModule) normalize(s *IVRScript) error {
 	err := s.normalizePrompt(module.VoicePromptIDs)
 	if err != nil {
 		return err
@@ -74,7 +74,7 @@ func (module *queryModule) normalize(s *IVRScript) error {
 func newQueryModule(decoder *xml.Decoder, sp ScriptPrompts) Module {
 	var (
 		immersion      = 1
-		pQM            = new(queryModule)
+		pQM            = new(QueryModule)
 		inURLParts     = false
 		inURL          = false
 		inMethod       = false

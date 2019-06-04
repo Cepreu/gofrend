@@ -6,7 +6,7 @@ import (
 )
 
 type (
-	setVariableModule struct {
+	SetVariableModule struct {
 		GeneralInfo
 		Exprs []*expression
 	}
@@ -34,14 +34,14 @@ type (
 	}
 )
 
-func (module *setVariableModule) normalize(s *IVRScript) (err error) {
+func (module *SetVariableModule) normalize(s *IVRScript) (err error) {
 	return nil
 }
 
 func newSetVariablesModule(decoder *xml.Decoder) Module {
 	var (
 		immersion = 1
-		pSVM      = new(setVariableModule)
+		pSVM      = new(SetVariableModule)
 	)
 
 	for immersion > 0 {

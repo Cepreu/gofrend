@@ -83,9 +83,9 @@ ckTTpV5Mvv8HvZuE1kYCAAA=</xml>
 		t.Errorf("Play module wasn't parsed...")
 	}
 	//res.normalize()
-	var mhu = res.(*getDigitsModule)
+	var mhu = res.(*GetDigitsModule)
 
-	expected := &getDigitsModule{
+	expected := &GetDigitsModule{
 		GeneralInfo: GeneralInfo{
 			ID:              "F1E142D8CF27471D8940713A637A1C1D",
 			Ascendants:      []ModuleID{"B612F85EA52D4B2586CE5F57579D6EC7"},

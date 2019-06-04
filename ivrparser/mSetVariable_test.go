@@ -132,8 +132,8 @@ func TestSetVariables(t *testing.T) {
 	if res == nil {
 		t.Fatal("nSetVariables module wasn't parsed...")
 	}
-	var mhu = res.(*setVariableModule)
-	var expected = setVariableModule{
+	var mhu = res.(*SetVariableModule)
+	var expected = SetVariableModule{
 		GeneralInfo: GeneralInfo{
 			ID:              "05FDBF862B6F493AAAAFEC26E9FC8733",
 			Ascendants:      []ModuleID{"7E06FB60DFAA4F3E89946625F8677CB3"},
