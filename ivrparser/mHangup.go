@@ -19,9 +19,11 @@ func (*hangupModule) normalize(*IVRScript) error {
 }
 
 func newHangupModule(decoder *xml.Decoder) Module {
-	var pHM = new(hangupModule)
-F:
-	for {
+	var (
+		inModule = true
+		pHM      = new(hangupModule)
+	)
+	for inModule {
 		t, err := decoder.Token()
 		if err != nil {
 			fmt.Printf("decoder.Token() failed with '%s'\n", err)
@@ -42,15 +44,14 @@ F:
 			} else if v.Name.Local == "overwriteDisposition" {
 				innerText, err := decoder.Token()
 				if err == nil {
-					pHM.OverwriteDisp = (string(innerText.(xml.CharData)) == "true")
+					pHM.OverwriteDisp = string(innerText.(xml.CharData)) == "true"
 				}
 			} else {
 				pHM.parseGeneralInfo(decoder, &v)
 			}
 		case xml.EndElement:
 			if v.Name.Local == cHangup {
-				break F /// <----------------------------------- Return should be HERE!
-
+				inModule = false /// <--- Return should be HERE!
 			}
 		}
 	}
