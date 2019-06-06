@@ -482,8 +482,8 @@ func (n *ttsNode) visit(depth int) string {
 	return fmt.Sprintf("%s  \"%s\", attributes %v, variable: %s,body: %s\n", d, n.nodeType, n.attributes, n.variableName, n.body)
 }
 
-func TestTtsPromptToAI(t *testing.T) {
-	if s := expected.transformToAI(); s != "" {
-		t.Fatal(s)
-	}
-}
+// func TestTtsPromptToAI(t *testing.T) {
+// 	if s := expected.transformToAI(); s != "" {
+// 		t.Fatal(s)
+// 	}
+// }

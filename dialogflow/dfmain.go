@@ -10,7 +10,7 @@ import (
 	"strconv"
 
 	dialogflow "cloud.google.com/go/dialogflow/apiv2"
-	"github.com/golang/protobuf/ptypes/struct"
+	structpb "github.com/golang/protobuf/ptypes/struct"
 	"google.golang.org/api/option"
 	dialogflowpb "google.golang.org/genproto/googleapis/cloud/dialogflow/v2"
 )
@@ -37,7 +37,7 @@ type NLPResponse struct {
 var dp DialogflowProcessor
 
 func main() {
-	dp.init("marysbikeshop-f198d", "marysbikeshop-f198d-3458dada9a89.json", "en", "America/Los_Angeles")
+	dp.init("f9-test-agent", "F9-Test-Agent-0925974a682a", "en", "America/Los_Angeles")
 	http.HandleFunc("/", requestHandler)
 	fmt.Println("Started listening...")
 	http.ListenAndServe(":5000", nil)
