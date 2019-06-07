@@ -14,10 +14,11 @@ func (*IncomingCallModule) normalize(*IVRScript) error {
 }
 
 func newIncomingCallModule(decoder *xml.Decoder) Module {
-	var pICM = new(IncomingCallModule)
-
-F:
-	for {
+	var (
+		inModule = true
+		pICM     = new(IncomingCallModule)
+	)
+	for inModule {
 		t, err := decoder.Token()
 		if err != nil {
 			fmt.Printf("decoder.Token() failed with '%s'\n", err)
@@ -29,7 +30,7 @@ F:
 			pICM.parseGeneralInfo(decoder, &v)
 		case xml.EndElement:
 			if v.Name.Local == "incomingCall" || v.Name.Local == "startOnHangup" {
-				break F /// <----------------------------------- Return should be HERE!
+				inModule = false /// <--- Return should be HERE!
 			}
 		}
 	}

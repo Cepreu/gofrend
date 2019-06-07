@@ -19,6 +19,7 @@ type IVRScript struct {
 	MLChoices       []*multilanguageMenuChoice
 	Variables       variables
 	Languages       []language
+	JSFunctions     []*jsFunction
 	Menus           []ModuleID
 }
 type ScriptPrompts map[PromptID]prompt
@@ -124,6 +125,9 @@ func NewIVRScript(src io.Reader) (*IVRScript, error) {
 						s.Languages = []language{{Lang: "en-US", TtsLang: "en-US", TtsVoice: "Samanta"}}
 					}
 				}
+
+			} else if v.Name.Local == "functions" {
+				s.JSFunctions = newJSFunctions(decoder)
 			}
 		case xml.CharData:
 			if inDomainID {

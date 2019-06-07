@@ -27,10 +27,11 @@ func (module *GetDigitsModule) normalize(s *IVRScript) error {
 }
 
 func newGetDigitsModule(decoder *xml.Decoder, sp ScriptPrompts) Module {
-	var pModule = new(GetDigitsModule)
-
-F:
-	for {
+	var (
+		inModule = true
+		pModule  = new(GetDigitsModule)
+	)
+	for inModule {
 		t, err := decoder.Token()
 		if err != nil {
 			fmt.Printf("decoder.Token() failed with '%s'\n", err)
@@ -89,7 +90,7 @@ F:
 
 		case xml.EndElement:
 			if v.Name.Local == cGetDigits {
-				break F /// <----------------------------------- Return should be HERE!
+				inModule = false //Exit!
 			}
 		}
 	}

@@ -10,6 +10,8 @@ import (
 	"os/exec"
 	"path/filepath"
 	"runtime"
+	"strings"
+	"unicode"
 
 	uuid "github.com/satori/go.uuid"
 )
@@ -98,4 +100,15 @@ func CmdUnzip(encoded string) (string, error) {
 	grepBytes, _ := ioutil.ReadAll(grepOut)
 	grepCmd.Wait()
 	return string(grepBytes), nil
+}
+
+func StripSpaces(str string) string {
+	return strings.Map(func(r rune) rune {
+		if unicode.IsSpace(r) {
+			// if the character is a space, drop it
+			return -1
+		}
+		// else keep it in the string
+		return r
+	}, str)
 }
