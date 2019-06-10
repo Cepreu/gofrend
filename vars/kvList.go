@@ -13,13 +13,12 @@ type KVListVar struct {
 
 // KVList - value of KVList type
 type KVList struct {
-	secured
 	value map[string]string
 }
 
 //NewKVList - returns pointer to a new KVList struct, or <nil> for an error
 func NewKVList(s string) *KVList {
-	f := KVList{secured{secured: false}, make(map[string]string)}
+	f := KVList{make(map[string]string)}
 	if err := json.Unmarshal([]byte(s), &f.value); err != nil {
 		return nil
 	}
@@ -39,7 +38,7 @@ func (kval *KVList) SetValue(fieldName string, fieldStrValue string) (err error)
 }
 
 //TBD
-func (sval *KVList) new(secure bool, strValue string) error {
+func (sval *KVList) new(strValue string) error {
 	return nil
 }
 

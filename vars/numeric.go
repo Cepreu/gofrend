@@ -14,14 +14,12 @@ type NumericVar struct {
 
 // Numeric - value of KVList type
 type Numeric struct {
-	secured
 	value float64
 }
 
 //NewNumeric - returns pointer to a new Numeric value struct, or <nil> for an error
 func NewNumeric(v float64) *Numeric {
-
-	return &Numeric{secured{secured: false}, v}
+	return &Numeric{v}
 }
 
 //SetValue - helper function for parsing xml
@@ -35,16 +33,7 @@ func (fval *Numeric) SetValue(fieldName string, fieldStrValue string) (err error
 	return err
 }
 
-func (fval *Numeric) String() string {
-	str := "*****"
-	if !fval.IsSecured() {
-		str, _ = fval.convertToString()
-	}
-	return fmt.Sprintf("{type=Numeric}{value=%s}", str)
-}
-
-func (fval *Numeric) new(secure bool, strValue string) error {
-	fval.SetSecured(secure)
+func (fval *Numeric) new(strValue string) error {
 	f64, err := strconv.ParseFloat(strValue, 64)
 	if err != nil {
 		return errors.New("Cannot convert string to float64")
@@ -53,8 +42,8 @@ func (fval *Numeric) new(secure bool, strValue string) error {
 	return nil
 }
 
-func (fval *Numeric) convertToString() (string, error) {
-	return strconv.FormatFloat(fval.value, 'f', 2, 64), nil
+func (fval *Numeric) String() string {
+	return strconv.FormatFloat(fval.value, 'f', 2, 64)
 }
 
 func (*Numeric) getType() VarType {

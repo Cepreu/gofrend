@@ -14,12 +14,10 @@ type CurrencyVar struct {
 
 // Currency - value of Currrency type
 type Currency struct {
-	secured
 	value float64
 }
 
-func (fval *Currency) new(secure bool, strValue string) error {
-	fval.SetSecured(secure)
+func (fval *Currency) new(strValue string) error {
 	return fval.SetValue("value", strValue)
 }
 
@@ -40,14 +38,11 @@ func (fval *Currency) SetValue(fieldName string, fieldStrValue string) (err erro
 
 // NewCurrency - returns pointer to a new Numeric value struct, or <nil> for an error
 func NewCurrency(v float64) *Currency {
-	return &Currency{secured{secured: false}, v}
+	return &Currency{v}
 }
 
 func (fval *Currency) String() string {
-	str := "*****"
-	if !fval.IsSecured() {
-		str, _ = fval.convertToString()
-	}
+	str, _ := fval.convertToString()
 	return fmt.Sprintf("{type=Currency}{value=%s}", str)
 }
 

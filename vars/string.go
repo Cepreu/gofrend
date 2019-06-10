@@ -13,7 +13,6 @@ type StringVar struct {
 
 // String - value of String type
 type String struct {
-	secured
 	value        string
 	fileNameType FileNameType
 	id           int
@@ -27,8 +26,7 @@ const (
 	fnRecording
 )
 
-func (sval *String) new(secure bool, strValue string) error {
-	sval.SetSecured(secure)
+func (sval *String) new(strValue string) error {
 	sval.value = strValue
 	return nil
 }
@@ -48,7 +46,7 @@ func (sval *String) SetValue(fieldName string, fieldStrValue string) (err error)
 
 //NewString - returns pointer to a new String struct, or <nil> for an error
 func NewString(v string, i int) *String {
-	return &String{secured{secured: false}, v, 0, i}
+	return &String{v, 0, i}
 }
 
 // func (sval *String) assign(that Value) error {
@@ -79,7 +77,6 @@ func NewString(v string, i int) *String {
 // 	}
 // 	return res, nil
 // }
-
 func (sval *String) toLong() (int64, error) {
 	return strconv.ParseInt(sval.value, 10, 64)
 }

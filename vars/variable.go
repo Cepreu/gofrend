@@ -47,22 +47,9 @@ func typeName(t VarType) string {
 
 // Value - interface type for internal ivr values
 type Value interface {
-	new(bool, string) error
+	new(string) error
 	SetValue(string, string) error
-	SetSecured(bool)
-	IsSecured() bool
-	fmt.Stringer
-}
-
-type secured struct {
-	secured bool
-}
-
-func (s secured) IsSecured() bool {
-	return s.secured
-}
-func (s secured) SetSecured(v bool) {
-	s.secured = v
+	String() string
 }
 
 // Variable - ivr variable description
@@ -72,6 +59,8 @@ type Variable struct {
 	description string
 	attributes  int
 	isNullValue bool
+	secured     bool
+	vtype       VarType
 }
 
 // NewVariable - Returns address of a new user variable, or <nil> if error
@@ -88,7 +77,12 @@ func (vv *Variable) SetValue(theVal Value) error {
 	return nil
 }
 
-func (v Variable) IsNull() bool {
+// GetValue - Returns pointer to the variable's value
+func (vv *Variable) GetValue() Value {
+	return vv.value
+}
+
+func (v *Variable) IsNull() bool {
 	return v.isNullValue
 }
 
@@ -97,11 +91,11 @@ func (pv *Variable) AssignNull() {
 }
 
 func (v *Variable) String() string {
-	re := "NULL"
 	if v.value != nil {
-		re = v.value.String()
+		re := v.GetValue()
+		return fmt.Sprintf("{{name=\"%s\"}{description=\"%s\"} %s}", v.name, v.description, re)
 	}
-	return fmt.Sprintf("{{name=\"%s\"}{description=\"%s\"} %s}", v.name, v.description, re)
+	return "NILL"
 }
 
 // func (pv *Variable) Assign(val *Value) {

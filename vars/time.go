@@ -13,12 +13,11 @@ type TimeVar struct {
 
 // Time - value of Time type
 type Time struct {
-	secured
 	minutes int
 }
 
 //SetValue - helper function for parsing xml
-func (tval *Time) SetValue(fieldName string, fieldStrValue string) (err error) {
+func (tval Time) SetValue(fieldName string, fieldStrValue string) (err error) {
 	switch fieldName {
 	case "minutes":
 		tval.minutes, err = strconv.Atoi(fieldStrValue)
@@ -29,15 +28,14 @@ func (tval *Time) SetValue(fieldName string, fieldStrValue string) (err error) {
 }
 
 func NewTime(minutes int) *Time {
-	return &Time{secured{secured: false}, minutes}
+	return &Time{minutes}
 }
 
-func (tval *Time) String() string {
+func (tval Time) String() string {
 	return fmt.Sprintf("%d", tval.minutes)
 }
 
-func (tval *Time) new(secure bool, strValue string) error {
-	tval.SetSecured(secure)
+func (tval Time) new(strValue string) error {
 	var err error
 	tval.minutes, err = vuStringToMinutes(strValue)
 	return err
@@ -66,24 +64,24 @@ func (tval *Time) new(secure bool, strValue string) error {
 // 	return res, nil
 // }
 
-func (tval *Time) toLong() (int64, error) {
-	return int64(tval.minutes), nil
-}
+// func (tval *Time) toLong() (int64, error) {
+// 	return int64(tval.minutes), nil
+// }
 
-func (tval *Time) toBigDecimal() (float64, error) {
-	return float64(tval.minutes), nil
-}
+// func (tval *Time) toBigDecimal() (float64, error) {
+// 	return float64(tval.minutes), nil
+// }
 
 func (*Time) getType() VarType {
 	return VarTime
 }
 
 ///////
-func (tval Time) getDifference(t2 Time) (iv Integer) {
-	iv = Integer{}
-	iv.new(true, fmt.Sprintf("%d", tval.minutes-t2.minutes))
-	return iv
-}
+// func (tval *Time) getDifference(t2 Time) (iv Integer) {
+// 	iv = Integer{}
+// 	iv.new(fmt.Sprintf("%d", tval.minutes-t2.minutes))
+// 	return iv
+// }
 
 // func (tval Time) getAddition(i2 IntegerValue) (iv IntegerValue, e error) {
 // 	iv = IntegerValue{}
