@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"log"
 
-	ivr "github.com/Cepreu/gofrend/ivrparser"
+	ivr "github.com/Cepreu/gofrend/xmlparser"
 	"github.com/Cepreu/gofrend/utils"
 	"github.com/davecgh/go-spew/spew"
 	dialogflowpb "google.golang.org/genproto/googleapis/cloud/dialogflow/v2"
