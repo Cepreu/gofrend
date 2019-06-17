@@ -25,7 +25,7 @@ func TestScript(t *testing.T) {
 	check(err)
 	s, err := ivr.NewIVRScript(bufio.NewReader(f))
 	check(err)
-	//	utils.PrettyPrint(s)
+	utils.PrettyPrint(s)
 
 	i, err := intentsGenerator(s)
 	check(err)
@@ -44,7 +44,7 @@ func TestIntent(t *testing.T) {
 	check(err)
 	s, err := ivr.NewIVRScript(bufio.NewReader(f))
 	check(err)
-	//	utils.PrettyPrint(s)
+	utils.PrettyPrint(s)
 
 	intents, err := intentsGenerator(s)
 	check(err)

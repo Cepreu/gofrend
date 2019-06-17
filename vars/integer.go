@@ -15,14 +15,14 @@ type IntegerVar struct {
 // Integer - value of Integer type
 type Integer struct {
 	secured
-	value int
+	Value int
 }
 
 //SetValue - helper function for parsing xml
 func (ival *Integer) SetValue(fieldName string, fieldStrValue string) (err error) {
 	switch fieldName {
 	case "value":
-		ival.value, err = strconv.Atoi(fieldStrValue)
+		ival.Value, err = strconv.Atoi(fieldStrValue)
 	default:
 		err = fmt.Errorf("Unknown field '%s' for Integer value", fieldName)
 	}
@@ -47,7 +47,7 @@ func (ival *Integer) new(secure bool, strValue string) error {
 	if err != nil {
 		return errors.New("Cannot convert string to long")
 	}
-	ival.value = i
+	ival.Value = i
 	return nil
 }
 
@@ -69,7 +69,7 @@ func (ival *Integer) new(secure bool, strValue string) error {
 // }
 
 func (ival *Integer) toLong() (int, error) {
-	return ival.value, nil
+	return ival.Value, nil
 }
 func (ival *Integer) toDate() (Date, error) {
 	return Date{}, nil
@@ -84,11 +84,11 @@ func (ival *Integer) String() string {
 }
 
 func (ival *Integer) convertToString() (string, error) {
-	return fmt.Sprintf("%d", ival.value), nil
+	return fmt.Sprintf("%d", ival.Value), nil
 }
 
 func (ival *Integer) toBigDecimal() (float64, error) {
-	return float64(ival.value), nil
+	return float64(ival.Value), nil
 }
 
 func (*Integer) getType() VarType {
