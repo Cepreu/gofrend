@@ -22,9 +22,9 @@ type (
 
 	//Condition - ifElse module's condition
 	Condition struct {
-		comparisonType string
-		rightOperand   parametrized
-		leftOperand    parametrized
+		ComparisonType string
+		RightOperand   parametrized
+		LeftOperand    parametrized
 	}
 )
 
@@ -107,14 +107,14 @@ func parseCondition(decoder *xml.Decoder) (*Condition, error) {
 			if v.Name.Local == "comparisonType" {
 				inComparisonType = true
 			} else if v.Name.Local == "rightOperand" {
-				pC.rightOperand.parse(decoder)
+				pC.RightOperand.parse(decoder)
 			} else if v.Name.Local == "leftOperand" {
-				pC.leftOperand.parse(decoder)
+				pC.LeftOperand.parse(decoder)
 			}
 
 		case xml.CharData:
 			if inComparisonType {
-				pC.comparisonType = string(v)
+				pC.ComparisonType = string(v)
 			}
 
 		case xml.EndElement:

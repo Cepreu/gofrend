@@ -107,9 +107,9 @@ func TestCase(t *testing.T) {
 					ConditionGrouping: "CUSTOM",
 					Conditions: []*Condition{
 						{
-							comparisonType: "EQUALS",
-							rightOperand:   parametrized{Value: vars.NewString("qwerty", 0)},
-							leftOperand:    parametrized{VariableName: "__BUFFER__"},
+							ComparisonType: "EQUALS",
+							RightOperand:   parametrized{Value: vars.NewString("qwerty", 0)},
+							LeftOperand:    parametrized{VariableName: "__BUFFER__"},
 						},
 					},
 				},
@@ -120,9 +120,9 @@ func TestCase(t *testing.T) {
 					ConditionGrouping: "CUSTOM",
 					Conditions: []*Condition{
 						{
-							comparisonType: "LIKE",
-							rightOperand:   parametrized{VariableName: "Contact.city"},
-							leftOperand:    parametrized{VariableName: "__BUFFER__"},
+							ComparisonType: "LIKE",
+							RightOperand:   parametrized{VariableName: "Contact.city"},
+							LeftOperand:    parametrized{VariableName: "__BUFFER__"},
 						},
 					},
 				},
@@ -133,8 +133,8 @@ func TestCase(t *testing.T) {
 					ConditionGrouping: "CUSTOM",
 					Conditions: []*Condition{
 						{
-							comparisonType: "IS_NULL",
-							leftOperand:    parametrized{VariableName: "__BUFFER__"},
+							ComparisonType: "IS_NULL",
+							LeftOperand:    parametrized{VariableName: "__BUFFER__"},
 						},
 					},
 				},
@@ -148,8 +148,8 @@ func TestCase(t *testing.T) {
 		t.Errorf("\nCase module, branch \"%s\": \n%v \nwas expected, in reality: \n%v", mCase.Branches[3].Name, expected.Branches[3], mCase.Branches[3])
 	}
 
-	if !reflect.DeepEqual(expected.Branches[0].Cond.Conditions[0].rightOperand, mCase.Branches[0].Cond.Conditions[0].rightOperand) {
-		t.Errorf("\nCase module, branch \"%s\": \n%v \nwas expected, in reality: \n%v", mCase.Branches[0].Name, expected.Branches[0].Cond.Conditions[0].rightOperand, mCase.Branches[0].Cond.Conditions[0].rightOperand)
+	if !reflect.DeepEqual(expected.Branches[0].Cond.Conditions[0].RightOperand, mCase.Branches[0].Cond.Conditions[0].RightOperand) {
+		t.Errorf("\nCase module, branch \"%s\": \n%v \nwas expected, in reality: \n%v", mCase.Branches[0].Name, expected.Branches[0].Cond.Conditions[0].RightOperand, mCase.Branches[0].Cond.Conditions[0].RightOperand)
 	}
 
 	if !reflect.DeepEqual(expected.Branches[1].Cond.Conditions[0], mCase.Branches[1].Cond.Conditions[0]) {

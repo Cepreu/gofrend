@@ -55,7 +55,8 @@ type Value interface {
 // Variable - ivr variable description
 type Variable struct {
 	name        string
-	value       Value
+	Value       Value
+	Type        VarType
 	description string
 	attributes  int
 	isNullValue bool
@@ -73,13 +74,13 @@ func NewVariable(name, descr string, attr int, isNull bool) *Variable {
 
 // SetValue - Assigns datatype-specific info to the variable
 func (vv *Variable) SetValue(theVal Value) error {
-	vv.value = theVal
+	vv.Value = theVal
 	return nil
 }
 
 // GetValue - Returns pointer to the variable's value
 func (vv *Variable) GetValue() Value {
-	return vv.value
+	return vv.Value
 }
 
 func (v *Variable) IsNull() bool {
@@ -91,11 +92,15 @@ func (pv *Variable) AssignNull() {
 }
 
 func (v *Variable) String() string {
-	if v.value != nil {
+	if v.Value != nil {
 		re := v.GetValue()
 		return fmt.Sprintf("{{name=\"%s\"}{description=\"%s\"} %s}", v.name, v.description, re)
 	}
 	return "NILL"
+}
+
+func (v *Variable) Name() string {
+	return v.name
 }
 
 // func (pv *Variable) Assign(val *Value) {

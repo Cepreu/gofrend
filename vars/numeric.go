@@ -14,7 +14,7 @@ type NumericVar struct {
 
 // Numeric - value of KVList type
 type Numeric struct {
-	value float64
+	Value float64
 }
 
 //NewNumeric - returns pointer to a new Numeric value struct, or <nil> for an error
@@ -26,7 +26,7 @@ func NewNumeric(v float64) *Numeric {
 func (fval *Numeric) SetValue(fieldName string, fieldStrValue string) (err error) {
 	switch fieldName {
 	case "value":
-		fval.value, err = strconv.ParseFloat(fieldStrValue, 64)
+		fval.Value, err = strconv.ParseFloat(fieldStrValue, 64)
 	default:
 		err = fmt.Errorf("Unknown field '%s' for Numeric value", fieldName)
 	}
@@ -38,12 +38,12 @@ func (fval *Numeric) new(strValue string) error {
 	if err != nil {
 		return errors.New("Cannot convert string to float64")
 	}
-	fval.value = f64
+	fval.Value = f64
 	return nil
 }
 
 func (fval *Numeric) String() string {
-	return strconv.FormatFloat(fval.value, 'f', 2, 64)
+	return strconv.FormatFloat(fval.Value, 'f', 2, 64)
 }
 
 func (*Numeric) getType() VarType {

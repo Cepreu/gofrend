@@ -11,7 +11,8 @@ import (
 	dialogflowpb "google.golang.org/genproto/googleapis/cloud/dialogflow/v2"
 )
 
-func handleWebhook(w http.ResponseWriter, r *http.Request) {
+// HandleWebhook performs DialogFlow fulfillment for the F9 Agent
+func HandleWebhook(w http.ResponseWriter, r *http.Request) {
 	fname := "ivr_scripts/is_large_test.five9ivr"
 	f, _ := os.Open(fname)
 	script, _ := ivr.NewIVRScript(bufio.NewReader(f))
@@ -22,19 +23,66 @@ func handleWebhook(w http.ResponseWriter, r *http.Request) {
 		log.Fatalf("Error unmarshalling dialogflow request: %v", err)
 	}
 
-	webhookResponse := dialogflowpb.WebhookResponse{
-		FulfillmentMessages: []*dialogflowpb.Intent_Message{
-			{
-				Message: &dialogflowpb.Intent_Message_Text_{
-					Text: &dialogflowpb.Intent_Message_Text{
-						Text: []string{messageText},
+	sessionID := wr.Session
+	var session *Session
+	if sessionExists(sessionID) {
+		session = loadSession(sessionID)
+	} else {
+		session = initSession(script)
+	}
+
+	interpreter := &Interpreter{
+		Session:     session,
+		Script:      script,
+		QueryResult: wr.QueryResult,
+		WebhookResponse: &dialogflowpb.WebhookResponse{
+			FulfillmentMessages: []*dialogflowpb.Intent_Message{
+				{
+					Message: &dialogflowpb.Intent_Message_Text_{
+						Text: &dialogflowpb.Intent_Message_Text{
+							Text: []string{},
+						},
 					},
 				},
 			},
+			OutputContexts: wr.QueryResult.OutputContexts,
 		},
 	}
+
+	moduleID := wr.QueryResult.Intent.DisplayName
+	module := getModuleByID(script, string(moduleID))
+	if !isInputOrMenu(module) {
+		log.Fatalf("Expected input or menu module to start processing, instead got: %T", module)
+	}
+	module = interpreter.ProcessInitial(module)
+	for module != nil {
+		module = interpreter.Process(module)
+	}
+
 	marshaler := jsonpb.Marshaler{}
-	marshaler.Marshal(w, &webhookResponse)
+	marshaler.Marshal(w, interpreter.WebhookResponse)
+
+	//Need to implement storing session
+}
+
+func getModuleByID(script *ivr.IVRScript, ID string) ivr.Module {
+	for _, m := range script.Modules {
+		if string(m.GetID()) == ID {
+			return m
+		}
+	}
+	return nil
+}
+
+func isInputOrMenu(module ivr.Module) bool {
+	switch module.(type) {
+	case *ivr.MenuModule:
+		return true
+	case *ivr.InputModule:
+		return true
+	default:
+		return false
+	}
 }
 
 // func HandleWebhook(w http.ResponseWriter, r *http.Request) {
