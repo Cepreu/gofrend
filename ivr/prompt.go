@@ -116,12 +116,6 @@ type XPausePrompt struct {
 
 func (t XPausePrompt) TransformToAI() string { return fmt.Sprintf("%d", t.Timeout) }
 
-type XMultiLanguagesPromptItem struct {
-	MLPromptID string `xml:"prompt"`
-}
-
-func (t XMultiLanguagesPromptItem) TransformToAI() string { return string(t.MLPromptID) }
-
 type XVivrPrompts struct {
 	VivrPrompts                  []XVivrPrompt  `xml:"vivrPrompt"`
 	ImagePrompts                 []XImagePrompt `xml:"imagePrompt"`
@@ -168,16 +162,6 @@ type XSimpleTextPromptItem struct {
 
 type LangCode string
 
-type MultilingualPrompt struct {
-	ID          string
-	Name        string
-	Description string
-	Type        string
-	Prompts     map[LangCode][]PromptID
-	DefLanguage LangCode
-	//	IsPersistent bool       `xml:"isPersistent"`
-}
-
 type MultilanguageMenuChoice struct {
 	ID          string
 	Name        string
@@ -188,51 +172,4 @@ type MultilanguageMenuChoice struct {
 	TxtPrompts  map[LangCode][]PromptID
 	DefLanguage LangCode
 	//	IsPersistent bool       `xml:"isPersistent"`
-}
-
-func (s *IVRScript) normalizePrompt(mp ModulePrompts) error {
-	for i := range mp {
-		s.NormalizeAttemptPrompt(&mp[i], true)
-	}
-	return nil
-}
-
-func (s *IVRScript) NormalizeAttemptPrompt(ap *AttemptPrompts, mlPrompTrueMlItemFalse bool) error {
-	var prsdef = []PromptID{}
-	for _, l := range s.Languages {
-		ap.LangPrArr = append(ap.LangPrArr, LanguagePrompts{Language: l.Lang, PrArr: nil})
-	}
-	for _, pid := range ap.LangPrArr[0].PrArr {
-		if _, found := s.Prompts[pid]; found {
-			for j := range s.Languages {
-				ap.LangPrArr[j+1].PrArr = append(ap.LangPrArr[j+1].PrArr, pid)
-			}
-			prsdef = append(prsdef, pid)
-		} else if mlPrompTrueMlItemFalse {
-			for k := range s.MLPrompts {
-				if s.MLPrompts[k].ID == string(pid) {
-					// Found!
-					for j, l := range s.Languages {
-						ap.LangPrArr[j+1].PrArr = append(ap.LangPrArr[j+1].PrArr, s.MLPrompts[k].Prompts[l.Lang]...)
-					}
-					prsdef = append(prsdef, s.MLPrompts[k].Prompts[s.MLPrompts[k].DefLanguage]...)
-					break
-				}
-			}
-		} else {
-			for k := range s.MLChoices {
-				if s.MLChoices[k].ID == string(pid) {
-					// Found!
-					for j, l := range s.Languages {
-						ap.LangPrArr[j+1].PrArr = append(ap.LangPrArr[j+1].PrArr, s.MLChoices[k].AudPrompts[l.Lang]...)
-					}
-					prsdef = append(prsdef, s.MLChoices[k].AudPrompts[s.MLChoices[k].DefLanguage]...)
-					break
-				}
-			}
-
-		}
-	}
-	ap.LangPrArr[0].PrArr = prsdef
-	return nil
 }

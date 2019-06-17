@@ -133,7 +133,7 @@ func TestSetVariables(t *testing.T) {
 	if res == nil {
 		t.Fatal("nSetVariables module wasn't parsed...")
 	}
-	var mhu = res.(*ivr.SetVariableModule)
+	var mhu = (res.(xmlSetVariablesModule)).m
 	var expected = ivr.SetVariableModule{
 		Exprs: []*ivr.Expression{
 			{
@@ -222,8 +222,11 @@ func TestSetVariables(t *testing.T) {
 	}
 	expected.SetGeneralInfo("SetVariable107", "05FDBF862B6F493AAAAFEC26E9FC8733",
 		[]ivr.ModuleID{"7E06FB60DFAA4F3E89946625F8677CB3"}, "4065B9160FE54714AEFAB56B9F9CB9C6", "",
-		"", false)
+		"", "false")
 
+	if expected.GetDescendant() != mhu.GetDescendant() {
+		t.Errorf("\nSetVariables module: \"%s\" was expected, in reality: \"%s\"", expected.GetDescendant(), mhu.GetDescendant())
+	}
 	if false == reflect.DeepEqual(&expected, mhu) {
 		t.Errorf("\nSetVariables module: \n%v \nwas expected, in reality: \n%v", expected, mhu)
 	}

@@ -7,7 +7,11 @@ import (
 	"github.com/Cepreu/gofrend/ivr"
 )
 
-func newIfElseModule(decoder *xml.Decoder) ivr.Module {
+type xmlIfElseModule struct {
+	s *ivr.IfElseModule
+}
+
+func newIfElseModule(decoder *xml.Decoder) normalizer {
 	var (
 		pIE      = new(ivr.IfElseModule)
 		inModule = true
@@ -56,5 +60,9 @@ func newIfElseModule(decoder *xml.Decoder) ivr.Module {
 			}
 		}
 	}
-	return pIE
+	return xmlIfElseModule{pIE}
+}
+
+func (xmlIfElseModule) normalize(*ivr.IVRScript) error {
+	return nil
 }

@@ -1,4 +1,4 @@
-package xmlparser
+ package xmlparser
 
 import (
 	"encoding/xml"

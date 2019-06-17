@@ -54,7 +54,7 @@ func TestForeignScript(t *testing.T) {
 		return
 	}
 	//res.normalize()
-	var m = res.(*ivr.ForeignScriptModule)
+	var m = (res.(xmlForeignScriptModule)).s
 
 	expected := &ivr.ForeignScriptModule{
 		IvrScript: "EXAMPLES..Five9..EmailRoutedByRulesEngine",
@@ -75,7 +75,7 @@ func TestForeignScript(t *testing.T) {
 	}
 	expected.SetGeneralInfo("ForeignScript19", "A39E830442574C8998F727E2171BFA1D",
 		[]ivr.ModuleID{"EE46D4FA17844064B679BBCABB45CDE8"}, "A917886FAA054CF581C4BA3798FCB836", "",
-		"No Disposition", false)
+		"No Disposition", "false")
 
 	if false == reflect.DeepEqual(expected.Parameters[0], m.Parameters[0]) {
 		t.Errorf("\nForeignScript module: \n%v \nwas expected, in reality: \n%v", expected.Parameters[0], m.Parameters[0])

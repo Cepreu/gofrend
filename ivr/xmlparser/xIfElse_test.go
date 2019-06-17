@@ -87,7 +87,7 @@ func TestIfElse(t *testing.T) {
 	if res == nil {
 		t.Fatal("IfElse module wasn't parsed...")
 	}
-	var mie = res.(*ivr.IfElseModule)
+	var mie = (res.(xmlIfElseModule)).s
 	var expected = &ivr.IfElseModule{
 		BranchIf: ivr.OutputBranch{"IF", "4663D0E48FA048CF938695D75A06739D",
 			&ivr.ComplexCondition{
@@ -113,9 +113,14 @@ func TestIfElse(t *testing.T) {
 	}
 
 	expected.SetGeneralInfo("IfElse5", "EEC8BE771FBC4E659AC3CA54F4FBEBF4",
-		[]ivr.ModuleID{"E1149703A8E543BE93F142456FED91F6"}, "", "", "", false)
+		[]ivr.ModuleID{"E1149703A8E543BE93F142456FED91F6"}, "", "", "", "false")
 
-	//	if !reflect.DeepEqual(expected.GeneralInfo, mie.GeneralInfo) ||
+	if expected.GetDescendant() != mie.GetDescendant() {
+		t.Errorf("\nIfElse module: \n\"%s\" decsendantID was expected, in reality: \"%s\"", expected.GetDescendant(), mie.GetDescendant())
+	}
+	if expected.GetID() != mie.GetID() {
+		t.Errorf("\nIfElse module: \n\"%s\" module ID was expected, in reality: \"%s\"", expected.GetID(), mie.GetID())
+	}
 	if !reflect.DeepEqual(expected.BranchElse, mie.BranchElse) ||
 		!reflect.DeepEqual(expected.BranchIf.Cond.Conditions[0], mie.BranchIf.Cond.Conditions[0]) ||
 		!reflect.DeepEqual(expected.BranchIf.Cond.Conditions[1], mie.BranchIf.Cond.Conditions[1]) ||

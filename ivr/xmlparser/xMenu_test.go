@@ -2,7 +2,6 @@ package xmlparser
 
 import (
 	"encoding/xml"
-	"reflect"
 	"strings"
 	"testing"
 
@@ -353,7 +352,7 @@ hS0CAAA=</xml>
 		t.Fatalf("Menu module wasn't parsed...")
 	}
 
-	var mmm = res.(*ivr.MenuModule)
+	var mmm = (res.(xmlMenuModule)).m
 
 	expected := &ivr.MenuModule{
 		VoicePromptIDs: ivr.ModulePrompts{
@@ -638,13 +637,16 @@ hS0CAAA=</xml>
 			NoInputTimeout        int
 		}{1, 5, 5},
 	}
+	expected.SetGeneralInfo("Copy of Menu5", "0B19BD7CEE3E4B85BA6C6631F1CCA222",
+		[]ivr.ModuleID{"35EBEC8BD6294BA2B6CF4C96D54BE72D"}, "", "C4BA62EF0F3F406A819ADE2CABD1669C",
+		"Caller Disconnected", "false")
 
-	if false == reflect.DeepEqual(expected.GetDescendant(), mmm.GetDescendant()) {
-		t.Errorf("\nHangup module: \n%v \nwas expected, in reality: \n%v", expected.GetDescendant(), mmm.GetDescendant())
-	}
-	if false == reflect.DeepEqual(expected.GetID(), mmm.GetID()) {
-		t.Errorf("\nMenu module, general info: \n%v \nwas expected, in reality: \n%v",
+	if expected.GetID() != mmm.GetID() {
+		t.Errorf("\nMenu module, moduleID: \n%v \nwas expected, in reality: \n%v",
 			expected.GetID(), mmm.GetID())
+	}
+	if expected.GetDescendant() != mmm.GetDescendant() {
+		t.Errorf("\nMenu module, DescendantID: \n%v \nwas expected, in reality: \n%v", expected.GetDescendant(), mmm.GetDescendant())
 	}
 
 }

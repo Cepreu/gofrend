@@ -94,7 +94,7 @@ func TestCase(t *testing.T) {
 	if res == nil {
 		t.Fatal("Case module wasn't parsed...")
 	}
-	var mCase = res.(*ivr.CaseModule)
+	var mCase = (res.(xmlCaseModule)).m
 	var expected = &ivr.CaseModule{
 		Branches: []*ivr.OutputBranch{
 			&ivr.OutputBranch{"bA", "D7F8916C13384EE08A6109F54109307E",
@@ -139,7 +139,7 @@ func TestCase(t *testing.T) {
 		},
 	}
 	expected.SetGeneralInfo("Case3", "D2CC05B0F6FC44F29B04C1C9E42DF732",
-		[]ivr.ModuleID{"368A8C40D5AD48668FB2DC7ED894B3BA"}, "", "", "No Disposition", false)
+		[]ivr.ModuleID{"368A8C40D5AD48668FB2DC7ED894B3BA"}, "", "", "No Disposition", "false")
 
 	//	if !reflect.DeepEqual(expected.GeneralInfo, mCase.GeneralInfo) ||
 	if !reflect.DeepEqual(expected.Branches[3], mCase.Branches[3]) {

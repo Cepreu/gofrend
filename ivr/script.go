@@ -9,12 +9,12 @@ type (
 		Modules         map[ModuleID]Module
 		ModulesOnHangup map[ModuleID]Module
 		Prompts         ScriptPrompts
-		MLPrompts       []*MultilingualPrompt
-		MLChoices       []*MultilanguageMenuChoice
-		Variables       Variables
-		Languages       []Language
-		JSFunctions     []*JsFunction
-		Menus           []ModuleID
+		//		MLPrompts       []*MultilingualPrompt
+		MLChoices   []*MultilanguageMenuChoice
+		Variables   Variables
+		Languages   []Language
+		JSFunctions []*JsFunction
+		Menus       []ModuleID
 	}
 
 	ScriptPrompts map[PromptID]prompt

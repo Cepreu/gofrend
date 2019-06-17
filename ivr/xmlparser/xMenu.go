@@ -8,7 +8,11 @@ import (
 	"github.com/Cepreu/gofrend/ivr"
 )
 
-func newMenuModule(decoder *xml.Decoder, sp ivr.ScriptPrompts) ivr.Module {
+type xmlMenuModule struct {
+	m *ivr.MenuModule
+}
+
+func newMenuModule(decoder *xml.Decoder, sp ivr.ScriptPrompts) normalizer {
 	var (
 		pMM      = new(ivr.MenuModule)
 		inModule = true
@@ -83,5 +87,13 @@ func newMenuModule(decoder *xml.Decoder, sp ivr.ScriptPrompts) ivr.Module {
 			}
 		}
 	}
-	return pMM
+	return xmlMenuModule{pMM}
+}
+
+func (module xmlMenuModule) normalize(s *ivr.IVRScript) error {
+	normalizePrompt(s, module.m.VoicePromptIDs)
+	for i := range module.m.Items {
+		normalizeAttemptPrompt(s, &module.m.Items[i].Prompt, false)
+	}
+	return nil
 }

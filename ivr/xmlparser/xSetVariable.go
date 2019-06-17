@@ -7,7 +7,11 @@ import (
 	"github.com/Cepreu/gofrend/ivr"
 )
 
-func newSetVariablesModule(decoder *xml.Decoder) ivr.Module {
+type xmlSetVariablesModule struct {
+	m *ivr.SetVariableModule
+}
+
+func newSetVariablesModule(decoder *xml.Decoder) normalizer {
 	var (
 		immersion = 1
 		pSVM      = new(ivr.SetVariableModule)
@@ -37,7 +41,7 @@ func newSetVariablesModule(decoder *xml.Decoder) ivr.Module {
 			immersion--
 		}
 	}
-	return pSVM
+	return xmlSetVariablesModule{pSVM}
 }
 
 func parseAssignment(decoder *xml.Decoder) *ivr.Expression {
@@ -122,3 +126,4 @@ func parseAssignment(decoder *xml.Decoder) *ivr.Expression {
 	}
 	return e
 }
+func (xmlSetVariablesModule) normalize(*ivr.IVRScript) error { return nil }

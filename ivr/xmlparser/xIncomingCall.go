@@ -7,7 +7,11 @@ import (
 	"github.com/Cepreu/gofrend/ivr"
 )
 
-func newIncomingCallModule(decoder *xml.Decoder) ivr.Module {
+type xmlIncomingCallModule struct {
+	s *ivr.IncomingCallModule
+}
+
+func newIncomingCallModule(decoder *xml.Decoder) normalizer {
 	var (
 		inModule = true
 		pICM     = new(ivr.IncomingCallModule)
@@ -28,5 +32,9 @@ func newIncomingCallModule(decoder *xml.Decoder) ivr.Module {
 			}
 		}
 	}
-	return pICM
+	return &xmlIncomingCallModule{pICM}
+}
+
+func (xmlIncomingCallModule) normalize(*ivr.IVRScript) error {
+	return nil
 }
