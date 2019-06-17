@@ -84,7 +84,7 @@ ckTTpV5Mvv8HvZuE1kYCAAA=</xml>
 		t.Errorf("Play module wasn't parsed...")
 	}
 	//res.normalize()
-	var mhu = (res.(xmlGetDigitsModule)).m
+	var mhu = res.(*ivr.GetDigitsModule)
 
 	expected := &ivr.GetDigitsModule{
 		VoicePromptIDs: ivr.ModulePrompts{
@@ -125,7 +125,7 @@ ckTTpV5Mvv8HvZuE1kYCAAA=</xml>
 
 	expected.SetGeneralInfo("GetDigits6", "F1E142D8CF27471D8940713A637A1C1D",
 		[]ivr.ModuleID{"B612F85EA52D4B2586CE5F57579D6EC7"}, "A96A2609FDDE4C499773122F6C6296A1", "ED132095BE1E4F47B51DA0BB842C3EEF",
-		"Caller Disconnected", "true")
+		"Caller Disconnected", true)
 
 	if false == reflect.DeepEqual(expected.InputInfo, mhu.InputInfo) {
 		t.Errorf("\nHangup module: \n%v \nwas expected, in reality: \n%v", expected.InputInfo, mhu.InputInfo)

@@ -39,21 +39,11 @@ const defaultLang = "Default"
 // 	return
 // }
 
-type MultilingualPrompt struct {
-	ID          string
-	Name        string
-	Description string
-	Type        string
-	Prompts     map[ivr.LangCode][]ivr.PromptID
-	DefLanguage ivr.LangCode
-	//	IsPersistent bool       `xml:"isPersistent"`
-}
-
-type XMultiLanguagesPromptItem struct {
-	MLPromptID string `xml:"prompt"`
-}
-
-func (t XMultiLanguagesPromptItem) TransformToAI() string { return string(t.MLPromptID) }
+// // LanguagePrompts - prompt for a specified language
+// type LanguagePrompts struct {
+// 	PrArr    []PromptID
+// 	Language langCode
+// }
 
 func newModulePrompts(c int, p []ivr.PromptID) (ivr.ModulePrompts, error) {
 	return ivr.ModulePrompts{newAttemptPrompts(c, p)}, nil
@@ -63,52 +53,52 @@ func newAttemptPrompts(c int, p []ivr.PromptID) ivr.AttemptPrompts {
 	return pmp
 }
 
-func normalizeAttemptPrompt(s *ivr.IVRScript, ap *ivr.AttemptPrompts, mlPrompTrueMlItemFalse bool) error {
-	var prsdef = []ivr.PromptID{}
-	for _, l := range s.Languages {
-		ap.LangPrArr = append(ap.LangPrArr, ivr.LanguagePrompts{Language: l.Lang, PrArr: nil})
-	}
-	for _, pid := range ap.LangPrArr[0].PrArr {
-		if _, found := s.Prompts[pid]; found {
-			for j := range s.Languages {
-				ap.LangPrArr[j+1].PrArr = append(ap.LangPrArr[j+1].PrArr, pid)
-			}
-			prsdef = append(prsdef, pid)
-		} else if mlPrompTrueMlItemFalse {
-			for k := range xMLPrompts {
-				if xMLPrompts[k].ID == string(pid) {
-					// Found!
-					for j, l := range s.Languages {
-						ap.LangPrArr[j+1].PrArr = append(ap.LangPrArr[j+1].PrArr, xMLPrompts[k].Prompts[l.Lang]...)
-					}
-					prsdef = append(prsdef, xMLPrompts[k].Prompts[xMLPrompts[k].DefLanguage]...)
-					break
-				}
-			}
-		} else {
-			for k := range s.MLChoices {
-				if s.MLChoices[k].ID == string(pid) {
-					// Found!
-					for j, l := range s.Languages {
-						ap.LangPrArr[j+1].PrArr = append(ap.LangPrArr[j+1].PrArr, s.MLChoices[k].AudPrompts[l.Lang]...)
-					}
-					prsdef = append(prsdef, s.MLChoices[k].AudPrompts[s.MLChoices[k].DefLanguage]...)
-					break
-				}
-			}
+// func normalizeAttemptPrompt(s *ivr.IVRScript, ap *ivr.AttemptPrompts, mlPrompTrueMlItemFalse bool) error {
+// 	var prsdef = []ivr.PromptID{}
+// 	for _, l := range s.Languages {
+// 		ap.LangPrArr = append(ap.LangPrArr, ivr.LanguagePrompts{Language: l.Lang, PrArr: nil})
+// 	}
+// 	for _, pid := range ap.LangPrArr[0].PrArr {
+// 		if _, found := s.Prompts[pid]; found {
+// 			for j := range s.Languages {
+// 				ap.LangPrArr[j+1].PrArr = append(ap.LangPrArr[j+1].PrArr, pid)
+// 			}
+// 			prsdef = append(prsdef, pid)
+// 		} else if mlPrompTrueMlItemFalse {
+// 			for k := range s.MLPrompts {
+// 				if s.MLPrompts[k].ID == string(pid) {
+// 					// Found!
+// 					for j, l := range s.Languages {
+// 						ap.LangPrArr[j+1].PrArr = append(ap.LangPrArr[j+1].PrArr, s.MLPrompts[k].Prompts[l.Lang]...)
+// 					}
+// 					prsdef = append(prsdef, s.MLPrompts[k].Prompts[s.MLPrompts[k].DefLanguage]...)
+// 					break
+// 				}
+// 			}
+// 		} else {
+// 			for k := range s.MLChoices {
+// 				if s.MLChoices[k].ID == string(pid) {
+// 					// Found!
+// 					for j, l := range s.Languages {
+// 						ap.LangPrArr[j+1].PrArr = append(ap.LangPrArr[j+1].PrArr, s.MLChoices[k].AudPrompts[l.Lang]...)
+// 					}
+// 					prsdef = append(prsdef, s.MLChoices[k].AudPrompts[s.MLChoices[k].DefLanguage]...)
+// 					break
+// 				}
+// 			}
 
-		}
-	}
-	ap.LangPrArr[0].PrArr = prsdef
-	return nil
-}
+// 		}
+// 	}
+// 	ap.LangPrArr[0].PrArr = prsdef
+// 	return nil
+// }
 
-func normalizePrompt(s *ivr.IVRScript, mp ivr.ModulePrompts) error {
-	for i := range mp {
-		normalizeAttemptPrompt(s, &mp[i], true)
-	}
-	return nil
-}
+// func normalizePrompt(s *ivr.IVRScript, mp ivr.ModulePrompts) error {
+// 	for i := range mp {
+// 		NormalizeAttemptPrompt(s, &mp[i], true)
+// 	}
+// 	return nil
+// }
 
 var counter int32
 
@@ -198,7 +188,7 @@ F:
 				pids = append(pids, pid)
 				sp[pid] = pp
 			} else if v.Name.Local == "multiLanguagesPromptItem" {
-				var pp XMultiLanguagesPromptItem
+				var pp ivr.XMultiLanguagesPromptItem
 				err = decoder.DecodeElement(&pp, &v)
 				if err != nil {
 					fmt.Printf("decoder.DecodeElement(multiLanguagesPromptItem>) failed with '%s'\n", err)

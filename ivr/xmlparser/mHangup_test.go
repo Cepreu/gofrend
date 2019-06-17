@@ -52,7 +52,7 @@ func TestHangup(t *testing.T) {
 	if res == nil {
 		t.Fatal("Hangup module wasn't parsed...")
 	}
-	var mhu = (res.(xmlHangupModule)).s
+	var mhu = res.(*ivr.HangupModule)
 	var expected = ivr.HangupModule{
 		Return2Caller: true,
 		ErrCode:       ivr.Parametrized{VariableName: "duration"},
@@ -62,7 +62,7 @@ func TestHangup(t *testing.T) {
 
 	expected.SetGeneralInfo("Hangup13", "A96A2609FDDE4C499773122F6C6296A1",
 		[]ivr.ModuleID{"ED132095BE1E4F47B51DA0BB842C3EEF", "F1E142D8CF27471D8940713A637A1C1D"},
-		"", "", "No Disposition", "false")
+		"", "", "No Disposition", false)
 
 	if false == reflect.DeepEqual(&expected, mhu) {
 		t.Errorf("\nHangup module: \n%v \nwas expected, in reality: \n%v", expected, mhu)

@@ -6,14 +6,9 @@ import (
 	"strconv"
 
 	"github.com/Cepreu/gofrend/ivr"
-	"github.com/Cepreu/gofrend/utils"
 )
 
-type xmlQueryModule struct {
-	m *ivr.QueryModule
-}
-
-func newQueryModule(decoder *xml.Decoder, sp ivr.ScriptPrompts) normalizer {
+func newQueryModule(decoder *xml.Decoder, sp ivr.ScriptPrompts) ivr.Module {
 	var (
 		immersion      = 1
 		pQM            = new(ivr.QueryModule)
@@ -105,7 +100,7 @@ func newQueryModule(decoder *xml.Decoder, sp ivr.ScriptPrompts) normalizer {
 		}
 	}
 
-	return xmlQueryModule{pQM}
+	return pQM
 }
 
 ///-------------
@@ -390,13 +385,4 @@ func parseKeyValueList(decoder *xml.Decoder) (p []ivr.KeyValue, err error) {
 		}
 	}
 	return p, nil
-}
-
-func (module xmlQueryModule) normalize(s *ivr.IVRScript) error {
-	err := normalizePrompt(s, module.m.VoicePromptIDs)
-	if err != nil {
-		return err
-	}
-	module.m.RequestInfo.Template, err = utils.CmdUnzip(module.m.RequestInfo.Base64)
-	return err
 }

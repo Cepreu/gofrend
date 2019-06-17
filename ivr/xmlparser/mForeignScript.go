@@ -7,11 +7,7 @@ import (
 	"github.com/Cepreu/gofrend/ivr"
 )
 
-type xmlForeignScriptModule struct {
-	s *ivr.ForeignScriptModule
-}
-
-func newForeignScriptModule(decoder *xml.Decoder) normalizer {
+func newForeignScriptModule(decoder *xml.Decoder) ivr.Module {
 	var (
 		inModule       = true
 		pFSM           = new(ivr.ForeignScriptModule)
@@ -77,8 +73,5 @@ func newForeignScriptModule(decoder *xml.Decoder) normalizer {
 			}
 		}
 	}
-	return xmlForeignScriptModule{pFSM}
-}
-func (xmlForeignScriptModule) normalize(*ivr.IVRScript) error {
-	return nil
+	return pFSM
 }

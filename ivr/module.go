@@ -1,10 +1,15 @@
 package ivr
 
+import (
+	"github.com/Cepreu/gofrend/utils"
+)
+
 // Module - parsed ivr module
 type Module interface {
 	GetID() ModuleID
 	GetDescendant() ModuleID
-	SetGeneralInfo(string, ModuleID, []ModuleID, ModuleID, ModuleID, string, string)
+	Normalize(*IVRScript) error
+	SetGeneralInfo(string, ModuleID, []ModuleID, ModuleID, ModuleID, string, bool)
 }
 
 // ModuleID - the IVR module's ID, string
@@ -27,28 +32,14 @@ func (m *module) GetID() ModuleID {
 
 func (m *module) SetGeneralInfo(name string, id ModuleID,
 	ascendants []ModuleID, descendant ModuleID, exceptionalDesc ModuleID,
-	dispo string, collapsible string) {
-	if id != "" {
-		m.ID = id
-	}
-	if len(ascendants) > 0 {
-		m.Ascendants = append(m.Ascendants, ascendants...)
-	}
-	if descendant != "" {
-		m.Descendant = descendant
-	}
-	if exceptionalDesc != "" {
-		m.ExceptionalDesc = exceptionalDesc
-	}
-	if name != "" {
-		m.Name = name
-	}
-	if dispo != "" {
-		m.Dispo = dispo
-	}
-	if collapsible == "true" {
-		m.Collapsible = true
-	}
+	dispo string, collapsible bool) {
+	m.ID = id
+	m.Ascendants = ascendants
+	m.Descendant = descendant
+	m.ExceptionalDesc = exceptionalDesc
+	m.Name = name
+	m.Dispo = dispo
+	m.Collapsible = collapsible
 }
 
 // GetDescendant - returns ID if the module's descendant
@@ -85,6 +76,8 @@ func (*CaseModule) transformToAI() string {
 	return ""
 }
 
+func (*CaseModule) Normalize(*IVRScript) error { return nil }
+
 type ForeignScriptModule struct {
 	module
 	IvrScript        string
@@ -98,6 +91,8 @@ type ForeignScriptModule struct {
 func (*ForeignScriptModule) transformToAI() string {
 	return ""
 }
+
+func (*ForeignScriptModule) Normalize(*IVRScript) error { return nil }
 
 type GetDigitsModule struct {
 	module
@@ -115,6 +110,10 @@ type GetDigitsModule struct {
 	}
 }
 
+func (module *GetDigitsModule) Normalize(s *IVRScript) error {
+	return s.normalizePrompt(module.VoicePromptIDs)
+}
+
 type HangupModule struct {
 	module
 	Return2Caller bool
@@ -122,6 +121,10 @@ type HangupModule struct {
 	ErrCode       Parametrized
 	ErrDescr      Parametrized
 	OverwriteDisp bool
+}
+
+func (*HangupModule) Normalize(*IVRScript) error {
+	return nil
 }
 
 type groupingType string //"ALL", "ANY", or "CUSTOM"
@@ -136,8 +139,14 @@ func (*IfElseModule) transformToAI() string {
 	return ""
 }
 
+func (*IfElseModule) Normalize(*IVRScript) error { return nil }
+
 type IncomingCallModule struct {
 	module
+}
+
+func (*IncomingCallModule) Normalize(*IVRScript) error {
+	return nil
 }
 
 type xInputGrammar struct {
@@ -172,6 +181,10 @@ type InputModule struct {
 	ConfData *ConfirmData
 }
 
+func (module *InputModule) Normalize(s *IVRScript) error {
+	return s.normalizePrompt(module.VoicePromptIDs)
+}
+
 //MenuModule - Menu module definition
 type MenuModule struct {
 	module
@@ -197,6 +210,14 @@ type MenuModule struct {
 	}
 }
 
+func (module *MenuModule) Normalize(s *IVRScript) error {
+	s.normalizePrompt(module.VoicePromptIDs)
+	for i := range module.Items {
+		s.NormalizeAttemptPrompt(&module.Items[i].Prompt, false)
+	}
+	return nil
+}
+
 // ActionType - Menu module item's action
 type ActionType string
 
@@ -210,6 +231,10 @@ type PlayModule struct {
 		TerminateDigit   string
 		ClearDigitBuffer bool
 	}
+}
+
+func (module *PlayModule) Normalize(s *IVRScript) error {
+	return s.normalizePrompt(module.VoicePromptIDs)
 }
 
 type (
@@ -266,6 +291,15 @@ type (
 	}
 )
 
+func (module *QueryModule) Normalize(s *IVRScript) error {
+	err := s.normalizePrompt(module.VoicePromptIDs)
+	if err != nil {
+		return err
+	}
+	module.RequestInfo.Template, err = utils.CmdUnzip(module.RequestInfo.Base64)
+	return err
+}
+
 type (
 	SetVariableModule struct {
 		module
@@ -295,6 +329,10 @@ type (
 	}
 )
 
+func (module *SetVariableModule) Normalize(s *IVRScript) (err error) {
+	return nil
+}
+
 type VoiceInputModule struct {
 	module
 	VoicePromptIDs ModulePrompts
@@ -321,4 +359,8 @@ type VoiceInputModule struct {
 		StringValue            string
 		VariableName           string
 	}
+}
+
+func (module *VoiceInputModule) Normalize(s *IVRScript) error {
+	return s.normalizePrompt(module.VoicePromptIDs)
 }

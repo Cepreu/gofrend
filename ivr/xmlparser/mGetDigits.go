@@ -8,11 +8,7 @@ import (
 	"github.com/Cepreu/gofrend/ivr"
 )
 
-type xmlGetDigitsModule struct {
-	m *ivr.GetDigitsModule
-}
-
-func newGetDigitsModule(decoder *xml.Decoder, sp ivr.ScriptPrompts) normalizer {
+func newGetDigitsModule(decoder *xml.Decoder, sp ivr.ScriptPrompts) ivr.Module {
 	var (
 		inModule = true
 		pModule  = new(ivr.GetDigitsModule)
@@ -81,9 +77,5 @@ func newGetDigitsModule(decoder *xml.Decoder, sp ivr.ScriptPrompts) normalizer {
 		}
 	}
 
-	return xmlGetDigitsModule{pModule}
-}
-
-func (module xmlGetDigitsModule) normalize(s *ivr.IVRScript) error {
-	return normalizePrompt(s, module.m.VoicePromptIDs)
+	return pModule
 }

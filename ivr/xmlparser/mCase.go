@@ -7,11 +7,7 @@ import (
 	"github.com/Cepreu/gofrend/ivr"
 )
 
-type xmlCaseModule struct {
-	m *ivr.CaseModule
-}
-
-func newCaseModule(decoder *xml.Decoder) normalizer {
+func newCaseModule(decoder *xml.Decoder) ivr.Module {
 	var (
 		pCase    = new(ivr.CaseModule)
 		inModule = true
@@ -37,7 +33,5 @@ func newCaseModule(decoder *xml.Decoder) normalizer {
 			}
 		}
 	}
-	return xmlCaseModule{pCase}
+	return pCase
 }
-
-func (xmlCaseModule) normalize(*ivr.IVRScript) error { return nil }

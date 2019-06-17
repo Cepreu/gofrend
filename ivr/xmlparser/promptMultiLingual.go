@@ -8,8 +8,8 @@ import (
 	"github.com/Cepreu/gofrend/utils"
 )
 
-func parseMultilanguagePrompts(s *ivr.IVRScript, decoder *xml.Decoder) (*MultilingualPrompt, error) {
-	pml := new(MultilingualPrompt)
+func parseMultilanguagePrompts(s *ivr.IVRScript, decoder *xml.Decoder) (*ivr.MultilingualPrompt, error) {
+	pml := new(ivr.MultilingualPrompt)
 	pml.Prompts = make(map[ivr.LangCode][]ivr.PromptID)
 	inDescription, inType, inName, inPromptID, inPrompts, inDefaultLanguage := false, false, false, false, false, false
 

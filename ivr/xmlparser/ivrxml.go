@@ -9,24 +9,23 @@ import (
 	"golang.org/x/net/html/charset"
 )
 
-var xMLPrompts []*MultilingualPrompt
-
 //NewIVRScript - Parsing of the getIVRResponse received from Five9 Config web service
 func NewIVRScript(src io.Reader) (*ivr.IVRScript, error) {
+	s := &ivr.IVRScript{
+		Prompts:   make(ivr.ScriptPrompts),
+		Variables: make(ivr.Variables),
+	}
+
+	decoder := xml.NewDecoder(src)
+	decoder.CharsetReader = charset.NewReaderLabel
 
 	var (
-		s = &ivr.IVRScript{
-			Prompts:   make(ivr.ScriptPrompts),
-			Variables: make(ivr.Variables),
-		}
-		xmlModules         []normalizer
-		xmlModulesOnHangup []normalizer
-		decoder            = xml.NewDecoder(src)
-		inMLPrompts        = false
-		inMLMenuChoices    = false
-		inDomainID         = false
+		//		inVariables     = false
+		inMLPrompts = false
+		//		inMLVIVRPrompts = false
+		inMLMenuChoices = false
+		inDomainID      = false
 	)
-	decoder.CharsetReader = charset.NewReaderLabel
 	for {
 		t, err := decoder.Token()
 		if err == io.EOF {
@@ -44,9 +43,9 @@ func NewIVRScript(src io.Reader) (*ivr.IVRScript, error) {
 			if v.Name.Local == "domainId" {
 				inDomainID = true
 			} else if v.Name.Local == "modules" {
-				xmlModules = parseModules(s, decoder, &v)
+				s.Modules = parseModules(s, decoder, &v)
 			} else if v.Name.Local == "modulesOnHangup" {
-				xmlModulesOnHangup = parseModules(s, decoder, &v)
+				s.ModulesOnHangup = parseModules(s, decoder, &v)
 			} else if v.Name.Local == "userVariables" {
 				parseVars(s.Variables, decoder)
 			} else if v.Name.Local == "multiLanguagesVIVRPrompts" {
@@ -59,7 +58,7 @@ func NewIVRScript(src io.Reader) (*ivr.IVRScript, error) {
 					fmt.Printf("parseMLPrompt() failed with '%s'\n", err)
 					break
 				} else {
-					xMLPrompts = append(xMLPrompts, mlp)
+					s.MLPrompts = append(s.MLPrompts, mlp)
 				}
 				// mlMenuChoices <---
 			} else if v.Name.Local == "multiLanguagesMenuChoices" {
@@ -103,13 +102,21 @@ func NewIVRScript(src io.Reader) (*ivr.IVRScript, error) {
 			}
 		}
 	}
-
-	for _, module := range xmlModules {
-		module.normalize(s)
-	}
-	for _, module := range xmlModulesOnHangup {
-		module.normalize(s)
+	finalization(s)
+	///////TBD - debug, delete/////
+	for vname, vval := range s.Variables {
+		fmt.Println("=====", vname, vval)
 	}
 
 	return s, nil
+}
+
+func finalization(s *ivr.IVRScript) error {
+	for _, module := range s.Modules {
+		module.Normalize(s)
+	}
+	for _, module := range s.ModulesOnHangup {
+		module.Normalize(s)
+	}
+	return nil
 }

@@ -8,11 +8,7 @@ import (
 	"github.com/Cepreu/gofrend/ivr"
 )
 
-type xmlPlayModule struct {
-	m *ivr.PlayModule
-}
-
-func newPlayModule(decoder *xml.Decoder, sp ivr.ScriptPrompts) normalizer {
+func newPlayModule(decoder *xml.Decoder, sp ivr.ScriptPrompts) ivr.Module {
 	var pPM = new(ivr.PlayModule)
 
 F:
@@ -58,9 +54,5 @@ F:
 		}
 	}
 
-	return xmlPlayModule{pPM}
-}
-
-func (module xmlPlayModule) normalize(s *ivr.IVRScript) error {
-	return normalizePrompt(s, module.m.VoicePromptIDs)
+	return pPM
 }

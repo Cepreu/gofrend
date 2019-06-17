@@ -7,11 +7,7 @@ import (
 	"github.com/Cepreu/gofrend/ivr"
 )
 
-type xmlHangupModule struct {
-	s *ivr.HangupModule
-}
-
-func newHangupModule(decoder *xml.Decoder) normalizer {
+func newHangupModule(decoder *xml.Decoder) ivr.Module {
 	var (
 		inModule = true
 		pHM      = new(ivr.HangupModule)
@@ -48,9 +44,5 @@ func newHangupModule(decoder *xml.Decoder) normalizer {
 			}
 		}
 	}
-	return xmlHangupModule{pHM}
-}
-
-func (xmlHangupModule) normalize(*ivr.IVRScript) error {
-	return nil
+	return pHM
 }
