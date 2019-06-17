@@ -6,7 +6,7 @@ import (
 	"strings"
 	"text/template"
 
-	"github.com/Cepreu/gofrend/xmlparser"
+	"github.com/Cepreu/gofrend/ivrparser"
 	"github.com/Cepreu/gofrend/utils"
 	"github.com/clbanning/mxj"
 	"github.com/davecgh/go-spew/spew"
@@ -80,7 +80,7 @@ func convertIVRResults(soapResponse *mxj.Map) (*IvrScriptDef, error) {
 		return nil, err
 	}
 	go func() {
-		IVR, err := xmlparser.NewIVRScript(strings.NewReader(result.XMLDefinition))
+		IVR, err := ivrparser.NewIVRScript(strings.NewReader(result.XMLDefinition))
 		err = utils.PrettyPrint(IVR)
 		fmt.Println(">========== PrettyPrint =========>>>", err)
 	}()

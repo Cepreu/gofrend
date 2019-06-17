@@ -8,7 +8,7 @@ import (
 	"testing"
 
 	dialogflow "cloud.google.com/go/dialogflow/apiv2"
-	ivr "github.com/Cepreu/gofrend/xmlparser"
+	ivr "github.com/Cepreu/gofrend/ivrparser"
 	"github.com/Cepreu/gofrend/utils"
 	"google.golang.org/api/option"
 	dialogflowpb "google.golang.org/genproto/googleapis/cloud/dialogflow/v2"

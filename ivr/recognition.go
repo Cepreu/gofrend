@@ -1,24 +1,24 @@
 package ivr
 
-type RecoType string
+type recoevent string
 
 const (
-	eventNoMatch RecoType = "NO_MATCH"
-	eventNoInput RecoType = "NO_INPUT"
-	eventHelp    RecoType = "HELP"
+	eventNoMatch recoevent = "NO_MATCH"
+	eventNoInput recoevent = "NO_INPUT"
+	eventHelp    recoevent = "HELP"
 )
 
-type RecoAction string
+type recoaction string
 
 const (
-	actionContinue RecoAction = "CONTINUE"
-	actionReprompt RecoAction = "REPROMPT"
-	actionExit     RecoAction = "EXIT"
+	actionContinue recoaction = "CONTINUE"
+	actionReprompt recoaction = "REPROMPT"
+	actionExit     recoaction = "EXIT"
 )
 
 // RecoEvent - recognition event
 type RecoEvent struct {
-	Event          RecoType
-	Action         RecoAction
+	Event          recoevent
+	Action         recoaction
 	CountAndPrompt AttemptPrompts
 }

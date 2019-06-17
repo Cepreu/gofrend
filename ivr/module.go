@@ -1,15 +1,12 @@
 package ivr
 
-import (
-	"github.com/Cepreu/gofrend/utils"
-)
+import "github.com/Cepreu/gofrend/utils"
 
 // Module - parsed ivr module
 type Module interface {
 	GetID() ModuleID
 	GetDescendant() ModuleID
-	Normalize(*IVRScript) error
-	SetGeneralInfo(string, ModuleID, []ModuleID, ModuleID, ModuleID, string, bool)
+	normalize(*IVRScript) error
 }
 
 // ModuleID - the IVR module's ID, string
@@ -28,18 +25,6 @@ type module struct {
 // GetID - returns ID if the module
 func (m *module) GetID() ModuleID {
 	return m.ID
-}
-
-func (m *module) SetGeneralInfo(name string, id ModuleID,
-	ascendants []ModuleID, descendant ModuleID, exceptionalDesc ModuleID,
-	dispo string, collapsible bool) {
-	m.ID = id
-	m.Ascendants = ascendants
-	m.Descendant = descendant
-	m.ExceptionalDesc = exceptionalDesc
-	m.Name = name
-	m.Dispo = dispo
-	m.Collapsible = collapsible
 }
 
 // GetDescendant - returns ID if the module's descendant
@@ -76,15 +61,15 @@ func (*CaseModule) transformToAI() string {
 	return ""
 }
 
-func (*CaseModule) Normalize(*IVRScript) error { return nil }
+func (*CaseModule) normalize(*IVRScript) error { return nil }
 
 type ForeignScriptModule struct {
 	module
 	IvrScript        string
 	PassCRM          bool
 	ReturnCRM        bool
-	Parameters       []KeyValueParametrized
-	ReturnParameters []KeyValue
+	Parameters       []keyValueParametrized
+	ReturnParameters []keyValue
 	IsConsistent     bool
 }
 
@@ -92,7 +77,7 @@ func (*ForeignScriptModule) transformToAI() string {
 	return ""
 }
 
-func (*ForeignScriptModule) Normalize(*IVRScript) error { return nil }
+func (*ForeignScriptModule) normalize(*IVRScript) error { return nil }
 
 type GetDigitsModule struct {
 	module
@@ -110,7 +95,7 @@ type GetDigitsModule struct {
 	}
 }
 
-func (module *GetDigitsModule) Normalize(s *IVRScript) error {
+func (module *GetDigitsModule) normalize(s *IVRScript) error {
 	return s.normalizePrompt(module.VoicePromptIDs)
 }
 
@@ -118,12 +103,12 @@ type HangupModule struct {
 	module
 	Return2Caller bool
 
-	ErrCode       Parametrized
-	ErrDescr      Parametrized
+	ErrCode       parametrized
+	ErrDescr      parametrized
 	OverwriteDisp bool
 }
 
-func (*HangupModule) Normalize(*IVRScript) error {
+func (*HangupModule) normalize(*IVRScript) error {
 	return nil
 }
 
@@ -139,13 +124,13 @@ func (*IfElseModule) transformToAI() string {
 	return ""
 }
 
-func (*IfElseModule) Normalize(*IVRScript) error { return nil }
+func (*IfElseModule) normalize(*IVRScript) error { return nil }
 
 type IncomingCallModule struct {
 	module
 }
 
-func (*IncomingCallModule) Normalize(*IVRScript) error {
+func (*IncomingCallModule) normalize(*IVRScript) error {
 	return nil
 }
 
@@ -181,7 +166,7 @@ type InputModule struct {
 	ConfData *ConfirmData
 }
 
-func (module *InputModule) Normalize(s *IVRScript) error {
+func (module *InputModule) normalize(s *IVRScript) error {
 	return s.normalizePrompt(module.VoicePromptIDs)
 }
 
@@ -210,10 +195,10 @@ type MenuModule struct {
 	}
 }
 
-func (module *MenuModule) Normalize(s *IVRScript) error {
+func (module *MenuModule) normalize(s *IVRScript) error {
 	s.normalizePrompt(module.VoicePromptIDs)
 	for i := range module.Items {
-		s.NormalizeAttemptPrompt(&module.Items[i].Prompt, false)
+		s.normalizeAttemptPrompt(&module.Items[i].Prompt, false)
 	}
 	return nil
 }
@@ -233,7 +218,7 @@ type PlayModule struct {
 	}
 }
 
-func (module *PlayModule) Normalize(s *IVRScript) error {
+func (module *PlayModule) normalize(s *IVRScript) error {
 	return s.normalizePrompt(module.VoicePromptIDs)
 }
 
@@ -249,23 +234,23 @@ type (
 		FetchTimeout                         int
 		StoreNumberOfArrayElementsInVariable bool
 
-		Parameters       []KeyValueParametrized
-		ReturnValues     []KeyValue
-		URLParts         []*Parametrized
-		RequestInfo      RequestInfo
-		Headers          []KeyValueParametrized
+		Parameters       []keyValueParametrized
+		ReturnValues     []keyValue
+		URLParts         []*parametrized
+		RequestInfo      requestInfo
+		Headers          []keyValueParametrized
 		RequestBodyType  string
 		SaveStatusCode   bool
 		SaveReasonPhrase bool
-		ResponseInfos    []*ResponseInfo
+		ResponseInfos    []*responseInfo
 	}
 
-	KeyValue struct {
+	keyValue struct {
 		Key   string
 		Value string
 	}
 
-	ResponseInfo struct {
+	responseInfo struct {
 		HTTPCodeFrom  int
 		HTTPCodeTo    int
 		ParsingMethod string
@@ -280,56 +265,56 @@ type (
 		}
 		TargetVariables []string
 	}
-	RequestInfo struct {
+	requestInfo struct {
 		Template     string
-		Base64       string
-		Replacements []*Replacement
+		base64       string
+		Replacements []*replacement
 	}
-	Replacement struct {
+	replacement struct {
 		Position     int
 		VariableName string
 	}
 )
 
-func (module *QueryModule) Normalize(s *IVRScript) error {
+func (module *QueryModule) normalize(s *IVRScript) error {
 	err := s.normalizePrompt(module.VoicePromptIDs)
 	if err != nil {
 		return err
 	}
-	module.RequestInfo.Template, err = utils.CmdUnzip(module.RequestInfo.Base64)
+	module.RequestInfo.Template, err = utils.CmdUnzip(module.RequestInfo.base64)
 	return err
 }
 
 type (
 	SetVariableModule struct {
 		module
-		Exprs []*Expression
+		Exprs []*expression
 	}
 
-	Expression struct {
+	expression struct {
 		Lval   string
 		IsFunc bool
-		Rval   Assigner
+		Rval   assigner
 	}
 
-	Assigner struct {
-		P *Parametrized
-		F *IvrFuncInvocation
+	assigner struct {
+		P *parametrized
+		F *ivrFuncInvocation
 	}
 
-	IvrFunc struct {
+	ivrFunc struct {
 		Name       string
 		ReturnType string
 		ArgTypes   []string
 	}
 
-	IvrFuncInvocation struct {
-		FuncDef IvrFunc
-		Params  []*Parametrized
+	ivrFuncInvocation struct {
+		FuncDef ivrFunc
+		Params  []*parametrized
 	}
 )
 
-func (module *SetVariableModule) Normalize(s *IVRScript) (err error) {
+func (module *SetVariableModule) normalize(s *IVRScript) (err error) {
 	return nil
 }
 
@@ -361,6 +346,6 @@ type VoiceInputModule struct {
 	}
 }
 
-func (module *VoiceInputModule) Normalize(s *IVRScript) error {
+func (module *VoiceInputModule) normalize(s *IVRScript) error {
 	return s.normalizePrompt(module.VoicePromptIDs)
 }

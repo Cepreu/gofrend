@@ -2,14 +2,14 @@ package ivr
 
 import "github.com/Cepreu/gofrend/vars"
 
-type Parametrized struct {
+type parametrized struct {
 	VariableName string
 	Value        vars.Value
 }
 
-func (p *Parametrized) IsVarSelected() bool { return p.VariableName != "" }
+func (p *parametrized) IsVarSelected() bool { return p.VariableName != "" }
 
-type KeyValueParametrized struct {
+type keyValueParametrized struct {
 	Key   string
-	Value *Parametrized
+	Value *parametrized
 }

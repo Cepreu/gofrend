@@ -2,44 +2,38 @@ package ivr
 
 import "github.com/Cepreu/gofrend/vars"
 
-type (
-	IVRScript struct {
-		Domain          string
-		Properties      string
-		Modules         map[ModuleID]Module
-		ModulesOnHangup map[ModuleID]Module
-		Prompts         ScriptPrompts
-		MLPrompts       []*MultilingualPrompt
-		MLChoices       []*MultilanguageMenuChoice
-		Variables       Variables
-		Languages       []Language
-		JSFunctions     []*JsFunction
-		Menus           []ModuleID
-	}
+type IVRScript struct {
+	Domain          string
+	Properties      string
+	Modules         map[ModuleID]Module
+	ModulesOnHangup map[ModuleID]Module
+	Prompts         ScriptPrompts
+	MLPrompts       []*multilingualPrompt
+	MLChoices       []*multilanguageMenuChoice
+	Variables       variables
+	Languages       []language
+	Menus           []ModuleID
+}
 
-	ScriptPrompts map[PromptID]prompt
+type ScriptPrompts map[PromptID]prompt
 
-	Variables map[string]*vars.Variable
+type variables map[string]*vars.Variable
 
-	Languages struct {
-		Langs []Language `xml:"languages"`
-	}
-	Language struct {
-		Lang     LangCode `xml:"lang"`
-		TtsLang  LangCode `xml:"ttsLanguage"`
-		TtsVoice string   `xml:"ttsVoice"`
-	}
-	JsFunction struct {
-		JsFunctionID string
-		Description  string
-		ReturnType   string //varType
-		Name         string
-		Arguments    []*FuncArgument
-		FuncBody     string
-	}
-	FuncArgument struct {
-		Name        string
-		Description string
-		ArgType     string
-	}
-)
+type xUserVariable struct {
+	Key           string `xml:"key"`
+	Name          string `xml:"value>name"`
+	Description   string `xml:"value>description"`
+	StringValue   string `xml:"value>stringValue>value"`
+	StringValueID int32  `xml:"value>stringValue>id"`
+	Attributes    int32  `xml:"value>attributes"`
+	IsNullValue   bool   `xml:"isNullValue"`
+}
+
+type languages struct {
+	Langs []language `xml:"languages"`
+}
+type language struct {
+	Lang     langCode `xml:"lang"`
+	TtsLang  langCode `xml:"ttsLanguage"`
+	TtsVoice string   `xml:"ttsVoice"`
+}

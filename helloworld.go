@@ -12,7 +12,7 @@ import (
 	"io/ioutil"
 	"os"
 
-	"github.com/Cepreu/gofrend/xmlparser"
+	"github.com/Cepreu/gofrend/IVRParser"
 	"github.com/Cepreu/gofrend/web"
 )
 
@@ -30,7 +30,7 @@ qb6tJRiWEtUfBwsMyMCk1z1d/F2v556x9yNYuDLkmwPyUQXXpOrDuVIVgVIDHRpXgoedDAx3AeNl
 
 	// Cmd(base64Text)
 	//	zlibbing(base64Text)
-	xmlparser.ParseIVR(strings.NewReader("<ivrScript/>"))
+	IVRParser.ParseIVR(strings.NewReader("<ivrScript/>"))
 	web.RunServer()
 }
 
