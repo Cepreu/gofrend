@@ -11,7 +11,8 @@ import (
 	dialogflowpb "google.golang.org/genproto/googleapis/cloud/dialogflow/v2"
 )
 
-func handleWebhook(w http.ResponseWriter, r *http.Request) {
+// HandleWebhook performs DialogFlow fulfillment for the F9 Agent
+func HandleWebhook(w http.ResponseWriter, r *http.Request) {
 	fname := "ivr_scripts/is_large_test.five9ivr"
 	f, _ := os.Open(fname)
 	script, _ := ivr.NewIVRScript(bufio.NewReader(f))
