@@ -1,13 +1,10 @@
 module github.com/Cepreu/gofrend
 
-go 1.12
-
 require (
 	cloud.google.com/go v0.40.0
 	github.com/clbanning/mxj v1.8.4
 	github.com/davecgh/go-spew v1.1.1
 	github.com/golang/protobuf v1.3.1
-	github.com/gorilla/mux v1.7.2
 	github.com/kr/pretty v0.1.0 // indirect
 	github.com/mitchellh/mapstructure v1.1.2
 	github.com/satori/go.uuid v1.2.0
