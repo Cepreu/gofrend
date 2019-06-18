@@ -22,15 +22,6 @@ func TestHash(t *testing.T) {
 	}
 }
 
-func TestUUID(t *testing.T) {
-	uid, err := GenUUIDv4()
-	if err != nil {
-		t.Error("Error while UUID generation")
-	} else {
-		t.Logf("\nTestUUID: generated id is: %s\n", uid)
-	}
-}
-
 func TestDirectory(t *testing.T) {
 	if CreateAgentDirectory("1111111", "myIVR2") != true {
 		t.Fatal("directory was not created!!!!")
