@@ -1,13 +1,13 @@
 package xmlparser
 
 import (
+	"encoding/json"
 	"encoding/xml"
-	"reflect"
 	"strings"
 	"testing"
 
 	"github.com/Cepreu/gofrend/ivr"
-	"github.com/Cepreu/gofrend/vars"
+	"github.com/Cepreu/gofrend/ivr/vars"
 	"golang.org/x/net/html/charset"
 )
 
@@ -227,8 +227,12 @@ func TestSetVariables(t *testing.T) {
 	if expected.GetDescendant() != mhu.GetDescendant() {
 		t.Errorf("\nSetVariables module: \"%s\" was expected, in reality: \"%s\"", expected.GetDescendant(), mhu.GetDescendant())
 	}
-	if false == reflect.DeepEqual(&expected, mhu) {
-		t.Errorf("\nSetVariables module: \n%v \nwas expected, in reality: \n%v", expected, mhu)
+
+	exp, err1 := json.MarshalIndent(expected, "", "  ")
+	setv, err2 := json.MarshalIndent(mhu, "", "  ")
+
+	if err1 != nil || err2 != nil || string(exp) != string(setv) {
+		t.Errorf("\nSetVariables module: \n%s \nwas expected, in reality: \n%s", string(exp), string(setv))
 	}
 
 }

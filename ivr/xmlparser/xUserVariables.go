@@ -6,7 +6,7 @@ import (
 	"strconv"
 
 	"github.com/Cepreu/gofrend/ivr"
-	"github.com/Cepreu/gofrend/vars"
+	"github.com/Cepreu/gofrend/ivr/vars"
 )
 
 func parseVars(vs ivr.Variables, decoder *xml.Decoder) (err error) {

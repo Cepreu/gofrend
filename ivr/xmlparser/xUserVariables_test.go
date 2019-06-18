@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	"github.com/Cepreu/gofrend/ivr"
-	"github.com/Cepreu/gofrend/vars"
+	"github.com/Cepreu/gofrend/ivr/vars"
 
 	"golang.org/x/net/html/charset"
 )

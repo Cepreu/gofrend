@@ -4,7 +4,7 @@ import (
 	"encoding/xml"
 
 	"github.com/Cepreu/gofrend/ivr"
-	"github.com/Cepreu/gofrend/vars"
+	"github.com/Cepreu/gofrend/ivr/vars"
 )
 
 func IsVarSelected(p *ivr.Parametrized) bool { return p.VariableName != "" }

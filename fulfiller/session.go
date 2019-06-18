@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/Cepreu/gofrend/vars"
+	"github.com/Cepreu/gofrend/ivr/vars"
 )
 
 // Session contains data stored by webhook between sessions.

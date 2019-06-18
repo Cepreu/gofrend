@@ -12,7 +12,7 @@ import (
 	"io/ioutil"
 	"os"
 
-	"github.com/Cepreu/gofrend/xmlparser"
+	"github.com/Cepreu/gofrend/ivr/xmlparser"
 	"github.com/Cepreu/gofrend/web"
 )
 
