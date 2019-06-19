@@ -67,6 +67,9 @@ func HandleWebhook(w http.ResponseWriter, r *http.Request) {
 
 func getModuleByID(script *ivr.IVRScript, ID string) (m ivr.Module) { // probably an unnecessary function
 	log.Print(ID) //Debug
+	for modID := range script.Modules {
+		log.Print(string(modID))
+	}
 	m, ok := script.Modules[ivr.ModuleID(ID)]
 	if !ok {
 		log.Print("No match.") //Debug
