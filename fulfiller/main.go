@@ -65,16 +65,14 @@ func HandleWebhook(w http.ResponseWriter, r *http.Request) {
 	//Need to implement storing session
 }
 
-func getModuleByID(script *ivr.IVRScript, ID string) ivr.Module {
+func getModuleByID(script *ivr.IVRScript, ID string) (m ivr.Module) { // probably an unnecessary function
 	log.Print(ID) //Debug
-	for i, m := range script.Modules {
-		log.Print(i, string(m.GetID())) //Debug
-		if string(m.GetID()) == ID {
-			return m
-		}
+	m, ok := script.Modules[ivr.ModuleID(ID)]
+	if !ok {
+		log.Print("No match.") //Debug
+		return nil
 	}
-	log.Print("No match.")
-	return nil
+	return m
 }
 
 func isInputOrMenu(module ivr.Module) bool {
