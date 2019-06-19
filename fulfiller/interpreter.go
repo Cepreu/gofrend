@@ -72,17 +72,21 @@ func (interpreter *Interpreter) processIfElse(module *ivr.IfElseModule) (next iv
 
 func populateCondition(condition *ivr.Condition, variables map[string]*vars.Variable) {
 	varName := condition.LeftOperand.VariableName
-	variable, ok := variables[varName]
-	if !ok {
-		log.Fatalf("Error finding session variable with name: %s", varName)
+	if varName != "" { // varName is empty if comparison is against constant
+		variable, ok := variables[varName]
+		if !ok {
+			log.Fatalf("Error finding session variable with name: %s", varName)
+		}
+		condition.LeftOperand.Value = variable.Value
 	}
-	condition.LeftOperand.Value = variable.Value
 	varName = condition.RightOperand.VariableName
-	variable, ok = variables[varName]
-	if !ok {
-		log.Fatalf("Error finding session variable with name: %s", varName)
+	if varName != "" {
+		variable, ok := variables[varName]
+		if !ok {
+			log.Fatalf("Error finding session variable with name: %s", varName)
+		}
+		condition.RightOperand.Value = variable.Value
 	}
-	condition.RightOperand.Value = variable.Value
 }
 
 func passes(condition *ivr.Condition) bool {

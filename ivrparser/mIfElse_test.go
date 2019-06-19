@@ -6,6 +6,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/Cepreu/gofrend/utils"
 	"github.com/Cepreu/gofrend/vars"
 	"golang.org/x/net/html/charset"
 )
@@ -87,6 +88,7 @@ func TestIfElse(t *testing.T) {
 		t.Fatal("IfElse module wasn't parsed...")
 	}
 	var mie = res.(*IfElseModule)
+	utils.PrettyPrint(mie)
 	var expected = &IfElseModule{
 		GeneralInfo: GeneralInfo{
 			ID:         "EEC8BE771FBC4E659AC3CA54F4FBEBF4",
