@@ -14,9 +14,7 @@ import (
 
 // HandleWebhook performs DialogFlow fulfillment for the F9 Agent
 func HandleWebhook(w http.ResponseWriter, r *http.Request) {
-	fname := "ivr_scripts/is_large_test.five9ivr"
-	f, _ := os.Open(fname)
-	script, _ := ivr.NewIVRScript(bufio.NewReader(f))
+	script := getScript("ivr_scripts/is_large_test.five9ivr")
 
 	wr := dialogflowpb.WebhookRequest{}
 	err := jsonpb.Unmarshal(r.Body, &wr)
@@ -64,6 +62,18 @@ func HandleWebhook(w http.ResponseWriter, r *http.Request) {
 	marshaler.Marshal(w, interpreter.WebhookResponse)
 
 	//Need to implement storing session
+}
+
+func getScript(fname string) *ivr.IVRScript {
+	f, err := os.Open(fname)
+	if err != nil {
+		log.Panic(err)
+	}
+	script, err := ivr.NewIVRScript(bufio.NewReader(f))
+	if err != nil {
+		log.Panic(err)
+	}
+	return script
 }
 
 func getModuleByID(script *ivr.IVRScript, ID string) (m ivr.Module) { // probably an unnecessary function
