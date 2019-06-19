@@ -65,6 +65,8 @@ func HandleWebhook(w http.ResponseWriter, r *http.Request) {
 }
 
 func getScript(fname string) *ivr.IVRScript {
+	dir, _ := os.Getwd()
+	log.Print(dir)
 	f, err := os.Open(fname)
 	if err != nil {
 		log.Panic(err)
