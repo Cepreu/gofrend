@@ -49,6 +49,7 @@ func (interpreter *Interpreter) processInputInitial(module *ivr.InputModule) ivr
 func (interpreter *Interpreter) processIfElse(module *ivr.IfElseModule) (next ivr.Module) {
 	var conditionsPass bool
 	conditions := module.BranchIf.Cond.Conditions
+	log.Printf("Condition grouping: %s", module.BranchIf.Cond.ConditionGrouping)
 	switch module.BranchIf.Cond.ConditionGrouping {
 	case "ALL":
 		conditionsPass = true
