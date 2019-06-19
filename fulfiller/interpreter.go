@@ -83,6 +83,7 @@ func populateCondition(condition *ivr.Condition, variables map[string]*vars.Vari
 }
 
 func passes(condition *ivr.Condition) bool {
+	log.Printf("Comparison Type: %s", condition.ComparisonType)
 	switch condition.ComparisonType {
 	case "MORE_THAN":
 		var left float64
