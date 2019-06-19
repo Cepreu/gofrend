@@ -7,6 +7,7 @@ import (
 	"os"
 
 	ivr "github.com/Cepreu/gofrend/ivrparser"
+	"github.com/Cepreu/gofrend/utils"
 	"github.com/golang/protobuf/jsonpb"
 	dialogflowpb "google.golang.org/genproto/googleapis/cloud/dialogflow/v2"
 )
@@ -68,11 +69,13 @@ func HandleWebhook(w http.ResponseWriter, r *http.Request) {
 func getModuleByID(script *ivr.IVRScript, ID string) (m ivr.Module) { // probably an unnecessary function
 	log.Print(ID) //Debug
 	for modID := range script.Modules {
+		log.Print("This is a module.")
 		log.Print(string(modID))
 	}
 	m, ok := script.Modules[ivr.ModuleID(ID)]
 	if !ok {
 		log.Print("No match.") //Debug
+		utils.PrettyLog(script.Modules)
 		return nil
 	}
 	return m
