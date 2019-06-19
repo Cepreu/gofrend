@@ -187,7 +187,7 @@ func input2intent(ivrScript *ivr.IVRScript, input *ivr.InputModule) (intent *dia
 					&dialogflowpb.Intent_TrainingPhrase_Part{
 						Text:        "1",
 						EntityType:  "@sys.number",
-						Alias:       "value",
+						Alias:       "Value",
 						UserDefined: true,
 					},
 				},
@@ -202,7 +202,7 @@ func input2intent(ivrScript *ivr.IVRScript, input *ivr.InputModule) (intent *dia
 					&dialogflowpb.Intent_TrainingPhrase_Part{
 						Text:        "2",
 						EntityType:  "@sys.number",
-						Alias:       "value",
+						Alias:       "Value",
 						UserDefined: true,
 					},
 				},
@@ -213,8 +213,8 @@ func input2intent(ivrScript *ivr.IVRScript, input *ivr.InputModule) (intent *dia
 		Parameters: []*dialogflowpb.Intent_Parameter{
 			{
 				Name:                  utils.GenUUIDv4(),
-				DisplayName:           "value",
-				Value:                 "$value",
+				DisplayName:           "Value",
+				Value:                 "$Value",
 				EntityTypeDisplayName: "@sys.number",
 				Mandatory:             true,
 			},
