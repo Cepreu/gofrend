@@ -103,6 +103,7 @@ func passes(condition *ivr.Condition) bool {
 		default:
 			log.Fatalf("Expected int or numeric in more than comparison, instead got: %T", v)
 		}
+		log.Printf("Left: %f, Right: %f.", left, right)
 		return left > right
 	}
 	return false
