@@ -172,7 +172,7 @@ func intentsGenerator(ivrScript *ivr.IVRScript) (intents []*dialogflowpb.Intent,
 
 func input2intent(ivrScript *ivr.IVRScript, input *ivr.InputModule) (intent *dialogflowpb.Intent, err error) {
 	intent = &dialogflowpb.Intent{
-		DisplayName: input.Name,
+		DisplayName: string(input.GetID()),
 		WebhookState: (dialogflowpb.Intent_WebhookState(
 			dialogflowpb.Intent_WebhookState_value["WEBHOOK_STATE_UNSPECIFIED"])),
 		Priority:          500000,

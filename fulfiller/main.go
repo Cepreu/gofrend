@@ -66,11 +66,14 @@ func HandleWebhook(w http.ResponseWriter, r *http.Request) {
 }
 
 func getModuleByID(script *ivr.IVRScript, ID string) ivr.Module {
-	for _, m := range script.Modules {
+	log.Print(ID) //Debug
+	for i, m := range script.Modules {
+		log.Print(i, string(m.GetID())) //Debug
 		if string(m.GetID()) == ID {
 			return m
 		}
 	}
+	log.Print("No match.")
 	return nil
 }
 
