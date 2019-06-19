@@ -103,7 +103,7 @@ func passes(condition *ivr.Condition) bool {
 			log.Fatalf("Expected int or numeric in more than comparison, instead got: %T", v)
 		}
 		var right float64
-		switch v := condition.LeftOperand.Value.(type) {
+		switch v := condition.RightOperand.Value.(type) {
 		case *vars.Integer:
 			right = float64(v.Value)
 		case *vars.Numeric:
