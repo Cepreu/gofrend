@@ -6,8 +6,12 @@ import (
 	"net/http"
 	"os"
 
+<<<<<<< HEAD
 	ivr "github.com/Cepreu/gofrend/ivrparser"
 	"github.com/Cepreu/gofrend/utils"
+=======
+	ivr "github.com/Cepreu/gofrend/ivr/xmlparser"
+>>>>>>> 8ffe0c172a3900f3340cffda428678c03bc5cb36
 	"github.com/golang/protobuf/jsonpb"
 	dialogflowpb "google.golang.org/genproto/googleapis/cloud/dialogflow/v2"
 )

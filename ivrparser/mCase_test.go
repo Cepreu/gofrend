@@ -1,12 +1,17 @@
 package ivrparser
 
 import (
+	"encoding/json"
 	"encoding/xml"
-	"reflect"
 	"strings"
 	"testing"
 
+<<<<<<< HEAD:ivrparser/mCase_test.go
 	"github.com/Cepreu/gofrend/vars"
+=======
+	"github.com/Cepreu/gofrend/ivr"
+	"github.com/Cepreu/gofrend/ivr/vars"
+>>>>>>> 8ffe0c172a3900f3340cffda428678c03bc5cb36:ivr/xmlparser/xCase_test.go
 	"golang.org/x/net/html/charset"
 )
 
@@ -142,6 +147,7 @@ func TestCase(t *testing.T) {
 			&OutputBranch{"No Match", "D7F8916C13384EE08A6109F54109307E", nil},
 		},
 	}
+<<<<<<< HEAD:ivrparser/mCase_test.go
 
 	if !reflect.DeepEqual(expected.GeneralInfo, mCase.GeneralInfo) ||
 		!reflect.DeepEqual(expected.Branches[3], mCase.Branches[3]) {
@@ -151,11 +157,15 @@ func TestCase(t *testing.T) {
 	if !reflect.DeepEqual(expected.Branches[0].Cond.Conditions[0].RightOperand, mCase.Branches[0].Cond.Conditions[0].RightOperand) {
 		t.Errorf("\nCase module, branch \"%s\": \n%v \nwas expected, in reality: \n%v", mCase.Branches[0].Name, expected.Branches[0].Cond.Conditions[0].RightOperand, mCase.Branches[0].Cond.Conditions[0].RightOperand)
 	}
+=======
+	expected.SetGeneralInfo("Case3", "D2CC05B0F6FC44F29B04C1C9E42DF732",
+		[]ivr.ModuleID{"368A8C40D5AD48668FB2DC7ED894B3BA"}, "", "", "", "false")
 
-	if !reflect.DeepEqual(expected.Branches[1].Cond.Conditions[0], mCase.Branches[1].Cond.Conditions[0]) {
-		t.Errorf("\nCase module, branch \"%s\": \n%v \nwas expected, in reality: \n%v", mCase.Branches[1].Name, expected.Branches[0].Cond.Conditions[0], mCase.Branches[1].Cond.Conditions[0])
-	}
-	if !reflect.DeepEqual(expected.Branches[2].Cond.Conditions[0], mCase.Branches[2].Cond.Conditions[0]) {
-		t.Errorf("\nCase module, branch \"%s\": \n%v \nwas expected, in reality: \n%v", mCase.Branches[2].Name, expected.Branches[2].Cond.Conditions[0], mCase.Branches[2].Cond.Conditions[0])
+	exp, err1 := json.MarshalIndent(expected, "", "  ")
+	setv, err2 := json.MarshalIndent(mCase, "", "  ")
+>>>>>>> 8ffe0c172a3900f3340cffda428678c03bc5cb36:ivr/xmlparser/xCase_test.go
+
+	if err1 != nil || err2 != nil || string(exp) != string(setv) {
+		t.Errorf("\nCase module: \n%s \n\nwas expected, in reality: \n\n%s", string(exp), string(setv))
 	}
 }

@@ -6,7 +6,12 @@ import (
 	"strings"
 	"testing"
 
+<<<<<<< HEAD:ivrparser/userVariables_test.go
 	"github.com/Cepreu/gofrend/vars"
+=======
+	"github.com/Cepreu/gofrend/ivr"
+	"github.com/Cepreu/gofrend/ivr/vars"
+>>>>>>> 8ffe0c172a3900f3340cffda428678c03bc5cb36:ivr/xmlparser/xUserVariables_test.go
 
 	"golang.org/x/net/html/charset"
 )

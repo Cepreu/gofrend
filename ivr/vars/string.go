@@ -32,7 +32,7 @@ func (sval *String) new(strValue string) error {
 }
 
 //SetValue - helper function for parsing xml
-func (sval *String) SetValue(fieldName string, fieldStrValue string) (err error) {
+func (sval String) SetValue(fieldName string, fieldStrValue string) (err error) {
 	switch fieldName {
 	case "value":
 		sval.value = fieldStrValue
@@ -77,30 +77,30 @@ func NewString(v string, i int) *String {
 // 	}
 // 	return res, nil
 // }
-func (sval *String) toLong() (int64, error) {
-	return strconv.ParseInt(sval.value, 10, 64)
-}
+// func (sval *String) toLong() (int64, error) {
+// 	return strconv.ParseInt(sval.value, 10, 64)
+// }
 
-func (sval *String) String() string {
+func (sval String) String() string {
 	return sval.value
 }
 
-func (sval *String) toBigDecimal() (float64, error) {
-	return strconv.ParseFloat(sval.value, 64)
-}
+// func (sval *String) toBigDecimal() (float64, error) {
+// 	return strconv.ParseFloat(sval.value, 64)
+// }
 
-func (sval *String) toTime() (int, error) {
-	return vuStringToMinutes(sval.value)
-}
-func (sval *String) toDate() ([]int, error) {
-	if y, m, d, e := vuStringToDate(sval.value); e == nil {
-		return []int{y, m, d}, e
-	}
-	return nil, fmt.Errorf("Cannot convert \" %s\" to Date", sval.value)
-}
-func (*String) getType() VarType {
-	return VarString
-}
+// func (sval *String) toTime() (int, error) {
+// 	return vuStringToMinutes(sval.value)
+// }
+// func (sval String) toDate() ([]int, error) {
+// 	if y, m, d, e := vuStringToDate(sval.value); e == nil {
+// 		return []int{y, m, d}, e
+// 	}
+// 	return nil, fmt.Errorf("Cannot convert \" %s\" to Date", sval.value)
+// }
+// func (*String) getType() VarType {
+// 	return VarString
+// }
 
 ///////////
 func (sval String) isFileName() bool {
