@@ -90,7 +90,7 @@ func PrettyPrint(v interface{}) (err error) {
 
 // PrettyLog - logs golang structures
 func PrettyLog(v interface{}) (err error) {
-	b, err := json.MarshalIndent(v, "", "  ")
+	b, err := json.Marshal(v)
 	if err == nil {
 		log.Print(string(b))
 	}
