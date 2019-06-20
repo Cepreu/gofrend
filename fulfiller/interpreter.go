@@ -16,6 +16,46 @@ type Interpreter struct {
 	WebhookResponse *dialogflowpb.WebhookResponse
 }
 
+// Interpret - main interpreter loop
+func Interpret(wr dialogflowpb.WebhookRequest, script *ivr.IVRScript) *dialogflowpb.WebhookResponse {
+	sessionID := wr.Session
+	var session *Session
+	if sessionExists(sessionID) {
+		session = loadSession(sessionID)
+	} else {
+		session = initSession(script)
+	}
+
+	interpreter := &Interpreter{
+		Session:     session,
+		Script:      script,
+		QueryResult: wr.QueryResult,
+		WebhookResponse: &dialogflowpb.WebhookResponse{
+			FulfillmentMessages: []*dialogflowpb.Intent_Message{
+				{
+					Message: &dialogflowpb.Intent_Message_Text_{
+						Text: &dialogflowpb.Intent_Message_Text{
+							Text: []string{},
+						},
+					},
+				},
+			},
+			OutputContexts: wr.QueryResult.OutputContexts,
+		},
+	}
+
+	moduleID := wr.QueryResult.Intent.DisplayName
+	module := getModuleByID(script, string(moduleID))
+	if !isInputOrMenu(module) {
+		log.Fatalf("Expected input or menu module to start processing, instead got: %T", module)
+	}
+	module = interpreter.ProcessInitial(module)
+	for module != nil {
+		module = interpreter.Process(module)
+	}
+	return interpreter.WebhookResponse
+}
+
 // ProcessInitial process a module and returns the next module to be processed
 func (interpreter *Interpreter) ProcessInitial(module ivr.Module) ivr.Module {
 	switch v := module.(type) {

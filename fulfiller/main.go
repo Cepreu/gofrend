@@ -15,6 +15,7 @@ import (
 // HandleWebhook performs DialogFlow fulfillment for the F9 Agent
 func HandleWebhook(w http.ResponseWriter, r *http.Request) {
 	script := getScript("ivr_scripts/is_large_test.five9ivr")
+	utils.PrettyLog(script)
 
 	wr := dialogflowpb.WebhookRequest{}
 	err := jsonpb.Unmarshal(r.Body, &wr)
@@ -22,44 +23,10 @@ func HandleWebhook(w http.ResponseWriter, r *http.Request) {
 		log.Fatalf("Error unmarshalling dialogflow request: %v", err)
 	}
 
-	sessionID := wr.Session
-	var session *Session
-	if sessionExists(sessionID) {
-		session = loadSession(sessionID)
-	} else {
-		session = initSession(script)
-	}
-
-	interpreter := &Interpreter{
-		Session:     session,
-		Script:      script,
-		QueryResult: wr.QueryResult,
-		WebhookResponse: &dialogflowpb.WebhookResponse{
-			FulfillmentMessages: []*dialogflowpb.Intent_Message{
-				{
-					Message: &dialogflowpb.Intent_Message_Text_{
-						Text: &dialogflowpb.Intent_Message_Text{
-							Text: []string{},
-						},
-					},
-				},
-			},
-			OutputContexts: wr.QueryResult.OutputContexts,
-		},
-	}
-
-	moduleID := wr.QueryResult.Intent.DisplayName
-	module := getModuleByID(script, string(moduleID))
-	if !isInputOrMenu(module) {
-		log.Fatalf("Expected input or menu module to start processing, instead got: %T", module)
-	}
-	module = interpreter.ProcessInitial(module)
-	for module != nil {
-		module = interpreter.Process(module)
-	}
+	response := Interpret(wr, script)
 
 	marshaler := jsonpb.Marshaler{}
-	marshaler.Marshal(w, interpreter.WebhookResponse)
+	marshaler.Marshal(w, response)
 
 	//Need to implement storing session
 }
