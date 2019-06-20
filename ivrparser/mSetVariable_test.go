@@ -1,17 +1,12 @@
 package ivrparser
 
 import (
-	"encoding/json"
 	"encoding/xml"
+	"reflect"
 	"strings"
 	"testing"
 
-<<<<<<< HEAD:ivrparser/mSetVariable_test.go
 	"github.com/Cepreu/gofrend/vars"
-=======
-	"github.com/Cepreu/gofrend/ivr"
-	"github.com/Cepreu/gofrend/ivr/vars"
->>>>>>> 8ffe0c172a3900f3340cffda428678c03bc5cb36:ivr/xmlparser/xSetVariable_test.go
 	"golang.org/x/net/html/charset"
 )
 
@@ -234,16 +229,8 @@ func TestSetVariables(t *testing.T) {
 		},
 	}
 
-<<<<<<< HEAD:ivrparser/mSetVariable_test.go
 	if false == reflect.DeepEqual(&expected, mhu) {
 		t.Errorf("\nSetVariables module: \n%v \nwas expected, in reality: \n%v", expected, mhu)
-=======
-	exp, err1 := json.MarshalIndent(expected, "", "  ")
-	setv, err2 := json.MarshalIndent(mhu, "", "  ")
-
-	if err1 != nil || err2 != nil || string(exp) != string(setv) {
-		t.Errorf("\nSetVariables module: \n%s \nwas expected, in reality: \n%s", string(exp), string(setv))
->>>>>>> 8ffe0c172a3900f3340cffda428678c03bc5cb36:ivr/xmlparser/xSetVariable_test.go
 	}
 
 }

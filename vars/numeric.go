@@ -23,7 +23,7 @@ func NewNumeric(v float64) *Numeric {
 }
 
 //SetValue - helper function for parsing xml
-func (fval Numeric) SetValue(fieldName string, fieldStrValue string) (err error) {
+func (fval *Numeric) SetValue(fieldName string, fieldStrValue string) (err error) {
 	switch fieldName {
 	case "value":
 		fval.Value, err = strconv.ParseFloat(fieldStrValue, 64)

@@ -37,13 +37,8 @@ func (ival *Integer) new(strValue string) error {
 	return nil
 }
 
-<<<<<<< HEAD:vars/integer.go
 func (ival *Integer) String() string {
 	return fmt.Sprintf("{type=Integer}{value=%s}", ival.Value)
-=======
-func (ival Integer) String() string {
-	return fmt.Sprintf("{type=Integer}{value=%d}", ival.value)
->>>>>>> 8ffe0c172a3900f3340cffda428678c03bc5cb36:ivr/vars/integer.go
 }
 
 func (*Integer) getType() VarType {

@@ -1,8 +1,8 @@
 package ivrparser
 
 import (
-	"encoding/json"
 	"encoding/xml"
+	"reflect"
 	"strings"
 	"testing"
 
@@ -131,7 +131,6 @@ ckTTpV5Mvv8HvZuE1kYCAAA=</xml>
 		}{4, "#", false, 20, 2, "HHMMP"},
 	}
 
-<<<<<<< HEAD:ivrparser/mGetDigits_test.go
 	if false == reflect.DeepEqual(expected.InputInfo, mhu.InputInfo) {
 		t.Errorf("\nHangup module: \n%v \nwas expected, in reality: \n%v", expected.InputInfo, mhu.InputInfo)
 	}
@@ -140,15 +139,4 @@ ckTTpV5Mvv8HvZuE1kYCAAA=</xml>
 			expected.GeneralInfo, mhu.GeneralInfo)
 	}
 	// more sanity checking...
-=======
-	expected.SetGeneralInfo("Case3", "D2CC05B0F6FC44F29B04C1C9E42DF732",
-		[]ivr.ModuleID{"368A8C40D5AD48668FB2DC7ED894B3BA"}, "", "", "Caller Disconnected", "false")
-
-	exp, err1 := json.MarshalIndent(expected, "", "  ")
-	setv, err2 := json.MarshalIndent(mhu, "", "  ")
-
-	if err1 != nil || err2 != nil || string(exp) != string(setv) {
-		t.Errorf("\nCase module: \n%s \n\nwas expected, in reality: \n\n%s", string(exp), string(setv))
-	}
->>>>>>> 8ffe0c172a3900f3340cffda428678c03bc5cb36:ivr/xmlparser/xGetDigits_test.go
 }

@@ -1,6 +1,6 @@
 package ivr
 
-import "github.com/Cepreu/gofrend/ivr/vars"
+import "github.com/Cepreu/gofrend/vars"
 
 type IVRScript struct {
 	Domain          string

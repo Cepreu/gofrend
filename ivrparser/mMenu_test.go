@@ -1,7 +1,6 @@
 package ivrparser
 
 import (
-	"encoding/json"
 	"encoding/xml"
 	"reflect"
 	"strings"
@@ -647,24 +646,12 @@ hS0CAAA=</xml>
 		}{1, 5, 5},
 	}
 
-<<<<<<< HEAD:ivrparser/mMenu_test.go
 	//   if false == reflect.DeepEqual(expected.InputInfo, mmm.InputInfo) {
 	// 	t.Errorf("\nHangup module: \n%v \nwas expected, in reality: \n%v", expected.InputInfo, mmm.InputInfo)
 	// }
 	if false == reflect.DeepEqual(expected.GeneralInfo, mmm.GeneralInfo) {
 		t.Errorf("\nMenu module, general info: \n%v \nwas expected, in reality: \n%v",
 			expected.GeneralInfo, mmm.GeneralInfo)
-=======
-	if expected.GetID() != mmm.GetID() {
-		t.Errorf("\nMenu module, moduleID: \n%v \nwas expected, in reality: \n%v",
-			expected.GetID(), mmm.GetID())
->>>>>>> 8ffe0c172a3900f3340cffda428678c03bc5cb36:ivr/xmlparser/xMenu_test.go
 	}
 
-	exp, err1 := json.MarshalIndent(expected, "", "  ")
-	setv, err2 := json.MarshalIndent(mmm, "", "  ")
-
-	if err1 != nil || err2 != nil || string(exp) != string(setv) {
-		t.Errorf("\nMenu module: \n%s \n\nwas expected, in reality: \n\n%s", string(exp), string(setv))
-	}
 }

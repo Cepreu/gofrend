@@ -1,18 +1,13 @@
 package ivrparser
 
 import (
-	"encoding/json"
 	"encoding/xml"
+	"reflect"
 	"strings"
 	"testing"
 
-<<<<<<< HEAD:ivrparser/mIfElse_test.go
 	"github.com/Cepreu/gofrend/utils"
 	"github.com/Cepreu/gofrend/vars"
-=======
-	"github.com/Cepreu/gofrend/ivr"
-	"github.com/Cepreu/gofrend/ivr/vars"
->>>>>>> 8ffe0c172a3900f3340cffda428678c03bc5cb36:ivr/xmlparser/xIfElse_test.go
 	"golang.org/x/net/html/charset"
 )
 
@@ -123,22 +118,11 @@ func TestIfElse(t *testing.T) {
 		BranchElse: OutputBranch{Name: "ELSE", Descendant: "497089347DB34EB6A2C9E72518F75125"},
 	}
 
-<<<<<<< HEAD:ivrparser/mIfElse_test.go
 	if !reflect.DeepEqual(expected.GeneralInfo, mie.GeneralInfo) ||
 		!reflect.DeepEqual(expected.BranchElse, mie.BranchElse) ||
 		!reflect.DeepEqual(expected.BranchIf.Cond.Conditions[0], mie.BranchIf.Cond.Conditions[0]) ||
 		!reflect.DeepEqual(expected.BranchIf.Cond.Conditions[1], mie.BranchIf.Cond.Conditions[1]) ||
 		!reflect.DeepEqual(expected.BranchIf.Cond.Conditions[2], mie.BranchIf.Cond.Conditions[2]) {
 		t.Errorf("\nIfElse module: \n%v \nwas expected, in reality: \n%v", expected, mie)
-=======
-	expected.SetGeneralInfo("IfElse5", "EEC8BE771FBC4E659AC3CA54F4FBEBF4",
-		[]ivr.ModuleID{"E1149703A8E543BE93F142456FED91F6"}, "", "", "", "false")
-
-	exp, err1 := json.MarshalIndent(expected, "", "  ")
-	setv, err2 := json.MarshalIndent(mie, "", "  ")
-
-	if err1 != nil || err2 != nil || string(exp) != string(setv) {
-		t.Errorf("\nIfElse module: \n%s \n\nwas expected, in reality: \n\n%s", string(exp), string(setv))
->>>>>>> 8ffe0c172a3900f3340cffda428678c03bc5cb36:ivr/xmlparser/xIfElse_test.go
 	}
 }

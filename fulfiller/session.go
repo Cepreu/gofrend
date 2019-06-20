@@ -6,13 +6,9 @@ import (
 	"log"
 	"os"
 
-<<<<<<< HEAD
 	ivr "github.com/Cepreu/gofrend/ivrparser"
 	"github.com/Cepreu/gofrend/vars"
 	structpb "github.com/golang/protobuf/ptypes/struct"
-=======
-	"github.com/Cepreu/gofrend/ivr/vars"
->>>>>>> 8ffe0c172a3900f3340cffda428678c03bc5cb36
 )
 
 // Session contains data stored by webhook between sessions.

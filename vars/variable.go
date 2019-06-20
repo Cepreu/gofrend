@@ -54,7 +54,6 @@ type Value interface {
 
 // Variable - ivr variable description
 type Variable struct {
-<<<<<<< HEAD:vars/variable.go
 	name        string
 	Value       Value
 	Type        VarType
@@ -63,15 +62,6 @@ type Variable struct {
 	isNullValue bool
 	secured     bool
 	vtype       VarType
-=======
-	Name        string
-	Value       Value
-	Description string
-	Attributes  int
-	IsNullValue bool
-	Secured     bool
-	Vtype       VarType
->>>>>>> 8ffe0c172a3900f3340cffda428678c03bc5cb36:ivr/vars/variable.go
 }
 
 // NewVariable - Returns address of a new user variable, or <nil> if error
@@ -79,7 +69,7 @@ func NewVariable(name, descr string, attr int, isNull bool) *Variable {
 	if name == "" {
 		return nil
 	}
-	return &Variable{Name: name, Description: descr, Attributes: attr, IsNullValue: isNull}
+	return &Variable{name: name, description: descr, attributes: attr, isNullValue: isNull}
 }
 
 // SetValue - Assigns datatype-specific info to the variable
@@ -94,17 +84,17 @@ func (vv *Variable) GetValue() Value {
 }
 
 func (v *Variable) IsNull() bool {
-	return v.IsNullValue
+	return v.isNullValue
 }
 
 func (pv *Variable) AssignNull() {
-	pv.IsNullValue = true
+	pv.isNullValue = true
 }
 
 func (v *Variable) String() string {
 	if v.Value != nil {
 		re := v.GetValue()
-		return fmt.Sprintf("{{name=\"%s\"}{description=\"%s\"} %s}", v.Name, v.Description, re)
+		return fmt.Sprintf("{{name=\"%s\"}{description=\"%s\"} %s}", v.name, v.description, re)
 	}
 	return "NILL"
 }
@@ -115,20 +105,20 @@ func (v *Variable) Name() string {
 
 // func (pv *Variable) Assign(val *Value) {
 // 	//	if val.isEmpty() {
-// 	//		pv.IsNullValue = true
+// 	//		pv.isNullValue = true
 // 	//	} else {
-// 	pv.Value.assign(val)
-// 	pv.IsNullValue = false
+// 	pv.value.assign(val)
+// 	pv.isNullValue = false
 // 	//	}
 // }
 
 // func (v Variable) compareTo(arg Variable) (int, error) {
-// 	if v.IsNullValue && arg.IsNullValue {
+// 	if v.isNullValue && arg.isNullValue {
 // 		return 0, nil
-// 	} else if v.IsNullValue || arg.IsNullValue {
-// 		return 0, fmt.Errorf("Cannot compare variable to NULL value : %v and %v", v.Value, arg.Value)
+// 	} else if v.isNullValue || arg.isNullValue {
+// 		return 0, fmt.Errorf("Cannot compare variable to NULL value : %v and %v", v.value, arg.value)
 // 	}
-// 	return v.Value.compareTo(arg.Value)
+// 	return v.value.compareTo(arg.value)
 // }
 
 // func (v Variable) IsExternal() bool {
@@ -149,13 +139,13 @@ func (v *Variable) Name() string {
 // 		result uint64 = 1
 // 	)
 // 	result = prime*result + uint64(v.attributes)
-// 	result = prime*result + utils.HashCode(v.Description)
+// 	result = prime*result + utils.HashCode(v.description)
 // 	if v.IsNull() {
 // 		result = prime*result + 1231
 // 	} else {
 // 		result = prime*result + 1237
 // 	}
-// 	result = prime*result + utils.HashCode(v.Name)
-// 	result = prime*result + utils.HashCode(v.Value.String())
+// 	result = prime*result + utils.HashCode(v.name)
+// 	result = prime*result + utils.HashCode(v.value.String())
 // 	return result
 // }
