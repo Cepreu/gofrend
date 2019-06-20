@@ -22,7 +22,7 @@ func (fval *Currency) new(strValue string) error {
 }
 
 //SetValue - helper function for parsing xml
-func (fval *Currency) SetValue(fieldName string, fieldStrValue string) (err error) {
+func (fval Currency) SetValue(fieldName string, fieldStrValue string) (err error) {
 	switch fieldName {
 	case "value":
 		f64, err := strconv.ParseFloat(fieldStrValue, 64)

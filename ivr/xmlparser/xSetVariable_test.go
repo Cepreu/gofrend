@@ -224,10 +224,6 @@ func TestSetVariables(t *testing.T) {
 		[]ivr.ModuleID{"7E06FB60DFAA4F3E89946625F8677CB3"}, "4065B9160FE54714AEFAB56B9F9CB9C6", "",
 		"", "false")
 
-	if expected.GetDescendant() != mhu.GetDescendant() {
-		t.Errorf("\nSetVariables module: \"%s\" was expected, in reality: \"%s\"", expected.GetDescendant(), mhu.GetDescendant())
-	}
-
 	exp, err1 := json.MarshalIndent(expected, "", "  ")
 	setv, err2 := json.MarshalIndent(mhu, "", "  ")
 

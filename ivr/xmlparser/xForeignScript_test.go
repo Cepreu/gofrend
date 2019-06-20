@@ -1,8 +1,8 @@
 package xmlparser
 
 import (
+	"encoding/json"
 	"encoding/xml"
-	"reflect"
 	"strings"
 	"testing"
 
@@ -53,7 +53,7 @@ func TestForeignScript(t *testing.T) {
 		t.Errorf("ForeignScript module wasn't parsed...")
 		return
 	}
-	//res.normalize()
+
 	var m = (res.(xmlForeignScriptModule)).s
 
 	expected := &ivr.ForeignScriptModule{
@@ -75,17 +75,12 @@ func TestForeignScript(t *testing.T) {
 	}
 	expected.SetGeneralInfo("ForeignScript19", "A39E830442574C8998F727E2171BFA1D",
 		[]ivr.ModuleID{"EE46D4FA17844064B679BBCABB45CDE8"}, "A917886FAA054CF581C4BA3798FCB836", "",
-		"No Disposition", "false")
+		"", "false")
 
-	if false == reflect.DeepEqual(expected.Parameters[0], m.Parameters[0]) {
-		t.Errorf("\nForeignScript module: \n%v \nwas expected, in reality: \n%v", expected.Parameters[0], m.Parameters[0])
+	exp, err1 := json.MarshalIndent(expected, "", "  ")
+	setv, err2 := json.MarshalIndent(m, "", "  ")
+
+	if err1 != nil || err2 != nil || string(exp) != string(setv) {
+		t.Errorf("\nMenu module: \n%s \n\nwas expected, in reality: \n\n%s", string(exp), string(setv))
 	}
-	if false == reflect.DeepEqual(expected.ReturnParameters[0], m.ReturnParameters[0]) {
-		t.Errorf("\nForeignScript module: \n%v \nwas expected, in reality: \n%v", expected.ReturnParameters[0], m.ReturnParameters[0])
-	}
-	// if false == reflect.DeepEqual(expected.GeneralInfo, m.GeneralInfo) {
-	// 	t.Errorf("\nForeignScript module, general info: \n%v \nwas expected, in reality: \n%v",
-	// 		expected.GeneralInfo, m.GeneralInfo)
-	// }
-	// more sanity checking...
 }

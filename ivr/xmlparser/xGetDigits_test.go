@@ -1,8 +1,8 @@
 package xmlparser
 
 import (
+	"encoding/json"
 	"encoding/xml"
-	"reflect"
 	"strings"
 	"testing"
 
@@ -123,16 +123,13 @@ ckTTpV5Mvv8HvZuE1kYCAAA=</xml>
 		}{4, "#", false, 20, 2, "HHMMP"},
 	}
 
-	expected.SetGeneralInfo("GetDigits6", "F1E142D8CF27471D8940713A637A1C1D",
-		[]ivr.ModuleID{"B612F85EA52D4B2586CE5F57579D6EC7"}, "A96A2609FDDE4C499773122F6C6296A1", "ED132095BE1E4F47B51DA0BB842C3EEF",
-		"Caller Disconnected", "true")
+	expected.SetGeneralInfo("Case3", "D2CC05B0F6FC44F29B04C1C9E42DF732",
+		[]ivr.ModuleID{"368A8C40D5AD48668FB2DC7ED894B3BA"}, "", "", "Caller Disconnected", "false")
 
-	if false == reflect.DeepEqual(expected.InputInfo, mhu.InputInfo) {
-		t.Errorf("\nHangup module: \n%v \nwas expected, in reality: \n%v", expected.InputInfo, mhu.InputInfo)
+	exp, err1 := json.MarshalIndent(expected, "", "  ")
+	setv, err2 := json.MarshalIndent(mhu, "", "  ")
+
+	if err1 != nil || err2 != nil || string(exp) != string(setv) {
+		t.Errorf("\nCase module: \n%s \n\nwas expected, in reality: \n\n%s", string(exp), string(setv))
 	}
-	// if false == reflect.DeepEqual(expected.GeneralInfo, mhu.GeneralInfo) {
-	// 	t.Errorf("\nHangup module, general info: \n%v \nwas expected, in reality: \n%v",
-	// 		expected.GeneralInfo, mhu.GeneralInfo)
-	// }
-	// more sanity checking...
 }

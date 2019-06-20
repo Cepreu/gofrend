@@ -1,6 +1,7 @@
 package xmlparser
 
 import (
+	"encoding/json"
 	"encoding/xml"
 	"strings"
 	"testing"
@@ -645,8 +646,11 @@ hS0CAAA=</xml>
 		t.Errorf("\nMenu module, moduleID: \n%v \nwas expected, in reality: \n%v",
 			expected.GetID(), mmm.GetID())
 	}
-	if expected.GetDescendant() != mmm.GetDescendant() {
-		t.Errorf("\nMenu module, DescendantID: \n%v \nwas expected, in reality: \n%v", expected.GetDescendant(), mmm.GetDescendant())
-	}
 
+	exp, err1 := json.MarshalIndent(expected, "", "  ")
+	setv, err2 := json.MarshalIndent(mmm, "", "  ")
+
+	if err1 != nil || err2 != nil || string(exp) != string(setv) {
+		t.Errorf("\nMenu module: \n%s \n\nwas expected, in reality: \n\n%s", string(exp), string(setv))
+	}
 }

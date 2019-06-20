@@ -1,8 +1,8 @@
 package xmlparser
 
 import (
+	"encoding/json"
 	"encoding/xml"
-	"reflect"
 	"strings"
 	"testing"
 
@@ -139,21 +139,12 @@ func TestCase(t *testing.T) {
 		},
 	}
 	expected.SetGeneralInfo("Case3", "D2CC05B0F6FC44F29B04C1C9E42DF732",
-		[]ivr.ModuleID{"368A8C40D5AD48668FB2DC7ED894B3BA"}, "", "", "No Disposition", "false")
+		[]ivr.ModuleID{"368A8C40D5AD48668FB2DC7ED894B3BA"}, "", "", "", "false")
 
-	//	if !reflect.DeepEqual(expected.GeneralInfo, mCase.GeneralInfo) ||
-	if !reflect.DeepEqual(expected.Branches[3], mCase.Branches[3]) {
-		t.Errorf("\nCase module, branch \"%s\": \n%v \nwas expected, in reality: \n%v", mCase.Branches[3].Name, expected.Branches[3], mCase.Branches[3])
-	}
+	exp, err1 := json.MarshalIndent(expected, "", "  ")
+	setv, err2 := json.MarshalIndent(mCase, "", "  ")
 
-	if !reflect.DeepEqual(expected.Branches[0].Cond.Conditions[0].RightOperand, mCase.Branches[0].Cond.Conditions[0].RightOperand) {
-		t.Errorf("\nCase module, branch \"%s\": \n%v \nwas expected, in reality: \n%v", mCase.Branches[0].Name, expected.Branches[0].Cond.Conditions[0].RightOperand, mCase.Branches[0].Cond.Conditions[0].RightOperand)
-	}
-
-	if !reflect.DeepEqual(expected.Branches[1].Cond.Conditions[0], mCase.Branches[1].Cond.Conditions[0]) {
-		t.Errorf("\nCase module, branch \"%s\": \n%v \nwas expected, in reality: \n%v", mCase.Branches[1].Name, expected.Branches[0].Cond.Conditions[0], mCase.Branches[1].Cond.Conditions[0])
-	}
-	if !reflect.DeepEqual(expected.Branches[2].Cond.Conditions[0], mCase.Branches[2].Cond.Conditions[0]) {
-		t.Errorf("\nCase module, branch \"%s\": \n%v \nwas expected, in reality: \n%v", mCase.Branches[2].Name, expected.Branches[2].Cond.Conditions[0], mCase.Branches[2].Cond.Conditions[0])
+	if err1 != nil || err2 != nil || string(exp) != string(setv) {
+		t.Errorf("\nCase module: \n%s \n\nwas expected, in reality: \n\n%s", string(exp), string(setv))
 	}
 }

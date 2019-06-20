@@ -38,7 +38,7 @@ func (ival Integer) new(strValue string) error {
 }
 
 func (ival Integer) String() string {
-	return fmt.Sprintf("{type=Integer}{value=%s}", ival.value)
+	return fmt.Sprintf("{type=Integer}{value=%d}", ival.value)
 }
 
 func (Integer) getType() VarType {

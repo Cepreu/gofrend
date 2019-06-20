@@ -1,8 +1,8 @@
 package xmlparser
 
 import (
+	"encoding/json"
 	"encoding/xml"
-	"reflect"
 	"strings"
 	"testing"
 
@@ -115,16 +115,10 @@ func TestIfElse(t *testing.T) {
 	expected.SetGeneralInfo("IfElse5", "EEC8BE771FBC4E659AC3CA54F4FBEBF4",
 		[]ivr.ModuleID{"E1149703A8E543BE93F142456FED91F6"}, "", "", "", "false")
 
-	if expected.GetDescendant() != mie.GetDescendant() {
-		t.Errorf("\nIfElse module: \n\"%s\" decsendantID was expected, in reality: \"%s\"", expected.GetDescendant(), mie.GetDescendant())
-	}
-	if expected.GetID() != mie.GetID() {
-		t.Errorf("\nIfElse module: \n\"%s\" module ID was expected, in reality: \"%s\"", expected.GetID(), mie.GetID())
-	}
-	if !reflect.DeepEqual(expected.BranchElse, mie.BranchElse) ||
-		!reflect.DeepEqual(expected.BranchIf.Cond.Conditions[0], mie.BranchIf.Cond.Conditions[0]) ||
-		!reflect.DeepEqual(expected.BranchIf.Cond.Conditions[1], mie.BranchIf.Cond.Conditions[1]) ||
-		!reflect.DeepEqual(expected.BranchIf.Cond.Conditions[2], mie.BranchIf.Cond.Conditions[2]) {
-		t.Errorf("\nIfElse module: \n%v \nwas expected, in reality: \n%v", expected, mie)
+	exp, err1 := json.MarshalIndent(expected, "", "  ")
+	setv, err2 := json.MarshalIndent(mie, "", "  ")
+
+	if err1 != nil || err2 != nil || string(exp) != string(setv) {
+		t.Errorf("\nIfElse module: \n%s \n\nwas expected, in reality: \n\n%s", string(exp), string(setv))
 	}
 }
