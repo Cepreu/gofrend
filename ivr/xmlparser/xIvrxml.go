@@ -18,6 +18,7 @@ func NewIVRScript(src io.Reader) (*ivr.IVRScript, error) {
 		s = &ivr.IVRScript{
 			Prompts:   make(ivr.ScriptPrompts),
 			Variables: make(ivr.Variables),
+			Modules:   make(map[ivr.ModuleID]ivr.Module),
 		}
 		xmlModules         []normalizer
 		xmlModulesOnHangup []normalizer
