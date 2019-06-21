@@ -18,7 +18,7 @@ type Integer struct {
 }
 
 //SetValue - helper function for parsing xml
-func (ival Integer) SetValue(fieldName string, fieldStrValue string) (err error) {
+func (ival *Integer) SetValue(fieldName string, fieldStrValue string) (err error) {
 	switch fieldName {
 	case "value":
 		ival.Value, err = strconv.Atoi(fieldStrValue)
@@ -28,7 +28,7 @@ func (ival Integer) SetValue(fieldName string, fieldStrValue string) (err error)
 	return err
 }
 
-func (ival Integer) new(strValue string) error {
+func (ival *Integer) new(strValue string) error {
 	i, err := strconv.Atoi(strValue)
 	if err != nil {
 		return errors.New("Cannot convert string to long")
@@ -37,11 +37,11 @@ func (ival Integer) new(strValue string) error {
 	return nil
 }
 
-func (ival Integer) String() string {
+func (ival *Integer) String() string {
 	return fmt.Sprintf("{type=Integer}{value=%d}", ival.Value)
 }
 
-func (Integer) getType() VarType {
+func (*Integer) getType() VarType {
 	return VarInteger
 }
 
