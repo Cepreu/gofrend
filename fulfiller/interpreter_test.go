@@ -1,5 +1,5 @@
 package fulfiller
 
-// func TestInterpret(t *testing.T) {
-// 	webhookRequest := &dialogflowpb.WebhookRequest{}
-// }
+import "testing"
+
+func TestDummy(t *testing.T) {}

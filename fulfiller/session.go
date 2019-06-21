@@ -6,8 +6,8 @@ import (
 	"log"
 	"os"
 
-	ivr "github.com/Cepreu/gofrend/ivrparser"
-	"github.com/Cepreu/gofrend/vars"
+	"github.com/Cepreu/gofrend/ivr"
+	"github.com/Cepreu/gofrend/ivr/vars"
 	structpb "github.com/golang/protobuf/ptypes/struct"
 )
 
@@ -64,7 +64,7 @@ func deleteSession(ID string) {
 func (session *Session) setParameter(name string, value *structpb.Value) {
 	var variable *vars.Variable
 	for _, v := range session.Variables {
-		if v.Name() == name {
+		if v.Name == name {
 			variable = v
 		}
 	}

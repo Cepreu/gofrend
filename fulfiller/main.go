@@ -6,7 +6,8 @@ import (
 	"net/http"
 	"os"
 
-	ivr "github.com/Cepreu/gofrend/ivrparser"
+	"github.com/Cepreu/gofrend/ivr"
+	"github.com/Cepreu/gofrend/ivr/xmlparser"
 	"github.com/Cepreu/gofrend/utils"
 	"github.com/golang/protobuf/jsonpb"
 	dialogflowpb "google.golang.org/genproto/googleapis/cloud/dialogflow/v2"
@@ -36,7 +37,7 @@ func getScript(fname string) *ivr.IVRScript {
 	if err != nil {
 		log.Panic(err)
 	}
-	script, err := ivr.NewIVRScript(bufio.NewReader(f))
+	script, err := xmlparser.NewIVRScript(bufio.NewReader(f))
 	if err != nil {
 		log.Panic(err)
 	}

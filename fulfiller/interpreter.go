@@ -3,8 +3,8 @@ package fulfiller
 import (
 	"log"
 
-	ivr "github.com/Cepreu/gofrend/ivrparser"
-	"github.com/Cepreu/gofrend/vars"
+	"github.com/Cepreu/gofrend/ivr"
+	"github.com/Cepreu/gofrend/ivr/vars"
 	dialogflowpb "google.golang.org/genproto/googleapis/cloud/dialogflow/v2"
 )
 

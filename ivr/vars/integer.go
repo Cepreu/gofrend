@@ -14,14 +14,14 @@ type IntegerVar struct {
 
 // Integer - value of Integer type
 type Integer struct {
-	value int
+	Value int
 }
 
 //SetValue - helper function for parsing xml
 func (ival Integer) SetValue(fieldName string, fieldStrValue string) (err error) {
 	switch fieldName {
 	case "value":
-		ival.value, err = strconv.Atoi(fieldStrValue)
+		ival.Value, err = strconv.Atoi(fieldStrValue)
 	default:
 		err = fmt.Errorf("Unknown field '%s' for Integer value", fieldName)
 	}
@@ -33,12 +33,12 @@ func (ival Integer) new(strValue string) error {
 	if err != nil {
 		return errors.New("Cannot convert string to long")
 	}
-	ival.value = i
+	ival.Value = i
 	return nil
 }
 
 func (ival Integer) String() string {
-	return fmt.Sprintf("{type=Integer}{value=%d}", ival.value)
+	return fmt.Sprintf("{type=Integer}{value=%d}", ival.Value)
 }
 
 func (Integer) getType() VarType {
