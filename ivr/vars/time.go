@@ -17,7 +17,7 @@ type Time struct {
 }
 
 //SetValue - helper function for parsing xml
-func (tval Time) SetValue(fieldName string, fieldStrValue string) (err error) {
+func (tval *Time) SetValue(fieldName string, fieldStrValue string) (err error) {
 	switch fieldName {
 	case "minutes":
 		tval.minutes, err = strconv.Atoi(fieldStrValue)
@@ -31,11 +31,11 @@ func NewTime(minutes int) *Time {
 	return &Time{minutes}
 }
 
-func (tval Time) String() string {
+func (tval *Time) String() string {
 	return fmt.Sprintf("%d", tval.minutes)
 }
 
-func (tval Time) new(strValue string) error {
+func (tval *Time) new(strValue string) error {
 	var err error
 	tval.minutes, err = vuStringToMinutes(strValue)
 	return err

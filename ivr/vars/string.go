@@ -32,7 +32,7 @@ func (sval *String) new(strValue string) error {
 }
 
 //SetValue - helper function for parsing xml
-func (sval String) SetValue(fieldName string, fieldStrValue string) (err error) {
+func (sval *String) SetValue(fieldName string, fieldStrValue string) (err error) {
 	switch fieldName {
 	case "value":
 		sval.value = fieldStrValue
@@ -81,7 +81,7 @@ func NewString(v string, i int) *String {
 // 	return strconv.ParseInt(sval.value, 10, 64)
 // }
 
-func (sval String) String() string {
+func (sval *String) String() string {
 	return sval.value
 }
 
@@ -103,12 +103,12 @@ func (sval String) String() string {
 // }
 
 ///////////
-func (sval String) isFileName() bool {
+func (sval *String) isFileName() bool {
 	return (sval.fileNameType != fnUndefined)
 }
-func (sval String) getFileNameType() FileNameType {
+func (sval *String) getFileNameType() FileNameType {
 	return sval.fileNameType
 }
-func (sval String) getRecordingID() int {
+func (sval *String) getRecordingID() int {
 	return sval.id
 }

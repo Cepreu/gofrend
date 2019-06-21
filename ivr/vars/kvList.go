@@ -26,7 +26,7 @@ func NewKVList(s string) *KVList {
 }
 
 //SetValue - helper function for parsing xml
-func (kval KVList) SetValue(fieldName string, fieldStrValue string) (err error) {
+func (kval *KVList) SetValue(fieldName string, fieldStrValue string) (err error) {
 	switch fieldName {
 	case "value":
 		kval.value = make(map[string]string)

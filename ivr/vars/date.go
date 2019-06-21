@@ -19,7 +19,7 @@ type Date struct {
 }
 
 //SetValue - helper function for parsing xml
-func (dval Date) SetValue(fieldName string, fieldStrValue string) (err error) {
+func (dval *Date) SetValue(fieldName string, fieldStrValue string) (err error) {
 	switch fieldName {
 	case "day":
 		dval.day, err = strconv.Atoi(fieldStrValue)
@@ -54,7 +54,7 @@ func NewDate(y, m, d int) *Date {
 	return &Date{d, m, y}
 }
 
-func (dval Date) new(strValue string) error {
+func (dval *Date) new(strValue string) error {
 	var err error
 	dval.day, dval.month, dval.year, err = vuStringToDate(strValue)
 	return err
@@ -77,7 +77,7 @@ func (dval Date) new(strValue string) error {
 // 	return dval.day + dval.month*100 + dval.year*10000, nil
 // }
 
-func (dval Date) String() string {
+func (dval *Date) String() string {
 	return fmt.Sprintf("%4d-%02d-%02d", dval.year, dval.month, dval.day)
 }
 
@@ -85,6 +85,6 @@ func (dval Date) String() string {
 // 	return dval
 // }
 
-func (Date) getType() VarType {
+func (*Date) getType() VarType {
 	return VarDate
 }
