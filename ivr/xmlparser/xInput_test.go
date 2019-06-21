@@ -1,0 +1,307 @@
+package xmlparser
+
+import (
+	"encoding/xml"
+	"strings"
+	"testing"
+
+	"github.com/Cepreu/gofrend/ivr"
+	"golang.org/x/net/html/charset"
+)
+
+func TestInput(t *testing.T) {
+	var xmlData = `
+	<input>
+	<ascendants>2F150D8AA7DE4E28A0E4AB745E6AE288</ascendants>
+	<exceptionalDescendant>ED132095BE1E4F47B51DA0BB842C3EEF</exceptionalDescendant>
+	<singleDescendant>F2A8A5D79BB04E25B69E74C66C4085F4</singleDescendant>
+	<moduleName>Input4</moduleName>
+	<locationX>136</locationX>
+	<locationY>69</locationY>
+	<moduleId>5F1A99ED97E74F67A1C477E89CC8700A</moduleId>
+	<data>
+		<dispo>
+			<id>-17</id>
+			<name>Caller Disconnected</name>
+		</dispo>
+		<vivrPrompts>
+			<interruptible>false</interruptible>
+			<canChangeInterruptableOption>true</canChangeInterruptableOption>
+			<ttsEnumed>false</ttsEnumed>
+			<exitModuleOnException>false</exitModuleOnException>
+		</vivrPrompts>
+		<vivrHeader>
+			<interruptible>false</interruptible>
+			<canChangeInterruptableOption>true</canChangeInterruptableOption>
+			<ttsEnumed>false</ttsEnumed>
+			<exitModuleOnException>false</exitModuleOnException>
+		</vivrHeader>
+		<textChannelData>
+			<textPrompts>
+				<interruptible>false</interruptible>
+				<canChangeInterruptableOption>true</canChangeInterruptableOption>
+				<ttsEnumed>false</ttsEnumed>
+				<exitModuleOnException>false</exitModuleOnException>
+			</textPrompts>
+			<isUsedVivrPrompts>true</isUsedVivrPrompts>
+			<isTextOnly>true</isTextOnly>
+		</textChannelData>
+		<grammar xsi:type="date" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+			<mainReturnValue>
+				<name>MEANING</name>
+				<type>DATE</type>
+				<varName>__BUFFER__</varName>
+			</mainReturnValue>
+			<stringProperty>
+				<type>LANGUAGE</type>
+				<value xsi:type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema">en-US</value>
+				<enabled>true</enabled>
+			</stringProperty>
+			<stringProperty>
+				<type>MINALLOWED</type>
+				<value xsi:type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema">19000101</value>
+				<enabled>true</enabled>
+			</stringProperty>
+			<stringProperty>
+				<type>MAXALLOWED</type>
+				<value xsi:type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema">21991231</value>
+				<enabled>true</enabled>
+			</stringProperty>
+			<stringProperty>
+				<type>MINEXPECTED</type>
+				<value xsi:type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema">19000101</value>
+				<enabled>true</enabled>
+			</stringProperty>
+			<stringProperty>
+				<type>MAXEXPECTED</type>
+				<value xsi:type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema">21991231</value>
+				<enabled>true</enabled>
+			</stringProperty>
+			<additionalReturnValues>
+				<name>SWI_literal</name>
+				<type>STRING</type>
+			</additionalReturnValues>
+			<propertiesToVariables/>
+		</grammar>
+		<prompts>
+			<prompt>
+				<TtsPrompt>
+					<xml>H4sIAAAAAAAAANVUzU6EMBi871OQ3tfqzZjCZjdZvHlQ8UqKfFkb+2PaQpa3t9Qs0lLixctygplm
+vum0A9mdBc960IYpmaO7m1uUgXxXLZOnHFWv5fYeZcZS2VKuJORoAIN2xYaYL6CfRw4CpC02mXsI
+tVazprNgfgAPcipPe0f8Qh6WVEDhRj+MPMH+M1wxqb1R3sGBGsj68S1HILfVC8KzITicQnBshTAL
+Ym7L0GFvAvvLwQZHTCQy4RbONqn1t2aovUY2qh2KR6XaTCgt2ZiYh5ZW8KoXguMMcDoE0lPNaMPh
+uuL5j0iC7T+Nd7KuD1VZHp/rmuCAmMW4mhdpdFySxJYTlo3VIE/2Y1mcaYlvzGVdqkBJMd+lS48E
+tKwTKJGquxqrDpblmpj4kNyRLAKYMnczgl/IN7AoSF2KBAAA</xml>
+					<promptTTSEnumed>false</promptTTSEnumed>
+				</TtsPrompt>
+				<pausePrompt>
+					<timeout>1000</timeout>
+				</pausePrompt>
+				<filePrompt>
+					<promptData>
+						<promptSelected>true</promptSelected>
+						<prompt>
+							<id>222995</id>
+							<name>hold music</name>
+						</prompt>
+						<isRecordedMessage>false</isRecordedMessage>
+					</promptData>
+				</filePrompt>
+				<filePrompt>
+					<promptData>
+						<promptSelected>true</promptSelected>
+						<prompt>
+							<id>-2</id>
+							<name>ONE</name>
+						</prompt>
+						<isRecordedMessage>false</isRecordedMessage>
+					</promptData>
+				</filePrompt>
+				<interruptible>false</interruptible>
+				<canChangeInterruptableOption>true</canChangeInterruptableOption>
+				<ttsEnumed>false</ttsEnumed>
+				<exitModuleOnException>false</exitModuleOnException>
+			</prompt>
+			<count>1</count>
+		</prompts>
+		<prompts>
+			<prompt>
+				<filePrompt>
+					<promptData>
+						<promptSelected>true</promptSelected>
+						<prompt>
+							<id>223013</id>
+							<name>sk_lang</name>
+						</prompt>
+						<isRecordedMessage>false</isRecordedMessage>
+					</promptData>
+				</filePrompt>
+				<multiLanguagesPromptItem>
+					<prompt>CA5DC222CB264883B4915F50C1CC4208</prompt>
+				</multiLanguagesPromptItem>
+				<interruptible>false</interruptible>
+				<canChangeInterruptableOption>true</canChangeInterruptableOption>
+				<ttsEnumed>false</ttsEnumed>
+				<exitModuleOnException>false</exitModuleOnException>
+			</prompt>
+			<count>2</count>
+		</prompts>
+		<recoEvents>
+			<event>NO_MATCH</event>
+			<count>1</count>
+			<compoundPrompt>
+				<multiLanguagesPromptItem>
+					<prompt>182C84795F9E458392D8B62682C9E602</prompt>
+				</multiLanguagesPromptItem>
+				<interruptible>false</interruptible>
+				<canChangeInterruptableOption>true</canChangeInterruptableOption>
+				<ttsEnumed>false</ttsEnumed>
+				<exitModuleOnException>false</exitModuleOnException>
+			</compoundPrompt>
+			<action>CONTINUE</action>
+		</recoEvents>
+		<recoEvents>
+			<event>NO_INPUT</event>
+			<count>1</count>
+			<compoundPrompt>
+				<multiLanguagesPromptItem>
+					<prompt>75EC58D2029A4090BFB5FAB11D558603</prompt>
+				</multiLanguagesPromptItem>
+				<interruptible>false</interruptible>
+				<canChangeInterruptableOption>true</canChangeInterruptableOption>
+				<ttsEnumed>false</ttsEnumed>
+				<exitModuleOnException>false</exitModuleOnException>
+			</compoundPrompt>
+			<action>REPROMPT</action>
+		</recoEvents>
+		<recoEvents>
+			<event>NO_INPUT</event>
+			<count>2</count>
+			<compoundPrompt>
+				<filePrompt>
+					<promptData>
+						<promptSelected>true</promptSelected>
+						<prompt>
+							<id>222990</id>
+							<name>YourCallIsImportantToUs</name>
+						</prompt>
+						<isRecordedMessage>false</isRecordedMessage>
+					</promptData>
+				</filePrompt>
+				<interruptible>true</interruptible>
+				<canChangeInterruptableOption>true</canChangeInterruptableOption>
+				<ttsEnumed>false</ttsEnumed>
+				<exitModuleOnException>false</exitModuleOnException>
+			</compoundPrompt>
+			<action>EXIT</action>
+		</recoEvents>
+		<recoEvents>
+			<event>HELP</event>
+			<count>1</count>
+			<compoundPrompt>
+				<pausePrompt>
+					<timeout>1000</timeout>
+				</pausePrompt>
+				<interruptible>false</interruptible>
+				<canChangeInterruptableOption>true</canChangeInterruptableOption>
+				<ttsEnumed>false</ttsEnumed>
+				<exitModuleOnException>false</exitModuleOnException>
+			</compoundPrompt>
+			<action>REPROMPT</action>
+		</recoEvents>
+		<recoEvents>
+			<event>HELP</event>
+			<count>3</count>
+			<compoundPrompt>
+				<filePrompt>
+					<promptData>
+						<promptSelected>true</promptSelected>
+						<prompt>
+							<id>-24</id>
+							<name>WeAreCurrentlyExperiencingTechnicalDifficultiesAccessingAccountInfo</name>
+						</prompt>
+						<isRecordedMessage>false</isRecordedMessage>
+					</promptData>
+				</filePrompt>
+				<multiLanguagesPromptItem>
+					<prompt>182C84795F9E458392D8B62682C9E602</prompt>
+				</multiLanguagesPromptItem>
+				<interruptible>false</interruptible>
+				<canChangeInterruptableOption>true</canChangeInterruptableOption>
+				<ttsEnumed>false</ttsEnumed>
+				<exitModuleOnException>false</exitModuleOnException>
+			</compoundPrompt>
+			<action>CONTINUE</action>
+		</recoEvents>
+		<ConfirmData>
+			<confirmRequired>REQUIRED</confirmRequired>
+			<requiredConfidence>75</requiredConfidence>
+			<maxAttemptsToConfirm>3</maxAttemptsToConfirm>
+			<noInputTimeout>3</noInputTimeout>
+			<prompt>
+				<multiLanguagesPromptItem>
+					<prompt>94B2D88A1A284F11970E29BB7500CC7E</prompt>
+				</multiLanguagesPromptItem>
+				<interruptible>true</interruptible>
+				<canChangeInterruptableOption>true</canChangeInterruptableOption>
+				<ttsEnumed>false</ttsEnumed>
+				<exitModuleOnException>false</exitModuleOnException>
+			</prompt>
+			<recoEvents>
+				<event>NO_MATCH</event>
+				<count>1</count>
+				<compoundPrompt>
+					<multiLanguagesPromptItem>
+						<prompt>182C84795F9E458392D8B62682C9E602</prompt>
+					</multiLanguagesPromptItem>
+					<interruptible>false</interruptible>
+					<canChangeInterruptableOption>true</canChangeInterruptableOption>
+					<ttsEnumed>false</ttsEnumed>
+					<exitModuleOnException>false</exitModuleOnException>
+				</compoundPrompt>
+				<action>REPROMPT</action>
+			</recoEvents>
+			<recoEvents>
+				<event>NO_INPUT</event>
+				<count>1</count>
+				<compoundPrompt>
+					<multiLanguagesPromptItem>
+						<prompt>75EC58D2029A4090BFB5FAB11D558603</prompt>
+					</multiLanguagesPromptItem>
+					<interruptible>false</interruptible>
+					<canChangeInterruptableOption>true</canChangeInterruptableOption>
+					<ttsEnumed>false</ttsEnumed>
+					<exitModuleOnException>false</exitModuleOnException>
+				</compoundPrompt>
+				<action>REPROMPT</action>
+			</recoEvents>
+		</ConfirmData>
+		<confidenceTreshold>5</confidenceTreshold>
+		<maxTimeToEnter>15</maxTimeToEnter>
+		<noInputTimeout>5</noInputTimeout>
+		<sensitivity>50</sensitivity>
+		<incompleteTimeout>2</incompleteTimeout>
+		<completeTimeout>0</completeTimeout>
+		<swirecNbestListLength>2</swirecNbestListLength>
+		<maxAttempts>3</maxAttempts>
+		<collapsible>true</collapsible>
+		<recognizeConfigParameters>
+			<recognizeConfigParameter>NO_INPUT_TIMEOUT</recognizeConfigParameter>
+			<recognizeConfigParameter>CONFIDENCE_TRESHOLD</recognizeConfigParameter>
+			<recognizeConfigParameter>MAX_TIME_TO_ENTER</recognizeConfigParameter>
+		</recognizeConfigParameters>
+		<recordUserInput>false</recordUserInput>
+		<dtmfHelpButton>null</dtmfHelpButton>
+	</data>
+</input>
+`
+	decoder := xml.NewDecoder(strings.NewReader(xmlData))
+	decoder.CharsetReader = charset.NewReaderLabel
+
+	prompts := make(ivr.ScriptPrompts)
+	res := newInputModule(decoder, prompts)
+	if res == nil {
+		t.Errorf("Input module wasn't decoded...")
+	}
+	// more sanity checking...
+}

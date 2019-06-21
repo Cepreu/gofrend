@@ -42,104 +42,19 @@ func (ap AttemptPrompts) TransformToAI(sp ScriptPrompts) (txt string) {
 // LanguagePrompts - prompt for a specified language
 type LanguagePrompts struct {
 	PrArr    []PromptID
-	Language langCode
+	Language LangCode
 }
 
-type xFilePrompt struct {
-	PromptDirectly     bool   `xml:"promptData>promptSelected"`
-	PromptID           int32  `xml:"promptData>prompt>id"`
-	PromptName         string `xml:"promptData>prompt>name"`
-	PromptVariableName string `xml:"promptData>promptVariableName"`
-	IsRecordedMessage  bool   `xml:"promptData>isRecordedMessage"`
+type TtsPrompt struct {
+	TTSPromptXML    string
+	PromptTTSEnumed bool
 }
 
-func (t xFilePrompt) TransformToAI() string {
-	if t.IsRecordedMessage {
-		return fmt.Sprintf("%s", t.PromptName)
-	}
-	return fmt.Sprintf("%s", t.PromptVariableName)
+// TransformToAI is a recursive function that calls itself for every child
+func (t TtsPrompt) TransformToAI() string {
+	n, _ := parseTtsPrompt(strings.NewReader(t.TTSPromptXML))
+	return n.transformToAI()
 }
-
-type xPausePrompt struct {
-	Timeout int32 `xml:"timeout"`
-}
-
-func (t xPausePrompt) TransformToAI() string { return fmt.Sprintf("%d", t.Timeout) }
-
-type xMultiLanguagesPromptItem struct {
-	MLPromptID string `xml:"prompt"`
-}
-
-func (t xMultiLanguagesPromptItem) TransformToAI() string { return string(t.MLPromptID) }
-
-type xVivrPrompts struct {
-	VivrPrompts                  []xVivrPrompt  `xml:"vivrPrompt"`
-	ImagePrompts                 []xImagePrompt `xml:"imagePrompt"`
-	Interruptible                bool           `xml:"interruptible"`
-	CanChangeInterruptableOption bool           `xml:"canChangeInterruptableOption"`
-	TtsEnumed                    bool           `xml:"ttsEnumed"`
-	ExitModuleOnException        bool           `xml:"exitModuleOnException"`
-}
-
-type xVivrHeader struct {
-	VPrompt                      xVivrPrompt `xml:"vivrPrompt"`
-	Interruptible                bool        `xml:"interruptible"`
-	CanChangeInterruptableOption bool        `xml:"canChangeInterruptableOption"`
-	TtsEnumed                    bool        `xml:"ttsEnumed"`
-	ExitModuleOnException        bool        `xml:"exitModuleOnException"`
-}
-
-type xVivrPrompt struct {
-	VivrXML string `xml:"xml"`
-}
-
-type xImagePrompt struct {
-	ImageURL           string `xml:"imageURL"`
-	IsVariableSelected bool   `xml:"isVariableSelected"`
-}
-
-type xTextChanneddata struct {
-	TextPrompts       xTextPrompts `xml:"textPrompts"`
-	IsUsedVivrPrompts bool         `xml:"isUsedVivrPrompts"`
-	IsTextOnly        bool         `xml:"isTextOnly"`
-}
-
-type xTextPrompts struct {
-	SimpleTextPromptItem         xSimpleTextPromptItem `xml:"simpleTextPromptItem"`
-	Interruptible                bool                  `xml:"interruptible"`
-	CanChangeInterruptableOption bool                  `xml:"canChangeInterruptableOption"`
-	TtsEnumed                    bool                  `xml:"ttsEnumed"`
-	ExitModuleOnException        bool                  `xml:"exitModuleOnException"`
-}
-
-type xSimpleTextPromptItem struct {
-	TextXML string `xml:"xml"`
-}
-
-type langCode string
-
-type multilingualPrompt struct {
-	ID          string
-	Name        string
-	Description string
-	Type        string
-	Prompts     map[langCode][]PromptID
-	DefLanguage langCode
-	//	IsPersistent bool       `xml:"isPersistent"`
-}
-
-type multilanguageMenuChoice struct {
-	ID          string
-	Name        string
-	Description string
-	Type        string
-	AudPrompts  map[langCode][]PromptID
-	VisPrompts  map[langCode][]PromptID
-	TxtPrompts  map[langCode][]PromptID
-	DefLanguage langCode
-	//	IsPersistent bool       `xml:"isPersistent"`
-}
-
 func (n *ttsNode) transformToAI() (s string) {
 	for _, child := range n.children {
 		s = strings.TrimPrefix(s+" "+child.transformToAI(), " ")
@@ -180,49 +95,81 @@ type ttsAttr struct {
 	value string
 }
 
-func (s *IVRScript) normalizePrompt(mp ModulePrompts) error {
-	for i := range mp {
-		s.normalizeAttemptPrompt(&mp[i], true)
-	}
-	return nil
+type XFilePrompt struct {
+	PromptDirectly     bool   `xml:"promptData>promptSelected"`
+	PromptID           int32  `xml:"promptData>prompt>id"`
+	PromptName         string `xml:"promptData>prompt>name"`
+	PromptVariableName string `xml:"promptData>promptVariableName"`
+	IsRecordedMessage  bool   `xml:"promptData>isRecordedMessage"`
 }
 
-func (s *IVRScript) normalizeAttemptPrompt(ap *AttemptPrompts, mlPrompTrueMlItemFalse bool) error {
-	var prsdef = []PromptID{}
-	for _, l := range s.Languages {
-		ap.LangPrArr = append(ap.LangPrArr, LanguagePrompts{Language: l.Lang, PrArr: nil})
+func (t XFilePrompt) TransformToAI() string {
+	if t.IsRecordedMessage {
+		return fmt.Sprintf("%s", t.PromptName)
 	}
-	for _, pid := range ap.LangPrArr[0].PrArr {
-		if _, found := s.Prompts[pid]; found {
-			for j := range s.Languages {
-				ap.LangPrArr[j+1].PrArr = append(ap.LangPrArr[j+1].PrArr, pid)
-			}
-			prsdef = append(prsdef, pid)
-		} else if mlPrompTrueMlItemFalse {
-			for k := range s.MLPrompts {
-				if s.MLPrompts[k].ID == string(pid) {
-					// Found!
-					for j, l := range s.Languages {
-						ap.LangPrArr[j+1].PrArr = append(ap.LangPrArr[j+1].PrArr, s.MLPrompts[k].Prompts[l.Lang]...)
-					}
-					prsdef = append(prsdef, s.MLPrompts[k].Prompts[s.MLPrompts[k].DefLanguage]...)
-					break
-				}
-			}
-		} else {
-			for k := range s.MLChoices {
-				if s.MLChoices[k].ID == string(pid) {
-					// Found!
-					for j, l := range s.Languages {
-						ap.LangPrArr[j+1].PrArr = append(ap.LangPrArr[j+1].PrArr, s.MLChoices[k].AudPrompts[l.Lang]...)
-					}
-					prsdef = append(prsdef, s.MLChoices[k].AudPrompts[s.MLChoices[k].DefLanguage]...)
-					break
-				}
-			}
+	return fmt.Sprintf("%s", t.PromptVariableName)
+}
 
-		}
-	}
-	ap.LangPrArr[0].PrArr = prsdef
-	return nil
+type XPausePrompt struct {
+	Timeout int32 `xml:"timeout"`
+}
+
+func (t XPausePrompt) TransformToAI() string { return fmt.Sprintf("%d", t.Timeout) }
+
+type XVivrPrompts struct {
+	VivrPrompts                  []XVivrPrompt  `xml:"vivrPrompt"`
+	ImagePrompts                 []XImagePrompt `xml:"imagePrompt"`
+	Interruptible                bool           `xml:"interruptible"`
+	CanChangeInterruptableOption bool           `xml:"canChangeInterruptableOption"`
+	TtsEnumed                    bool           `xml:"ttsEnumed"`
+	ExitModuleOnException        bool           `xml:"exitModuleOnException"`
+}
+
+type XVivrHeader struct {
+	VPrompt                      XVivrPrompt `xml:"vivrPrompt"`
+	Interruptible                bool        `xml:"interruptible"`
+	CanChangeInterruptableOption bool        `xml:"canChangeInterruptableOption"`
+	TtsEnumed                    bool        `xml:"ttsEnumed"`
+	ExitModuleOnException        bool        `xml:"exitModuleOnException"`
+}
+
+type XVivrPrompt struct {
+	VivrXML string `xml:"xml"`
+}
+
+type XImagePrompt struct {
+	ImageURL           string `xml:"imageURL"`
+	IsVariableSelected bool   `xml:"isVariableSelected"`
+}
+
+type XTextChanneddata struct {
+	TextPrompts       XTextPrompts `xml:"textPrompts"`
+	IsUsedVivrPrompts bool         `xml:"isUsedVivrPrompts"`
+	IsTextOnly        bool         `xml:"isTextOnly"`
+}
+
+type XTextPrompts struct {
+	SimpleTextPromptItem         XSimpleTextPromptItem `xml:"simpleTextPromptItem"`
+	Interruptible                bool                  `xml:"interruptible"`
+	CanChangeInterruptableOption bool                  `xml:"canChangeInterruptableOption"`
+	TtsEnumed                    bool                  `xml:"ttsEnumed"`
+	ExitModuleOnException        bool                  `xml:"exitModuleOnException"`
+}
+
+type XSimpleTextPromptItem struct {
+	TextXML string `xml:"xml"`
+}
+
+type LangCode string
+
+type MultilanguageMenuChoice struct {
+	ID          string
+	Name        string
+	Description string
+	Type        string
+	AudPrompts  map[LangCode][]PromptID
+	VisPrompts  map[LangCode][]PromptID
+	TxtPrompts  map[LangCode][]PromptID
+	DefLanguage LangCode
+	//	IsPersistent bool       `xml:"isPersistent"`
 }

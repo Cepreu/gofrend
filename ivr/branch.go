@@ -16,7 +16,7 @@ type ComplexCondition struct {
 
 //Condition - ifElse module's condition
 type Condition struct {
-	comparisonType string
-	rightOperand   parametrized
-	leftOperand    parametrized
+	ComparisonType string
+	RightOperand   Parametrized
+	LeftOperand    Parametrized
 }

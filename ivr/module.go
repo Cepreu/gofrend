@@ -1,12 +1,10 @@
 package ivr
 
-import "github.com/Cepreu/gofrend/utils"
-
 // Module - parsed ivr module
 type Module interface {
 	GetID() ModuleID
 	GetDescendant() ModuleID
-	normalize(*IVRScript) error
+	SetGeneralInfo(string, ModuleID, []ModuleID, ModuleID, ModuleID, string, string)
 }
 
 // ModuleID - the IVR module's ID, string
@@ -25,6 +23,32 @@ type module struct {
 // GetID - returns ID if the module
 func (m *module) GetID() ModuleID {
 	return m.ID
+}
+
+func (m *module) SetGeneralInfo(name string, id ModuleID,
+	ascendants []ModuleID, descendant ModuleID, exceptionalDesc ModuleID,
+	dispo string, collapsible string) {
+	if id != "" {
+		m.ID = id
+	}
+	if len(ascendants) > 0 {
+		m.Ascendants = append(m.Ascendants, ascendants...)
+	}
+	if descendant != "" {
+		m.Descendant = descendant
+	}
+	if exceptionalDesc != "" {
+		m.ExceptionalDesc = exceptionalDesc
+	}
+	if name != "" {
+		m.Name = name
+	}
+	if dispo != "" {
+		m.Dispo = dispo
+	}
+	if collapsible == "true" {
+		m.Collapsible = true
+	}
 }
 
 // GetDescendant - returns ID if the module's descendant
@@ -61,23 +85,19 @@ func (*CaseModule) transformToAI() string {
 	return ""
 }
 
-func (*CaseModule) normalize(*IVRScript) error { return nil }
-
 type ForeignScriptModule struct {
 	module
 	IvrScript        string
 	PassCRM          bool
 	ReturnCRM        bool
-	Parameters       []keyValueParametrized
-	ReturnParameters []keyValue
+	Parameters       []KeyValueParametrized
+	ReturnParameters []KeyValue
 	IsConsistent     bool
 }
 
 func (*ForeignScriptModule) transformToAI() string {
 	return ""
 }
-
-func (*ForeignScriptModule) normalize(*IVRScript) error { return nil }
 
 type GetDigitsModule struct {
 	module
@@ -95,21 +115,13 @@ type GetDigitsModule struct {
 	}
 }
 
-func (module *GetDigitsModule) normalize(s *IVRScript) error {
-	return s.normalizePrompt(module.VoicePromptIDs)
-}
-
 type HangupModule struct {
 	module
 	Return2Caller bool
 
-	ErrCode       parametrized
-	ErrDescr      parametrized
+	ErrCode       Parametrized
+	ErrDescr      Parametrized
 	OverwriteDisp bool
-}
-
-func (*HangupModule) normalize(*IVRScript) error {
-	return nil
 }
 
 type groupingType string //"ALL", "ANY", or "CUSTOM"
@@ -124,14 +136,8 @@ func (*IfElseModule) transformToAI() string {
 	return ""
 }
 
-func (*IfElseModule) normalize(*IVRScript) error { return nil }
-
 type IncomingCallModule struct {
 	module
-}
-
-func (*IncomingCallModule) normalize(*IVRScript) error {
-	return nil
 }
 
 type xInputGrammar struct {
@@ -166,10 +172,6 @@ type InputModule struct {
 	ConfData *ConfirmData
 }
 
-func (module *InputModule) normalize(s *IVRScript) error {
-	return s.normalizePrompt(module.VoicePromptIDs)
-}
-
 //MenuModule - Menu module definition
 type MenuModule struct {
 	module
@@ -195,14 +197,6 @@ type MenuModule struct {
 	}
 }
 
-func (module *MenuModule) normalize(s *IVRScript) error {
-	s.normalizePrompt(module.VoicePromptIDs)
-	for i := range module.Items {
-		s.normalizeAttemptPrompt(&module.Items[i].Prompt, false)
-	}
-	return nil
-}
-
 // ActionType - Menu module item's action
 type ActionType string
 
@@ -218,10 +212,6 @@ type PlayModule struct {
 	}
 }
 
-func (module *PlayModule) normalize(s *IVRScript) error {
-	return s.normalizePrompt(module.VoicePromptIDs)
-}
-
 type (
 	QueryModule struct {
 		module
@@ -234,23 +224,23 @@ type (
 		FetchTimeout                         int
 		StoreNumberOfArrayElementsInVariable bool
 
-		Parameters       []keyValueParametrized
-		ReturnValues     []keyValue
-		URLParts         []*parametrized
-		RequestInfo      requestInfo
-		Headers          []keyValueParametrized
+		Parameters       []KeyValueParametrized
+		ReturnValues     []KeyValue
+		URLParts         []*Parametrized
+		RequestInfo      RequestInfo
+		Headers          []KeyValueParametrized
 		RequestBodyType  string
 		SaveStatusCode   bool
 		SaveReasonPhrase bool
-		ResponseInfos    []*responseInfo
+		ResponseInfos    []*ResponseInfo
 	}
 
-	keyValue struct {
+	KeyValue struct {
 		Key   string
 		Value string
 	}
 
-	responseInfo struct {
+	ResponseInfo struct {
 		HTTPCodeFrom  int
 		HTTPCodeTo    int
 		ParsingMethod string
@@ -265,58 +255,45 @@ type (
 		}
 		TargetVariables []string
 	}
-	requestInfo struct {
+	RequestInfo struct {
 		Template     string
-		base64       string
-		Replacements []*replacement
+		Base64       string
+		Replacements []*Replacement
 	}
-	replacement struct {
+	Replacement struct {
 		Position     int
 		VariableName string
 	}
 )
 
-func (module *QueryModule) normalize(s *IVRScript) error {
-	err := s.normalizePrompt(module.VoicePromptIDs)
-	if err != nil {
-		return err
-	}
-	module.RequestInfo.Template, err = utils.CmdUnzip(module.RequestInfo.base64)
-	return err
-}
-
 type (
 	SetVariableModule struct {
 		module
-		Exprs []*expression
+		Exprs []*Expression
 	}
 
-	expression struct {
+	Expression struct {
 		Lval   string
 		IsFunc bool
-		Rval   assigner
+		Rval   Assigner
 	}
 
-	assigner struct {
-		P *parametrized
-		F *ivrFuncInvocation
+	Assigner struct {
+		P *Parametrized
+		F *IvrFuncInvocation
 	}
 
-	ivrFunc struct {
+	IvrFunc struct {
 		Name       string
 		ReturnType string
 		ArgTypes   []string
 	}
 
-	ivrFuncInvocation struct {
-		FuncDef ivrFunc
-		Params  []*parametrized
+	IvrFuncInvocation struct {
+		FuncDef IvrFunc
+		Params  []*Parametrized
 	}
 )
-
-func (module *SetVariableModule) normalize(s *IVRScript) (err error) {
-	return nil
-}
 
 type VoiceInputModule struct {
 	module
@@ -344,8 +321,4 @@ type VoiceInputModule struct {
 		StringValue            string
 		VariableName           string
 	}
-}
-
-func (module *VoiceInputModule) normalize(s *IVRScript) error {
-	return s.normalizePrompt(module.VoicePromptIDs)
 }

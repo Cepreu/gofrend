@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"hash/crc32"
 	"io/ioutil"
-	"log"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -84,15 +83,6 @@ func PrettyPrint(v interface{}) (err error) {
 	b, err := json.MarshalIndent(v, "", "  ")
 	if err == nil {
 		fmt.Println(string(b))
-	}
-	return
-}
-
-// PrettyLog - logs golang structures
-func PrettyLog(v interface{}) (err error) {
-	b, err := json.Marshal(v)
-	if err == nil {
-		log.Print(string(b))
 	}
 	return
 }

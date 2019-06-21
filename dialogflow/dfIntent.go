@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"log"
 
-	ivr "github.com/Cepreu/gofrend/ivrparser"
+	ivr "github.com/Cepreu/gofrend/ivr"
 	"github.com/Cepreu/gofrend/utils"
 	"github.com/davecgh/go-spew/spew"
 	dialogflowpb "google.golang.org/genproto/googleapis/cloud/dialogflow/v2"
@@ -160,8 +160,6 @@ func (dp *DialogflowProcessor) CreateIntent() string {
 func intentsGenerator(ivrScript *ivr.IVRScript) (intents []*dialogflowpb.Intent, err error) {
 	for _, m := range ivrScript.Modules {
 		switch v := m.(type) {
-		// case *ivr.MenuModule:
-		// 	return menu2intents(ivrScript, v)
 		case *ivr.InputModule:
 			intent, err := input2intent(ivrScript, v)
 			return []*dialogflowpb.Intent{intent}, err

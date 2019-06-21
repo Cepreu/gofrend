@@ -8,7 +8,7 @@ import (
 	"testing"
 
 	dialogflow "cloud.google.com/go/dialogflow/apiv2"
-	ivr "github.com/Cepreu/gofrend/ivrparser"
+	"github.com/Cepreu/gofrend/ivr/xmlparser"
 	"github.com/Cepreu/gofrend/utils"
 	"google.golang.org/api/option"
 	dialogflowpb "google.golang.org/genproto/googleapis/cloud/dialogflow/v2"
@@ -23,7 +23,7 @@ func TestScript(t *testing.T) {
 	var fname = "test_files/is_large_test.five9ivr"
 	f, err := os.Open(fname)
 	check(err)
-	s, err := ivr.NewIVRScript(bufio.NewReader(f))
+	s, err := xmlparser.NewIVRScript(bufio.NewReader(f))
 	check(err)
 	utils.PrettyPrint(s)
 
@@ -42,7 +42,7 @@ func TestIntent(t *testing.T) {
 	var fname = "test_files/is_large_test.five9ivr"
 	f, err := os.Open(fname)
 	check(err)
-	s, err := ivr.NewIVRScript(bufio.NewReader(f))
+	s, err := xmlparser.NewIVRScript(bufio.NewReader(f))
 	check(err)
 
 	intents, err := intentsGenerator(s)
