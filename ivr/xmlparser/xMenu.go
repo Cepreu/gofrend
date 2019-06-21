@@ -95,5 +95,6 @@ func (module xmlMenuModule) normalize(s *ivr.IVRScript) error {
 	for i := range module.m.Items {
 		normalizeAttemptPrompt(s, &module.m.Items[i].Prompt, false)
 	}
+	s.Modules[module.m.ID] = module.m
 	return nil
 }

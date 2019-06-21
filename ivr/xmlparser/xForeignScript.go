@@ -79,6 +79,7 @@ func newForeignScriptModule(decoder *xml.Decoder) normalizer {
 	}
 	return xmlForeignScriptModule{pFSM}
 }
-func (xmlForeignScriptModule) normalize(*ivr.IVRScript) error {
+func (module xmlForeignScriptModule) normalize(s *ivr.IVRScript) error {
+	s.Modules[module.s.ID] = module.s
 	return nil
 }

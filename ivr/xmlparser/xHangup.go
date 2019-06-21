@@ -51,6 +51,7 @@ func newHangupModule(decoder *xml.Decoder) normalizer {
 	return xmlHangupModule{pHM}
 }
 
-func (xmlHangupModule) normalize(*ivr.IVRScript) error {
+func (module xmlHangupModule) normalize(s *ivr.IVRScript) error {
+	s.Modules[module.s.ID] = module.s
 	return nil
 }

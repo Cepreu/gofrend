@@ -40,4 +40,7 @@ func newCaseModule(decoder *xml.Decoder) normalizer {
 	return xmlCaseModule{pCase}
 }
 
-func (xmlCaseModule) normalize(*ivr.IVRScript) error { return nil }
+func (module xmlCaseModule) normalize(s *ivr.IVRScript) error {
+	s.Modules[module.m.ID] = module.m
+	return nil
+}

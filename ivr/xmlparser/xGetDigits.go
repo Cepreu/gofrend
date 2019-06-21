@@ -85,5 +85,6 @@ func newGetDigitsModule(decoder *xml.Decoder, sp ivr.ScriptPrompts) normalizer {
 }
 
 func (module xmlGetDigitsModule) normalize(s *ivr.IVRScript) error {
+	s.Modules[module.m.ID] = module.m
 	return normalizePrompt(s, module.m.VoicePromptIDs)
 }

@@ -398,5 +398,6 @@ func (module xmlQueryModule) normalize(s *ivr.IVRScript) error {
 		return err
 	}
 	module.m.RequestInfo.Template, err = utils.CmdUnzip(module.m.RequestInfo.Base64)
+	s.Modules[module.m.ID] = module.m
 	return err
 }

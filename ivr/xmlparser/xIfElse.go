@@ -63,6 +63,7 @@ func newIfElseModule(decoder *xml.Decoder) normalizer {
 	return xmlIfElseModule{pIE}
 }
 
-func (xmlIfElseModule) normalize(*ivr.IVRScript) error {
+func (module xmlIfElseModule) normalize(s *ivr.IVRScript) error {
+	s.Modules[module.s.ID] = module.s
 	return nil
 }

@@ -126,4 +126,7 @@ func parseAssignment(decoder *xml.Decoder) *ivr.Expression {
 	}
 	return e
 }
-func (xmlSetVariablesModule) normalize(*ivr.IVRScript) error { return nil }
+func (module xmlSetVariablesModule) normalize(s *ivr.IVRScript) error {
+	s.Modules[module.m.ID] = module.m
+	return nil
+}

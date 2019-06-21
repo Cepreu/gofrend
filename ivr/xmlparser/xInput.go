@@ -62,5 +62,6 @@ F:
 }
 
 func (module xmlInputModule) normalize(s *ivr.IVRScript) error {
+	s.Modules[module.m.ID] = module.m
 	return normalizePrompt(s, module.m.VoicePromptIDs)
 }

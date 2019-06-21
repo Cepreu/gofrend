@@ -35,6 +35,7 @@ func newIncomingCallModule(decoder *xml.Decoder) normalizer {
 	return &xmlIncomingCallModule{pICM}
 }
 
-func (xmlIncomingCallModule) normalize(*ivr.IVRScript) error {
+func (module xmlIncomingCallModule) normalize(s *ivr.IVRScript) error {
+	s.Modules[module.s.ID] = module.s
 	return nil
 }
