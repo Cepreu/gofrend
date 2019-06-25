@@ -1,4 +1,4 @@
-package preparer
+package cloud
 
 import (
 	"context"
@@ -10,7 +10,7 @@ import (
 	"google.golang.org/api/option"
 )
 
-func uploadData(data []byte) error {
+func UploadXML(data []byte) error {
 	object, err := getObjectHandleFromData(data)
 	if err != nil {
 		return err
@@ -31,7 +31,7 @@ func uploadData(data []byte) error {
 	return nil
 }
 
-func downloadData(hash string) ([]byte, error) {
+func DownloadXML(hash string) ([]byte, error) {
 	object, err := getObjectHandleFromHash(hash)
 	if err != nil {
 		return nil, err
@@ -54,7 +54,7 @@ func getObjectHandleFromData(data []byte) (*storage.ObjectHandle, error) {
 func getObjectHandleFromHash(hash string) (*storage.ObjectHandle, error) {
 	ctx := context.Background()
 
-	client, err := storage.NewClient(ctx, option.WithCredentialsFile("F9-Test-Agent-0925974a682a.json"))
+	client, err := storage.NewClient(ctx, option.WithCredentialsFile("f9-dialogflow-converter-9e31638c7ca7.json"))
 	if err != nil {
 		return nil, err
 	}

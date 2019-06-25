@@ -1,42 +1,37 @@
 package preparer
 
 import (
-	"bufio"
+	"bytes"
 	"context"
 	"fmt"
 	"io/ioutil"
-	"os"
 
 	dialogflow "cloud.google.com/go/dialogflow/apiv2"
+	"github.com/Cepreu/gofrend/cloud"
 	ivr "github.com/Cepreu/gofrend/ivr"
 	"github.com/Cepreu/gofrend/ivr/xmlparser"
 	"google.golang.org/api/option"
 	dialogflowpb "google.golang.org/genproto/googleapis/cloud/dialogflow/v2"
 )
 
-func check(e error) {
-	if e != nil {
-		panic(e)
-	}
-}
-
-// PrepareFile creates necessary DialogFlow intents and uploads XML to google storage
+// PrepareFile creates necessary DialogFlow intents and uploads XML to gcp storage
 func PrepareFile(filename string) error {
-	f, err := os.Open(filename)
-	if err != nil {
-		return err
-	}
-	script, err := xmlparser.NewIVRScript(bufio.NewReader(f))
-	if err != nil {
-		return err
-	}
-	prepareIntents(script)
-
 	data, err := ioutil.ReadFile(filename)
 	if err != nil {
 		return err
 	}
-	return uploadData(data)
+
+	err = cloud.UploadXML(data)
+	if err != nil {
+		return err
+	}
+
+	script, err := xmlparser.NewIVRScript(bytes.NewReader(data))
+	if err != nil {
+		return err
+	}
+
+	return prepareIntents(script)
 }
 
 func prepareIntents(script *ivr.IVRScript) error {
@@ -47,7 +42,7 @@ func prepareIntents(script *ivr.IVRScript) error {
 
 	projectID := "f9-test-agent"
 	ctx := context.Background()
-	client, err := dialogflow.NewIntentsClient(ctx, option.WithCredentialsFile("F9-Test-Agent-0925974a682a.json"))
+	client, err := dialogflow.NewIntentsClient(ctx, option.WithCredentialsFile("f9-dialogflow-converter-9e31638c7ca7.json"))
 	if err != nil {
 		return err
 	}

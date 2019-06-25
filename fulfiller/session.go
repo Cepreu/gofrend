@@ -1,10 +1,7 @@
 package fulfiller
 
 import (
-	"encoding/json"
 	"fmt"
-	"log"
-	"os"
 
 	"github.com/Cepreu/gofrend/ivr"
 	"github.com/Cepreu/gofrend/ivr/vars"
@@ -23,45 +20,23 @@ func initSession(script *ivr.IVRScript) *Session {
 	}
 }
 
-func sessionExists(ID string) bool {
-	filename := fmt.Sprintf("sessions/%s.json", ID)
-	f, err := os.Open(filename)
-	if err != nil {
-		return false
-	}
-	f.Close()
-	return true
+func sessionExists(ID string) (bool, error) {
+	return false, nil
 }
 
-func (session *Session) store(ID string) {
-	filename := fmt.Sprintf("sessions/%s.json", ID)
-	f, err := os.Open(filename)
-	if err != nil {
-		f, _ = os.Create(filename)
-	}
-	bytes, _ := json.Marshal(session)
-	f.Write(bytes)
-	f.Close()
+func (session *Session) store(ID string) error {
+	return nil
 }
 
-// Not safe to call if session does not exist.
-func loadSession(ID string) (session *Session) {
-	filename := fmt.Sprintf("sessions/%s.json", ID)
-	f, _ := os.Open(filename)
-	finfo, _ := f.Stat()
-	data := make([]byte, finfo.Size())
-	f.Read(data)
-	f.Close()
-	json.Unmarshal(data, session)
-	return
+func loadSession(ID string) (*Session, error) {
+	return nil, nil
 }
 
-func deleteSession(ID string) {
-	filename := fmt.Sprintf("sessions/%s.json", ID)
-	os.Remove(filename)
+func deleteSession(ID string) error {
+	return nil
 }
 
-func (session *Session) setParameter(name string, value *structpb.Value) {
+func (session *Session) setParameter(name string, value *structpb.Value) error {
 	var variable *vars.Variable
 	for _, v := range session.Variables {
 		if v.Name == name {
@@ -69,10 +44,11 @@ func (session *Session) setParameter(name string, value *structpb.Value) {
 		}
 	}
 	if variable == nil {
-		log.Fatalf("Could not find session variable with name: %s", name)
+		return fmt.Errorf("Could not find session variable with name: %s", name)
 	}
 	switch v := variable.Value.(type) {
 	case *vars.Integer:
 		v.Value = int(value.GetNumberValue())
 	}
+	return nil
 }

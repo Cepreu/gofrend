@@ -33,6 +33,12 @@ func TestScript(t *testing.T) {
 // 	check(err)
 // }
 
+func check(err error) {
+	if err != nil {
+		panic(err)
+	}
+}
+
 func TestIntent(t *testing.T) {
 	var fname = "test_files/is_large_test.five9ivr"
 	f, err := os.Open(fname)
@@ -43,14 +49,14 @@ func TestIntent(t *testing.T) {
 	intents, err := intentsGenerator(s)
 	check(err)
 
-	projectID := "f9-test-agent"
+	projectID := "f9-dialogflow-converter"
 	request := &dialogflowpb.CreateIntentRequest{
 		Parent: fmt.Sprintf("projects/%s/agent", projectID),
 		Intent: intents[0],
 	}
 
 	ctx := context.Background()
-	client, err := dialogflow.NewIntentsClient(ctx, option.WithCredentialsFile("F9-Test-Agent-0925974a682a.json"))
+	client, err := dialogflow.NewIntentsClient(ctx, option.WithCredentialsFile("f9-dialogflow-converter-9e31638c7ca7.json"))
 	check(err)
 
 	_, err = client.CreateIntent(ctx, request)

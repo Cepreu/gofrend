@@ -1,6 +1,7 @@
 package fulfiller
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/Cepreu/gofrend/ivr"
@@ -17,11 +18,18 @@ type Interpreter struct {
 }
 
 // Interpret - main interpreter loop
-func Interpret(wr dialogflowpb.WebhookRequest, script *ivr.IVRScript) *dialogflowpb.WebhookResponse {
+func Interpret(wr dialogflowpb.WebhookRequest, script *ivr.IVRScript) (*dialogflowpb.WebhookResponse, error) {
 	sessionID := wr.Session
 	var session *Session
-	if sessionExists(sessionID) {
-		session = loadSession(sessionID)
+	exists, err := sessionExists(sessionID)
+	if err != nil {
+		return nil, err
+	}
+	if exists {
+		session, err = loadSession(sessionID)
+		if err != nil {
+			return nil, err
+		}
 	} else {
 		session = initSession(script)
 	}
@@ -45,48 +53,57 @@ func Interpret(wr dialogflowpb.WebhookRequest, script *ivr.IVRScript) *dialogflo
 	}
 
 	moduleID := wr.QueryResult.Intent.DisplayName
-	module := getModuleByID(script, string(moduleID))
+	module, err := getModuleByID(script, ivr.ModuleID(moduleID))
+	if err != nil {
+		return nil, err
+	}
 	if !isInputOrMenu(module) {
-		log.Fatalf("Expected input or menu module to start processing, instead got: %T", module)
+		return nil, fmt.Errorf("Expected input or menu module to start processing, instead got: %T", module)
 	}
-	module = interpreter.ProcessInitial(module)
+	module, err = interpreter.ProcessInitial(module)
+	if err != nil {
+		return nil, err
+	}
 	for module != nil {
-		module = interpreter.Process(module)
+		module, err = interpreter.Process(module)
+		if err != nil {
+			return nil, err
+		}
 	}
-	return interpreter.WebhookResponse
+	return interpreter.WebhookResponse, nil
 }
 
 // ProcessInitial process a module and returns the next module to be processed
-func (interpreter *Interpreter) ProcessInitial(module ivr.Module) ivr.Module {
+func (interpreter *Interpreter) ProcessInitial(module ivr.Module) (ivr.Module, error) {
 	switch v := module.(type) {
 	case *ivr.InputModule:
 		return interpreter.processInputInitial(v)
 	}
-	return nil
+	return nil, nil
 }
 
 // Process processes a module and returns the next module to be processed
-func (interpreter *Interpreter) Process(module ivr.Module) ivr.Module {
+func (interpreter *Interpreter) Process(module ivr.Module) (ivr.Module, error) {
 	switch v := module.(type) {
 	case *ivr.IfElseModule:
 		return interpreter.processIfElse(v)
 	case *ivr.PlayModule:
 		return interpreter.processPlay(v)
 	case *ivr.HangupModule:
-		return nil
+		return nil, nil
 	}
-	return nil
+	return nil, nil
 }
 
-func (interpreter *Interpreter) processInputInitial(module *ivr.InputModule) ivr.Module {
+func (interpreter *Interpreter) processInputInitial(module *ivr.InputModule) (ivr.Module, error) {
 	parameters := interpreter.QueryResult.Parameters.Fields
 	for name, value := range parameters {
 		interpreter.Session.setParameter(name, value)
 	}
-	return getModuleByID(interpreter.Script, string(module.GetDescendant()))
+	return getModuleByID(interpreter.Script, module.GetDescendant())
 }
 
-func (interpreter *Interpreter) processIfElse(module *ivr.IfElseModule) (next ivr.Module) {
+func (interpreter *Interpreter) processIfElse(module *ivr.IfElseModule) (ivr.Module, error) {
 	var conditionsPass bool
 	conditions := module.BranchIf.Cond.Conditions
 	if module.BranchIf.Cond.ConditionGrouping == "" { // Parser currently does not populate this field
@@ -97,17 +114,19 @@ func (interpreter *Interpreter) processIfElse(module *ivr.IfElseModule) (next iv
 		conditionsPass = true
 		for _, condition := range conditions {
 			populateCondition(condition, interpreter.Session.Variables)
-			if !passes(condition) {
+			passes, err := conditionPasses(condition)
+			if err != nil {
+				return nil, err
+			}
+			if !passes {
 				conditionsPass = false
 			}
 		}
 	}
 	if conditionsPass {
-		next = getModuleByID(interpreter.Script, string(module.BranchIf.Descendant))
-	} else {
-		next = getModuleByID(interpreter.Script, string(module.BranchElse.Descendant))
+		return getModuleByID(interpreter.Script, module.BranchIf.Descendant)
 	}
-	return
+	return getModuleByID(interpreter.Script, module.BranchElse.Descendant)
 }
 
 func populateCondition(condition *ivr.Condition, variables map[string]*vars.Variable) {
@@ -129,7 +148,7 @@ func populateCondition(condition *ivr.Condition, variables map[string]*vars.Vari
 	}
 }
 
-func passes(condition *ivr.Condition) bool {
+func conditionPasses(condition *ivr.Condition) (bool, error) {
 	log.Printf("Comparison Type: %s", condition.ComparisonType)
 	switch condition.ComparisonType {
 	case "MORE_THAN":
@@ -152,14 +171,33 @@ func passes(condition *ivr.Condition) bool {
 			log.Fatalf("Expected int or numeric in more than comparison, instead got: %T", v)
 		}
 		log.Printf("Left: %f, Right: %f.", left, right)
-		return left > right
+		return left > right, nil
 	}
-	return false
+	return false, nil
 }
 
-func (interpreter *Interpreter) processPlay(module *ivr.PlayModule) ivr.Module {
+func (interpreter *Interpreter) processPlay(module *ivr.PlayModule) (ivr.Module, error) {
 	promptStrings := module.VoicePromptIDs.TransformToAI(interpreter.Script.Prompts)
 	intentMessageText := interpreter.WebhookResponse.FulfillmentMessages[0].GetText()
 	intentMessageText.Text = append(intentMessageText.Text, promptStrings...)
-	return getModuleByID(interpreter.Script, string(module.GetDescendant()))
+	return getModuleByID(interpreter.Script, module.GetDescendant())
+}
+
+func getModuleByID(script *ivr.IVRScript, moduleID ivr.ModuleID) (ivr.Module, error) { // probably an unnecessary function
+	module, ok := script.Modules[moduleID]
+	if !ok {
+		return nil, fmt.Errorf("Module not found with ID: %s", moduleID)
+	}
+	return module, nil
+}
+
+func isInputOrMenu(module ivr.Module) bool {
+	switch module.(type) {
+	case *ivr.MenuModule:
+		return true
+	case *ivr.InputModule:
+		return true
+	default:
+		return false
+	}
 }

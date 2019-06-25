@@ -1,11 +1,11 @@
 package fulfiller
 
 import (
-	"bufio"
+	"bytes"
 	"log"
 	"net/http"
-	"os"
 
+	"github.com/Cepreu/gofrend/cloud"
 	"github.com/Cepreu/gofrend/ivr"
 	"github.com/Cepreu/gofrend/ivr/xmlparser"
 	"github.com/Cepreu/gofrend/utils"
@@ -15,16 +15,22 @@ import (
 
 // HandleWebhook performs DialogFlow fulfillment for the F9 Agent
 func HandleWebhook(w http.ResponseWriter, r *http.Request) {
-	script := getScript("ivr_scripts/is_large_test.five9ivr")
+	script, err := getScript("ivr_scripts/is_large_test.five9ivr")
+	if err != nil {
+		log.Panic(err)
+	}
 	utils.PrettyLog(script)
 
 	wr := dialogflowpb.WebhookRequest{}
-	err := jsonpb.Unmarshal(r.Body, &wr)
+	err = jsonpb.Unmarshal(r.Body, &wr)
 	if err != nil {
-		log.Fatalf("Error unmarshalling dialogflow request: %v", err)
+		log.Panic(err)
 	}
 
-	response := Interpret(wr, script)
+	response, err := Interpret(wr, script)
+	if err != nil {
+		log.Panic(err)
+	}
 
 	marshaler := jsonpb.Marshaler{}
 	marshaler.Marshal(w, response)
@@ -32,37 +38,16 @@ func HandleWebhook(w http.ResponseWriter, r *http.Request) {
 	//Need to implement storing session
 }
 
-func getScript(fname string) *ivr.IVRScript {
-	f, err := os.Open(fname)
+func getScript(hash string) (*ivr.IVRScript, error) {
+	data, err := cloud.DownloadXML(hash)
 	if err != nil {
-		log.Panic(err)
+		return nil, err
 	}
-	script, err := xmlparser.NewIVRScript(bufio.NewReader(f))
+	script, err := xmlparser.NewIVRScript(bytes.NewReader(data))
 	if err != nil {
-		log.Panic(err)
+		return nil, err
 	}
-	return script
-}
-
-func getModuleByID(script *ivr.IVRScript, ID string) (m ivr.Module) { // probably an unnecessary function
-	m, ok := script.Modules[ivr.ModuleID(ID)]
-	if !ok {
-		log.Print("No match.") //Debug
-		utils.PrettyLog(script.Modules)
-		return nil
-	}
-	return m
-}
-
-func isInputOrMenu(module ivr.Module) bool {
-	switch module.(type) {
-	case *ivr.MenuModule:
-		return true
-	case *ivr.InputModule:
-		return true
-	default:
-		return false
-	}
+	return script, nil
 }
 
 // func HandleWebhook(w http.ResponseWriter, r *http.Request) {

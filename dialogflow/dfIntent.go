@@ -172,7 +172,7 @@ func input2intent(ivrScript *ivr.IVRScript, input *ivr.InputModule) (intent *dia
 	intent = &dialogflowpb.Intent{
 		DisplayName: string(input.GetID()),
 		WebhookState: (dialogflowpb.Intent_WebhookState(
-			dialogflowpb.Intent_WebhookState_value["WEBHOOK_STATE_UNSPECIFIED"])),
+			dialogflowpb.Intent_WebhookState_value["WEBHOOK_STATE_ENABLED"])),
 		Priority:          500000,
 		MlDisabled:        false,
 		InputContextNames: []string{},

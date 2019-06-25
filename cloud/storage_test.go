@@ -1,4 +1,4 @@
-package preparer
+package cloud
 
 import (
 	"bytes"
@@ -7,6 +7,12 @@ import (
 
 	"github.com/Cepreu/gofrend/utils"
 )
+
+func check(err error) {
+	if err != nil {
+		panic(err)
+	}
+}
 
 var fname1 = "test_files/is_large_test.five9ivr"
 
@@ -37,18 +43,18 @@ var fname1 = "test_files/is_large_test.five9ivr"
 // 	}
 // }
 
-func TestUploadData(t *testing.T) {
+func TestUploadXML(t *testing.T) {
 	data, err := ioutil.ReadFile(fname1)
 	check(err)
-	err = uploadData(data)
+	err = UploadXML(data)
 	check(err)
 }
 
-func TestDownloadData(t *testing.T) {
+func TestDownloadXML(t *testing.T) {
 	expectedData, err := ioutil.ReadFile(fname1)
 	check(err)
 	hash := utils.HashToString(expectedData)
-	data, err := downloadData(hash)
+	data, err := DownloadXML(hash)
 	check(err)
 	if !bytes.Equal(data, expectedData) {
 		panic("Download data does not match file contents")
