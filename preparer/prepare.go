@@ -42,7 +42,7 @@ func prepareIntents(script *ivr.IVRScript) error {
 
 	projectID := "f9-test-agent"
 	ctx := context.Background()
-	client, err := dialogflow.NewIntentsClient(ctx, option.WithCredentialsFile("f9-dialogflow-converter-9e31638c7ca7.json"))
+	client, err := dialogflow.NewIntentsClient(ctx, option.WithCredentialsFile("credentials.json"))
 	if err != nil {
 		return err
 	}

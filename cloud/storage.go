@@ -54,7 +54,7 @@ func getObjectHandleFromData(data []byte) (*storage.ObjectHandle, error) {
 func getObjectHandleFromHash(hash string) (*storage.ObjectHandle, error) {
 	ctx := context.Background()
 
-	client, err := storage.NewClient(ctx, option.WithCredentialsFile("f9-dialogflow-converter-9e31638c7ca7.json"))
+	client, err := storage.NewClient(ctx, option.WithCredentialsFile("credentials.json"))
 	if err != nil {
 		return nil, err
 	}
