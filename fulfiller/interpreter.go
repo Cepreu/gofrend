@@ -21,19 +21,7 @@ type Interpreter struct {
 // Interpret - main interpreter loop
 func Interpret(wr dialogflowpb.WebhookRequest, script *ivr.IVRScript) (*dialogflowpb.WebhookResponse, error) {
 	sessionID := wr.Session
-	var session *Session
-	exists, err := sessionExists(sessionID)
-	if err != nil {
-		return nil, err
-	}
-	if exists {
-		session, err = loadSession(sessionID)
-		if err != nil {
-			return nil, err
-		}
-	} else {
-		session = initSession(script)
-	}
+	session, err := loadSession(sessionID, script)
 
 	interpreter := &Interpreter{
 		Session:     session,
