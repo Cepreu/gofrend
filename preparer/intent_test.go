@@ -41,7 +41,7 @@ func TestIntent(t *testing.T) {
 	var filename = "test_files/is_large_test.five9ivr"
 	data, err := ioutil.ReadFile(filename)
 	check(err)
-	scriptHash := utils.ScriptHash(data)
+	scriptHash := utils.HashToString(data)
 	script, err := xmlparser.NewIVRScript(bytes.NewReader(data))
 	check(err)
 	intents, err := intentsGenerator(script, scriptHash)

@@ -2,7 +2,6 @@ package fulfiller
 
 import (
 	"bytes"
-	"fmt"
 	"log"
 	"net/http"
 
@@ -38,13 +37,8 @@ func HandleWebhook(w http.ResponseWriter, r *http.Request) {
 	//Need to implement storing session
 }
 
-func getScriptHash(webhookRequest dialogflowpb.WebhookRequest) (string, error) {
-	contextNames := webhookRequest.QueryResult.Intent.InputContextNames
-	if len(contextNames) != 1 {
-		utils.PrettyLog(webhookRequest.QueryResult)
-		return "", fmt.Errorf("Length of input contexts expected to be 1, in reality: %d", len(contextNames))
-	}
-	return utils.ContextToHash(contextNames[0])
+func getScriptHash(webhookRequest dialogflowpb.WebhookRequest) string {
+	return utils.DisplayNameToScriptHash(webhookRequest.QueryResult.Intent.DisplayName)
 }
 
 func getScriptFromHash(hash string) (*ivr.IVRScript, error) {
@@ -60,10 +54,7 @@ func getScriptFromHash(hash string) (*ivr.IVRScript, error) {
 }
 
 func getScript(webhookRequest dialogflowpb.WebhookRequest) (*ivr.IVRScript, error) {
-	hash, err := getScriptHash(webhookRequest)
-	if err != nil {
-		return nil, err
-	}
+	hash := getScriptHash(webhookRequest)
 	return getScriptFromHash(hash)
 }
 

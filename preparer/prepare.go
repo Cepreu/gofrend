@@ -22,7 +22,7 @@ func PrepareFile(filename string) error {
 		return err
 	}
 
-	scriptHash := utils.ScriptHash(data)
+	scriptHash := utils.HashToString(data)
 
 	err = cloud.UploadXML(data)
 	if err != nil {

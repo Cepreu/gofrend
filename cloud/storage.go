@@ -47,7 +47,7 @@ func DownloadXML(hash string) ([]byte, error) {
 }
 
 func getObjectHandleFromData(data []byte) (*storage.ObjectHandle, error) {
-	hash := utils.ScriptHash(data)
+	hash := utils.HashToString(data)
 	return getObjectHandleFromHash(hash)
 }
 

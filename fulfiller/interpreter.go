@@ -6,6 +6,7 @@ import (
 
 	"github.com/Cepreu/gofrend/ivr"
 	"github.com/Cepreu/gofrend/ivr/vars"
+	"github.com/Cepreu/gofrend/utils"
 	dialogflowpb "google.golang.org/genproto/googleapis/cloud/dialogflow/v2"
 )
 
@@ -52,7 +53,7 @@ func Interpret(wr dialogflowpb.WebhookRequest, script *ivr.IVRScript) (*dialogfl
 		},
 	}
 
-	moduleID := wr.QueryResult.Intent.DisplayName
+	moduleID := utils.DisplayNameToModuleID(wr.QueryResult.Intent.DisplayName)
 	module, err := getModuleByID(script, ivr.ModuleID(moduleID))
 	if err != nil {
 		return nil, err
