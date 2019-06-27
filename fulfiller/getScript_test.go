@@ -18,8 +18,8 @@ var fname1 = "test_files/is_large_test.five9ivr"
 func TestGetScript(t *testing.T) {
 	data, err := ioutil.ReadFile(fname1)
 	check(err)
-	hash := utils.HashToString(data)
-	script, err := getScript(hash)
+	hash := utils.ScriptHash(data)
+	script, err := getScriptFromHash(hash)
 	check(err)
 	utils.PrettyPrint(script)
 }

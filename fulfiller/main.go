@@ -2,6 +2,7 @@ package fulfiller
 
 import (
 	"bytes"
+	"fmt"
 	"log"
 	"net/http"
 
@@ -15,14 +16,13 @@ import (
 
 // HandleWebhook performs DialogFlow fulfillment for the F9 Agent
 func HandleWebhook(w http.ResponseWriter, r *http.Request) {
-	script, err := getScript("ivr_scripts/is_large_test.five9ivr")
+	wr := dialogflowpb.WebhookRequest{}
+	err := jsonpb.Unmarshal(r.Body, &wr)
 	if err != nil {
 		log.Panic(err)
 	}
-	utils.PrettyLog(script)
 
-	wr := dialogflowpb.WebhookRequest{}
-	err = jsonpb.Unmarshal(r.Body, &wr)
+	script, err := getScript(wr)
 	if err != nil {
 		log.Panic(err)
 	}
@@ -38,7 +38,15 @@ func HandleWebhook(w http.ResponseWriter, r *http.Request) {
 	//Need to implement storing session
 }
 
-func getScript(hash string) (*ivr.IVRScript, error) {
+func getScriptHash(webhookRequest dialogflowpb.WebhookRequest) (string, error) {
+	contextNames := webhookRequest.QueryResult.Intent.InputContextNames
+	if len(contextNames) != 1 {
+		return "", fmt.Errorf("Length of input contexts expected to be 1, in reality: %d", len(contextNames))
+	}
+	return utils.ContextToHash(contextNames[0])
+}
+
+func getScriptFromHash(hash string) (*ivr.IVRScript, error) {
 	data, err := cloud.DownloadXML(hash)
 	if err != nil {
 		return nil, err
@@ -48,6 +56,14 @@ func getScript(hash string) (*ivr.IVRScript, error) {
 		return nil, err
 	}
 	return script, nil
+}
+
+func getScript(webhookRequest dialogflowpb.WebhookRequest) (*ivr.IVRScript, error) {
+	hash, err := getScriptHash(webhookRequest)
+	if err != nil {
+		return nil, err
+	}
+	return getScriptFromHash(hash)
 }
 
 // func HandleWebhook(w http.ResponseWriter, r *http.Request) {

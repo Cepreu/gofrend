@@ -14,11 +14,6 @@ import (
 	dialogflowpb "google.golang.org/genproto/googleapis/cloud/dialogflow/v2"
 )
 
-func check(e error) {
-	if e != nil {
-		panic(e)
-	}
-}
 func TestScript(t *testing.T) {
 	var fname = "test_files/is_large_test.five9ivr"
 	f, err := os.Open(fname)
@@ -55,7 +50,7 @@ func TestIntent(t *testing.T) {
 	}
 
 	ctx := context.Background()
-	client, err := dialogflow.NewIntentsClient(ctx, option.WithCredentialsFile("f9-dialogflow-converter-9e31638c7ca7.json"))
+	client, err := dialogflow.NewIntentsClient(ctx, option.WithCredentialsFile("credentials.json"))
 	check(err)
 
 	_, err = client.CreateIntent(ctx, request)

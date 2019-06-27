@@ -6,25 +6,25 @@ import (
 	dialogflowpb "google.golang.org/genproto/googleapis/cloud/dialogflow/v2"
 )
 
-func intentsGenerator(ivrScript *ivr.IVRScript) (intents []*dialogflowpb.Intent, err error) {
+func intentsGenerator(ivrScript *ivr.IVRScript, scriptHash string) (intents []*dialogflowpb.Intent, err error) {
 	for _, m := range ivrScript.Modules {
 		switch v := m.(type) {
 		case *ivr.InputModule:
-			intent, err := input2intent(ivrScript, v)
+			intent, err := input2intent(ivrScript, v, scriptHash)
 			return []*dialogflowpb.Intent{intent}, err
 		}
 	}
 	return nil, nil
 }
 
-func input2intent(ivrScript *ivr.IVRScript, input *ivr.InputModule) (intent *dialogflowpb.Intent, err error) {
+func input2intent(ivrScript *ivr.IVRScript, input *ivr.InputModule, scriptHash string) (intent *dialogflowpb.Intent, err error) {
 	intent = &dialogflowpb.Intent{
-		DisplayName: string(input.GetID()),
+		DisplayName: input.GetID().Lower(),
 		WebhookState: (dialogflowpb.Intent_WebhookState(
-			dialogflowpb.Intent_WebhookState_value["WEBHOOK_STATE_UNSPECIFIED"])),
+			dialogflowpb.Intent_WebhookState_value["WEBHOOK_STATE_ENABLED"])),
 		Priority:          500000,
 		MlDisabled:        false,
-		InputContextNames: []string{},
+		InputContextNames: []string{utils.HashToContext("f9-dialogflow-converter", scriptHash)},
 		Events:            []string{},
 		TrainingPhrases: []*dialogflowpb.Intent_TrainingPhrase{
 			&dialogflowpb.Intent_TrainingPhrase{
@@ -55,8 +55,13 @@ func input2intent(ivrScript *ivr.IVRScript, input *ivr.InputModule) (intent *dia
 				},
 			},
 		},
-		Action:         "input.sayvalue",
-		OutputContexts: []*dialogflowpb.Context{},
+		Action: "input.sayvalue",
+		OutputContexts: []*dialogflowpb.Context{
+			&dialogflowpb.Context{
+				Name:          utils.HashToContext("f9-dialogflow-converter", scriptHash),
+				LifespanCount: 2,
+			},
+		},
 		Parameters: []*dialogflowpb.Intent_Parameter{
 			{
 				Name:                  utils.GenUUIDv4(),

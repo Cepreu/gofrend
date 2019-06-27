@@ -1,5 +1,7 @@
 package ivr
 
+import "strings"
+
 // Module - parsed ivr module
 type Module interface {
 	GetID() ModuleID
@@ -9,6 +11,11 @@ type Module interface {
 
 // ModuleID - the IVR module's ID, string
 type ModuleID string
+
+// Lower returns lower case string representation of ID
+func (ID ModuleID) Lower() string {
+	return strings.ToLower(string(ID))
+}
 
 type module struct {
 	ID              ModuleID

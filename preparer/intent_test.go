@@ -2,8 +2,10 @@ package preparer
 
 import (
 	"bufio"
+	"bytes"
 	"context"
 	"fmt"
+	"io/ioutil"
 	"os"
 	"testing"
 
@@ -21,10 +23,6 @@ func TestScript(t *testing.T) {
 	s, err := xmlparser.NewIVRScript(bufio.NewReader(f))
 	check(err)
 	utils.PrettyPrint(s)
-
-	i, err := intentsGenerator(s)
-	check(err)
-	utils.PrettyPrint(i)
 }
 
 // func TestClientInit(t *testing.T) {
@@ -40,13 +38,13 @@ func check(err error) {
 }
 
 func TestIntent(t *testing.T) {
-	var fname = "test_files/is_large_test.five9ivr"
-	f, err := os.Open(fname)
+	var filename = "test_files/is_large_test.five9ivr"
+	data, err := ioutil.ReadFile(filename)
 	check(err)
-	s, err := xmlparser.NewIVRScript(bufio.NewReader(f))
+	scriptHash := utils.ScriptHash(data)
+	script, err := xmlparser.NewIVRScript(bytes.NewReader(data))
 	check(err)
-
-	intents, err := intentsGenerator(s)
+	intents, err := intentsGenerator(script, scriptHash)
 	check(err)
 
 	projectID := "f9-dialogflow-converter"
@@ -56,7 +54,7 @@ func TestIntent(t *testing.T) {
 	}
 
 	ctx := context.Background()
-	client, err := dialogflow.NewIntentsClient(ctx, option.WithCredentialsFile("f9-dialogflow-converter-9e31638c7ca7.json"))
+	client, err := dialogflow.NewIntentsClient(ctx, option.WithCredentialsFile("credentials.json"))
 	check(err)
 
 	_, err = client.CreateIntent(ctx, request)

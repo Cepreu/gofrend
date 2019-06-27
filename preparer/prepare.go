@@ -10,6 +10,7 @@ import (
 	"github.com/Cepreu/gofrend/cloud"
 	ivr "github.com/Cepreu/gofrend/ivr"
 	"github.com/Cepreu/gofrend/ivr/xmlparser"
+	"github.com/Cepreu/gofrend/utils"
 	"google.golang.org/api/option"
 	dialogflowpb "google.golang.org/genproto/googleapis/cloud/dialogflow/v2"
 )
@@ -21,6 +22,8 @@ func PrepareFile(filename string) error {
 		return err
 	}
 
+	scriptHash := utils.ScriptHash(data)
+
 	err = cloud.UploadXML(data)
 	if err != nil {
 		return err
@@ -31,16 +34,16 @@ func PrepareFile(filename string) error {
 		return err
 	}
 
-	return prepareIntents(script)
+	return prepareIntents(script, scriptHash)
 }
 
-func prepareIntents(script *ivr.IVRScript) error {
-	intents, err := intentsGenerator(script)
+func prepareIntents(script *ivr.IVRScript, scriptHash string) error {
+	intents, err := intentsGenerator(script, scriptHash)
 	if err != nil {
 		return err
 	}
 
-	projectID := "f9-test-agent"
+	projectID := "f9-dialogflow-converter" // TODO Repeated in cloud package.
 	ctx := context.Background()
 	client, err := dialogflow.NewIntentsClient(ctx, option.WithCredentialsFile("credentials.json"))
 	if err != nil {

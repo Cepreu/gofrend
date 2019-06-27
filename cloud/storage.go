@@ -47,7 +47,7 @@ func DownloadXML(hash string) ([]byte, error) {
 }
 
 func getObjectHandleFromData(data []byte) (*storage.ObjectHandle, error) {
-	hash := utils.HashToString(data)
+	hash := utils.ScriptHash(data)
 	return getObjectHandleFromHash(hash)
 }
 
@@ -58,6 +58,6 @@ func getObjectHandleFromHash(hash string) (*storage.ObjectHandle, error) {
 	if err != nil {
 		return nil, err
 	}
-	object := client.Bucket("f9-test-agent.appspot.com").Object(fmt.Sprintf("five9ivr-files/%s", hash))
+	object := client.Bucket("f9-dialogflow-converter.appspot.com").Object(fmt.Sprintf("five9ivr-files/%s", hash))
 	return object, nil
 }

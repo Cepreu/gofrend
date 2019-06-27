@@ -53,10 +53,10 @@ func TestUploadXML(t *testing.T) {
 func TestDownloadXML(t *testing.T) {
 	expectedData, err := ioutil.ReadFile(fname1)
 	check(err)
-	hash := utils.HashToString(expectedData)
+	hash := utils.ScriptHash(expectedData)
 	data, err := DownloadXML(hash)
 	check(err)
 	if !bytes.Equal(data, expectedData) {
-		panic("Download data does not match file contents")
+		t.Fatalf("Download data does not match file contents")
 	}
 }
