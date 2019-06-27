@@ -1,6 +1,8 @@
 package preparer
 
 import (
+	"fmt"
+
 	ivr "github.com/Cepreu/gofrend/ivr"
 	"github.com/Cepreu/gofrend/utils"
 	dialogflowpb "google.golang.org/genproto/googleapis/cloud/dialogflow/v2"
@@ -18,13 +20,14 @@ func intentsGenerator(ivrScript *ivr.IVRScript, scriptHash string) (intents []*d
 }
 
 func input2intent(ivrScript *ivr.IVRScript, input *ivr.InputModule, scriptHash string) (intent *dialogflowpb.Intent, err error) {
+	displayName := utils.MakeDisplayName(scriptHash, input.GetID())
 	intent = &dialogflowpb.Intent{
-		DisplayName: utils.MakeDisplayName(scriptHash, input.GetID()),
+		DisplayName: displayName,
 		WebhookState: (dialogflowpb.Intent_WebhookState(
 			dialogflowpb.Intent_WebhookState_value["WEBHOOK_STATE_ENABLED"])),
 		Priority:          500000,
 		MlDisabled:        false,
-		InputContextNames: []string{},
+		InputContextNames: []string{fmt.Sprintf("projects/f9-dialogflow-converter/agent/sessions/-/contexts/%s", displayName)},
 		Events:            []string{},
 		TrainingPhrases: []*dialogflowpb.Intent_TrainingPhrase{
 			&dialogflowpb.Intent_TrainingPhrase{
