@@ -41,6 +41,7 @@ func HandleWebhook(w http.ResponseWriter, r *http.Request) {
 func getScriptHash(webhookRequest dialogflowpb.WebhookRequest) (string, error) {
 	contextNames := webhookRequest.QueryResult.Intent.InputContextNames
 	if len(contextNames) != 1 {
+		utils.PrettyLog(webhookRequest.QueryResult)
 		return "", fmt.Errorf("Length of input contexts expected to be 1, in reality: %d", len(contextNames))
 	}
 	return utils.ContextToHash(contextNames[0])
