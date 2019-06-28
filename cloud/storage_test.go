@@ -14,7 +14,7 @@ func check(err error) {
 	}
 }
 
-var fname1 = "test_files/is_large_test.five9ivr"
+var fname1 = "test_files/comparison_test.five9ivr"
 
 // func TestBucket(t *testing.T) {
 // 	ctx := context.Background()

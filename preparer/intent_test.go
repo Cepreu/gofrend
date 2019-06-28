@@ -61,6 +61,35 @@ func TestIntent(t *testing.T) {
 	check(err)
 }
 
+func TestComparisonIntent(t *testing.T) {
+	var filename = "test_files/comparison_test.five9ivr"
+	data, err := ioutil.ReadFile(filename)
+	check(err)
+	scriptHash := utils.HashToString(data)
+	script, err := xmlparser.NewIVRScript(bytes.NewReader(data))
+	check(err)
+	intents, err := intentsGenerator(script, scriptHash)
+	check(err)
+	if len(intents) != 2 {
+		t.Fatalf("Len of intents expected to be 2, instead: %d", len(intents))
+	}
+
+	projectID := "f9-dialogflow-converter"
+	ctx := context.Background()
+	client, err := dialogflow.NewIntentsClient(ctx, option.WithCredentialsFile("credentials.json"))
+	check(err)
+
+	for _, intent := range intents {
+		request := &dialogflowpb.CreateIntentRequest{
+			Parent: fmt.Sprintf("projects/%s/agent", projectID),
+			Intent: intent,
+		}
+		_, err = client.CreateIntent(ctx, request)
+		check(err)
+	}
+
+}
+
 // func TestMenu(t *testing.T) {
 // 	Menu := &ivr.MenuModule{
 // 		GeneralInfo: ivr.GeneralInfo{

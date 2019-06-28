@@ -21,12 +21,13 @@ func HandleWebhook(w http.ResponseWriter, r *http.Request) {
 		log.Panic(err)
 	}
 
-	script, err := getScript(wr)
+	hash := getScriptHash(wr)
+	script, err := getScript(hash)
 	if err != nil {
 		log.Panic(err)
 	}
 
-	response, err := Interpret(wr, script)
+	response, err := Interpret(wr, script, hash)
 	if err != nil {
 		log.Panic(err)
 	}
@@ -41,7 +42,7 @@ func getScriptHash(webhookRequest dialogflowpb.WebhookRequest) string {
 	return utils.DisplayNameToScriptHash(webhookRequest.QueryResult.Intent.DisplayName)
 }
 
-func getScriptFromHash(hash string) (*ivr.IVRScript, error) {
+func getScript(hash string) (*ivr.IVRScript, error) {
 	data, err := cloud.DownloadXML(hash)
 	if err != nil {
 		return nil, err
@@ -51,11 +52,6 @@ func getScriptFromHash(hash string) (*ivr.IVRScript, error) {
 		return nil, err
 	}
 	return script, nil
-}
-
-func getScript(webhookRequest dialogflowpb.WebhookRequest) (*ivr.IVRScript, error) {
-	hash := getScriptHash(webhookRequest)
-	return getScriptFromHash(hash)
 }
 
 // func HandleWebhook(w http.ResponseWriter, r *http.Request) {

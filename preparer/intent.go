@@ -1,22 +1,24 @@
 package preparer
 
 import (
-	"fmt"
-
 	ivr "github.com/Cepreu/gofrend/ivr"
 	"github.com/Cepreu/gofrend/utils"
 	dialogflowpb "google.golang.org/genproto/googleapis/cloud/dialogflow/v2"
 )
 
-func intentsGenerator(ivrScript *ivr.IVRScript, scriptHash string) (intents []*dialogflowpb.Intent, err error) {
+func intentsGenerator(ivrScript *ivr.IVRScript, scriptHash string) ([]*dialogflowpb.Intent, error) {
+	intents := []*dialogflowpb.Intent{}
 	for _, m := range ivrScript.Modules {
 		switch v := m.(type) {
 		case *ivr.InputModule:
 			intent, err := input2intent(ivrScript, v, scriptHash)
-			return []*dialogflowpb.Intent{intent}, err
+			if err != nil {
+				return nil, err
+			}
+			intents = append(intents, intent)
 		}
 	}
-	return nil, nil
+	return intents, nil
 }
 
 func input2intent(ivrScript *ivr.IVRScript, input *ivr.InputModule, scriptHash string) (intent *dialogflowpb.Intent, err error) {
@@ -27,7 +29,7 @@ func input2intent(ivrScript *ivr.IVRScript, input *ivr.InputModule, scriptHash s
 			dialogflowpb.Intent_WebhookState_value["WEBHOOK_STATE_ENABLED"])),
 		Priority:          500000,
 		MlDisabled:        false,
-		InputContextNames: []string{fmt.Sprintf("projects/f9-dialogflow-converter/agent/sessions/-/contexts/%s", displayName)},
+		InputContextNames: []string{utils.MakeContextName(displayName)},
 		Events:            []string{},
 		TrainingPhrases: []*dialogflowpb.Intent_TrainingPhrase{
 			&dialogflowpb.Intent_TrainingPhrase{

@@ -14,18 +14,20 @@ import (
 type Interpreter struct {
 	Session         *Session
 	Script          *ivr.IVRScript
+	ScriptHash      string
 	QueryResult     *dialogflowpb.QueryResult
 	WebhookResponse *dialogflowpb.WebhookResponse
 }
 
 // Interpret - main interpreter loop
-func Interpret(wr dialogflowpb.WebhookRequest, script *ivr.IVRScript) (*dialogflowpb.WebhookResponse, error) {
+func Interpret(wr dialogflowpb.WebhookRequest, script *ivr.IVRScript, scriptHash string) (*dialogflowpb.WebhookResponse, error) {
 	sessionID := wr.Session
 	session, err := loadSession(sessionID, script)
 
 	interpreter := &Interpreter{
 		Session:     session,
 		Script:      script,
+		ScriptHash:  scriptHash,
 		QueryResult: wr.QueryResult,
 		WebhookResponse: &dialogflowpb.WebhookResponse{
 			FulfillmentMessages: []*dialogflowpb.Intent_Message{
@@ -37,7 +39,6 @@ func Interpret(wr dialogflowpb.WebhookRequest, script *ivr.IVRScript) (*dialogfl
 					},
 				},
 			},
-			OutputContexts: wr.QueryResult.OutputContexts,
 		},
 	}
 
@@ -78,6 +79,8 @@ func (interpreter *Interpreter) Process(module ivr.Module) (ivr.Module, error) {
 		return interpreter.processIfElse(v)
 	case *ivr.PlayModule:
 		return interpreter.processPlay(v)
+	case *ivr.InputModule:
+		return interpreter.processInput(v)
 	case *ivr.HangupModule:
 		return nil, nil
 	}
@@ -90,6 +93,22 @@ func (interpreter *Interpreter) processInputInitial(module *ivr.InputModule) (iv
 		interpreter.Session.setParameter(name, value)
 	}
 	return getModuleByID(interpreter.Script, module.GetDescendant())
+}
+
+func (interpreter *Interpreter) processInput(module *ivr.InputModule) (ivr.Module, error) {
+	promptStrings := module.VoicePromptIDs.TransformToAI(interpreter.Script.Prompts) // Duplicate code with processPlay
+	intentMessageText := interpreter.WebhookResponse.FulfillmentMessages[0].GetText()
+	intentMessageText.Text = append(intentMessageText.Text, promptStrings...)
+
+	interpreter.WebhookResponse.OutputContexts = []*dialogflowpb.Context{
+		&dialogflowpb.Context{
+			Name:          utils.MakeContextName(utils.MakeDisplayName(interpreter.ScriptHash, module.GetID())),
+			LifespanCount: 1,
+		},
+	}
+
+	interpreter.Session.store()
+	return nil, nil
 }
 
 func (interpreter *Interpreter) processIfElse(module *ivr.IfElseModule) (ivr.Module, error) {
@@ -138,7 +157,6 @@ func populateCondition(condition *ivr.Condition, variables map[string]*vars.Vari
 }
 
 func conditionPasses(condition *ivr.Condition) (bool, error) {
-	log.Printf("Comparison Type: %s", condition.ComparisonType)
 	switch condition.ComparisonType {
 	case "MORE_THAN":
 		var left float64
@@ -170,6 +188,10 @@ func (interpreter *Interpreter) processPlay(module *ivr.PlayModule) (ivr.Module,
 	intentMessageText := interpreter.WebhookResponse.FulfillmentMessages[0].GetText()
 	intentMessageText.Text = append(intentMessageText.Text, promptStrings...)
 	return getModuleByID(interpreter.Script, module.GetDescendant())
+}
+
+func (interpreter *Interpreter) processHangup(module *ivr.HangupModule) (ivr.Module, error) {
+	return nil, interpreter.Session.delete()
 }
 
 func getModuleByID(script *ivr.IVRScript, moduleID ivr.ModuleID) (ivr.Module, error) { // probably an unnecessary function

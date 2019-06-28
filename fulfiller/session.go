@@ -14,14 +14,14 @@ import (
 // Session contains data stored by webhook between sessions.
 type Session struct {
 	// Script variables.
-	Client    *datastore.Client
-	Key       *datastore.Key
-	Ctx       context.Context
+	client    *datastore.Client
+	key       *datastore.Key
+	ctx       context.Context
 	Variables map[string]*vars.Variable
 }
 
 func (session *Session) store() error {
-	_, err := session.Client.Put(session.Ctx, session.Key, session.Variables)
+	_, err := session.client.Put(session.ctx, session.key, session.Variables)
 	return err
 }
 
@@ -33,11 +33,11 @@ func loadSession(sessionID string, script *ivr.IVRScript) (*Session, error) {
 	}
 	key := makeKey(sessionID)
 	session := &Session{
-		Client: client,
-		Key:    key,
-		Ctx:    ctx,
+		client: client,
+		key:    key,
+		ctx:    ctx,
 	}
-	variables := make(map[string]*vars.Variable)
+	variables := map[string]*vars.Variable{}
 	err = client.Get(ctx, key, variables)
 	if err == datastore.ErrNoSuchEntity {
 		session.Variables = script.Variables
@@ -50,7 +50,7 @@ func loadSession(sessionID string, script *ivr.IVRScript) (*Session, error) {
 }
 
 func (session *Session) delete() error {
-	return session.Client.Delete(session.Ctx, session.Key)
+	return session.client.Delete(session.ctx, session.key)
 }
 
 func (session *Session) setParameter(name string, value *structpb.Value) error {
