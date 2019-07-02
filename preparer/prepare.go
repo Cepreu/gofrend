@@ -22,8 +22,6 @@ func PrepareFile(filename string) error {
 		return err
 	}
 
-	scriptHash := utils.HashToString(data)
-
 	err = cloud.UploadXML(data)
 	if err != nil {
 		return err
@@ -34,6 +32,8 @@ func PrepareFile(filename string) error {
 		return err
 	}
 
+	scriptHash := utils.HashToString(data)
+
 	return prepareIntents(script, scriptHash)
 }
 
@@ -43,16 +43,15 @@ func prepareIntents(script *ivr.IVRScript, scriptHash string) error {
 		return err
 	}
 
-	projectID := "f9-dialogflow-converter" // TODO Repeated in cloud package.
 	ctx := context.Background()
-	client, err := dialogflow.NewIntentsClient(ctx, option.WithCredentialsFile("credentials.json"))
+	client, err := dialogflow.NewIntentsClient(ctx, option.WithCredentialsFile(cloud.GcpCredentialsFileName))
 	if err != nil {
 		return err
 	}
 
 	for _, intent := range intents {
 		request := &dialogflowpb.CreateIntentRequest{
-			Parent: fmt.Sprintf("projects/%s/agent", projectID),
+			Parent: fmt.Sprintf("projects/%s/agent", cloud.GcpProjectID),
 			Intent: intent,
 		}
 

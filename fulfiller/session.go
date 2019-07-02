@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"cloud.google.com/go/datastore"
+	"github.com/Cepreu/gofrend/cloud"
 	"github.com/Cepreu/gofrend/ivr"
 	"github.com/Cepreu/gofrend/ivr/vars"
 	structpb "github.com/golang/protobuf/ptypes/struct"
@@ -32,7 +33,7 @@ func (session *Session) save() error {
 
 func loadSession(sessionID string, script *ivr.IVRScript) (*Session, error) { // Eventually should split into load/init
 	ctx := context.Background()
-	client, err := datastore.NewClient(ctx, "f9-dialogflow-converter", option.WithCredentialsFile("credentials.json"))
+	client, err := datastore.NewClient(ctx, cloud.GcpProjectID, option.WithCredentialsFile(cloud.GcpCredentialsFileName))
 	if err != nil {
 		return nil, err
 	}

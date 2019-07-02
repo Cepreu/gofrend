@@ -10,6 +10,7 @@ import (
 	"google.golang.org/api/option"
 )
 
+// UploadXML uploads static xml file to cloud
 func UploadXML(data []byte) error {
 	object, err := getObjectHandleFromData(data)
 	if err != nil {
@@ -31,6 +32,7 @@ func UploadXML(data []byte) error {
 	return nil
 }
 
+// DownloadXML downloads static xml file from cloud
 func DownloadXML(hash string) ([]byte, error) {
 	object, err := getObjectHandleFromHash(hash)
 	if err != nil {
@@ -54,10 +56,10 @@ func getObjectHandleFromData(data []byte) (*storage.ObjectHandle, error) {
 func getObjectHandleFromHash(hash string) (*storage.ObjectHandle, error) {
 	ctx := context.Background()
 
-	client, err := storage.NewClient(ctx, option.WithCredentialsFile("credentials.json"))
+	client, err := storage.NewClient(ctx, option.WithCredentialsFile(GcpCredentialsFileName))
 	if err != nil {
 		return nil, err
 	}
-	object := client.Bucket("f9-dialogflow-converter.appspot.com").Object(fmt.Sprintf("five9ivr-files/%s", hash))
+	object := client.Bucket(GcpStorageBucketName).Object(fmt.Sprintf("five9ivr-files/%s", hash))
 	return object, nil
 }
