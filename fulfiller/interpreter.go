@@ -107,8 +107,7 @@ func (interpreter *Interpreter) processInput(module *ivr.InputModule) (ivr.Modul
 		},
 	}
 
-	interpreter.Session.store()
-	return nil, nil
+	return nil, interpreter.Session.save()
 }
 
 func (interpreter *Interpreter) processIfElse(module *ivr.IfElseModule) (ivr.Module, error) {
@@ -121,7 +120,7 @@ func (interpreter *Interpreter) processIfElse(module *ivr.IfElseModule) (ivr.Mod
 	case "ALL":
 		conditionsPass = true
 		for _, condition := range conditions {
-			populateCondition(condition, interpreter.Session.Variables)
+			populateCondition(interpreter.Session, condition)
 			passes, err := conditionPasses(condition)
 			if err != nil {
 				return nil, err
@@ -137,22 +136,22 @@ func (interpreter *Interpreter) processIfElse(module *ivr.IfElseModule) (ivr.Mod
 	return getModuleByID(interpreter.Script, module.BranchElse.Descendant)
 }
 
-func populateCondition(condition *ivr.Condition, variables map[string]*vars.Variable) {
+func populateCondition(session *Session, condition *ivr.Condition) {
 	varName := condition.LeftOperand.VariableName
 	if varName != "" { // varName is empty if comparison is against constant
-		variable, ok := variables[varName]
+		storageVar, ok := session.getParameter(varName)
 		if !ok {
 			log.Fatalf("Error finding session variable with name: %s", varName)
 		}
-		condition.LeftOperand.Value = variable.Value
+		condition.LeftOperand.Value = storageVar.value()
 	}
 	varName = condition.RightOperand.VariableName
 	if varName != "" {
-		variable, ok := variables[varName]
+		storageVar, ok := session.getParameter(varName)
 		if !ok {
 			log.Fatalf("Error finding session variable with name: %s", varName)
 		}
-		condition.RightOperand.Value = variable.Value
+		condition.RightOperand.Value = storageVar.value()
 	}
 }
 

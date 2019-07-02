@@ -14,18 +14,23 @@ import (
 // Session contains data stored by webhook between sessions.
 type Session struct {
 	// Script variables.
-	client    *datastore.Client
-	key       *datastore.Key
-	ctx       context.Context
-	Variables map[string]*vars.Variable
+	client *datastore.Client
+	key    *datastore.Key
+	ctx    context.Context
+	Data   *SessionData
 }
 
-func (session *Session) store() error {
-	_, err := session.client.Put(session.ctx, session.key, session.Variables)
+// SessionData contains info to be stored in cloud between sessions.
+type SessionData struct {
+	Variables []*StorageVariable
+}
+
+func (session *Session) save() error {
+	_, err := session.client.Put(session.ctx, session.key, session.Data)
 	return err
 }
 
-func loadSession(sessionID string, script *ivr.IVRScript) (*Session, error) {
+func loadSession(sessionID string, script *ivr.IVRScript) (*Session, error) { // Eventually should split into load/init
 	ctx := context.Background()
 	client, err := datastore.NewClient(ctx, "f9-dialogflow-converter", option.WithCredentialsFile("credentials.json"))
 	if err != nil {
@@ -36,16 +41,14 @@ func loadSession(sessionID string, script *ivr.IVRScript) (*Session, error) {
 		client: client,
 		key:    key,
 		ctx:    ctx,
+		Data:   new(SessionData),
 	}
-	variables := map[string]*vars.Variable{}
-	err = client.Get(ctx, key, variables)
+	err = client.Get(ctx, key, session.Data)
 	if err == datastore.ErrNoSuchEntity {
-		session.Variables = script.Variables
-		return session, nil
+		session.initializeVariables(script.Variables)
 	} else if err != nil {
 		return nil, err
 	}
-	session.Variables = variables
 	return session, nil
 }
 
@@ -54,22 +57,47 @@ func (session *Session) delete() error {
 }
 
 func (session *Session) setParameter(name string, value *structpb.Value) error {
-	variable, ok := session.Variables[name]
+	variable, ok := session.getParameter(name)
 	if !ok {
 		return fmt.Errorf("Could not find session variable with name: %s", name)
 	}
-	switch v := variable.Value.(type) {
+	switch v := variable.value().(type) {
 	case *vars.Integer:
 		v.Value = int(value.GetNumberValue())
 	}
 	return nil
 }
 
-func (session *Session) getParameter(name string) (*vars.Variable, bool) {
-	v, ok := session.Variables[name]
-	return v, ok
+func (session *Session) getParameter(name string) (*StorageVariable, bool) {
+	var ret *StorageVariable
+	found := false
+	for _, storageVar := range session.Data.Variables {
+		if storageVar.Name == name {
+			found = true
+			ret = storageVar
+		}
+	}
+	return ret, found
+}
+
+func (session *Session) initializeVariables(variables map[string]*vars.Variable) {
+	session.Data.Variables = []*StorageVariable{}
+	var storageVar *StorageVariable
+	for name, variable := range variables {
+		storageVar = &StorageVariable{
+			Name: name,
+		}
+		switch v := variable.Value.(type) {
+		case *vars.Integer:
+			storageVar.Type = "Integer"
+			storageVar.IntegerValue = v
+		default:
+			panic("Not implemented")
+		}
+		session.Data.Variables = append(session.Data.Variables, storageVar)
+	}
 }
 
 func makeKey(sessionID string) *datastore.Key {
-	return datastore.NameKey("Session", sessionID, nil)
+	return datastore.NameKey("SessionData", sessionID, nil)
 }

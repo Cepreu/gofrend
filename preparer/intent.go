@@ -1,6 +1,8 @@
 package preparer
 
 import (
+	"fmt"
+
 	ivr "github.com/Cepreu/gofrend/ivr"
 	"github.com/Cepreu/gofrend/utils"
 	dialogflowpb "google.golang.org/genproto/googleapis/cloud/dialogflow/v2"
@@ -23,6 +25,7 @@ func intentsGenerator(ivrScript *ivr.IVRScript, scriptHash string) ([]*dialogflo
 
 func input2intent(ivrScript *ivr.IVRScript, input *ivr.InputModule, scriptHash string) (intent *dialogflowpb.Intent, err error) {
 	displayName := utils.MakeDisplayName(scriptHash, input.GetID())
+	parameterName := input.Grammar.MRVvariable
 	intent = &dialogflowpb.Intent{
 		DisplayName: displayName,
 		WebhookState: (dialogflowpb.Intent_WebhookState(
@@ -39,7 +42,7 @@ func input2intent(ivrScript *ivr.IVRScript, input *ivr.InputModule, scriptHash s
 					&dialogflowpb.Intent_TrainingPhrase_Part{
 						Text:        "1",
 						EntityType:  "@sys.number",
-						Alias:       "Value",
+						Alias:       parameterName,
 						UserDefined: true,
 					},
 				},
@@ -54,7 +57,7 @@ func input2intent(ivrScript *ivr.IVRScript, input *ivr.InputModule, scriptHash s
 					&dialogflowpb.Intent_TrainingPhrase_Part{
 						Text:        "2",
 						EntityType:  "@sys.number",
-						Alias:       "Value",
+						Alias:       parameterName,
 						UserDefined: true,
 					},
 				},
@@ -65,8 +68,8 @@ func input2intent(ivrScript *ivr.IVRScript, input *ivr.InputModule, scriptHash s
 		Parameters: []*dialogflowpb.Intent_Parameter{
 			{
 				Name:                  utils.GenUUIDv4(),
-				DisplayName:           "Value",
-				Value:                 "$Value",
+				DisplayName:           parameterName,
+				Value:                 fmt.Sprintf("$%s", parameterName),
 				EntityTypeDisplayName: "@sys.number",
 				Mandatory:             true,
 			},

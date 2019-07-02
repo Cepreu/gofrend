@@ -19,7 +19,7 @@ func TestGetScript(t *testing.T) {
 	data, err := ioutil.ReadFile(fname1)
 	check(err)
 	hash := utils.HashToString(data)
-	script, err := getScriptFromHash(hash)
+	script, err := getScript(hash)
 	check(err)
 	utils.PrettyPrint(script)
 }
