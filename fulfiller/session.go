@@ -48,6 +48,7 @@ func loadSession(sessionID string, script *ivr.IVRScript) (*Session, error) { //
 	err = client.Get(ctx, key, session.Data)
 	if err == datastore.ErrNoSuchEntity {
 		session.initializeVariables(script.Variables)
+		session.initializeDefaultVariables()
 	} else if err != nil {
 		return nil, err
 	}
@@ -107,11 +108,26 @@ func (session *Session) initializeVariables(variables map[string]*vars.Variable)
 		case *vars.Integer:
 			storageVar.Type = "Integer"
 			storageVar.IntegerValue = v
+		case *vars.String:
+			storageVar.Type = "String"
+			storageVar.StringValue = v
 		default:
 			panic("Not implemented")
 		}
 		session.Data.Variables = append(session.Data.Variables, storageVar)
 	}
+}
+
+func (session *Session) initializeDefaultVariables() {
+	defaults := map[string]*vars.Variable{
+		"__BUFFER__": &vars.Variable{
+			Value: &vars.String{
+				Value: "",
+			},
+		},
+		// TODO __ExtContactFields__
+	}
+	session.initializeVariables(defaults)
 }
 
 func makeKey(sessionID string) *datastore.Key {
