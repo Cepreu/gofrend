@@ -50,12 +50,12 @@ func Interpret(wr dialogflowpb.WebhookRequest, script *ivr.IVRScript, scriptHash
 	if !isInputOrMenu(module) {
 		return nil, fmt.Errorf("Expected input or menu module to start processing, instead got: %T", module)
 	}
-	module, err = interpreter.ProcessInitial(module)
+	module, err = interpreter.processInitial(module)
 	if err != nil {
 		return nil, err
 	}
 	for module != nil {
-		module, err = interpreter.Process(module)
+		module, err = interpreter.process(module)
 		if err != nil {
 			return nil, err
 		}
@@ -64,7 +64,7 @@ func Interpret(wr dialogflowpb.WebhookRequest, script *ivr.IVRScript, scriptHash
 }
 
 // ProcessInitial process a module and returns the next module to be processed
-func (interpreter *Interpreter) ProcessInitial(module ivr.Module) (ivr.Module, error) {
+func (interpreter *Interpreter) processInitial(module ivr.Module) (ivr.Module, error) {
 	switch v := module.(type) {
 	case *ivr.InputModule:
 		return interpreter.processInputInitial(v)
@@ -73,7 +73,7 @@ func (interpreter *Interpreter) ProcessInitial(module ivr.Module) (ivr.Module, e
 }
 
 // Process processes a module and returns the next module to be processed
-func (interpreter *Interpreter) Process(module ivr.Module) (ivr.Module, error) {
+func (interpreter *Interpreter) process(module ivr.Module) (ivr.Module, error) {
 	switch v := module.(type) {
 	case *ivr.IfElseModule:
 		return interpreter.processIfElse(v)
@@ -96,18 +96,20 @@ func (interpreter *Interpreter) processInputInitial(module *ivr.InputModule) (iv
 }
 
 func (interpreter *Interpreter) processInput(module *ivr.InputModule) (ivr.Module, error) {
-	promptStrings := module.VoicePromptIDs.TransformToAI(interpreter.Script.Prompts) // Duplicate code with processPlay
-	intentMessageText := interpreter.WebhookResponse.FulfillmentMessages[0].GetText()
-	intentMessageText.Text = append(intentMessageText.Text, promptStrings...)
-
+	interpreter.addResponseText(module.VoicePromptIDs)
 	interpreter.WebhookResponse.OutputContexts = []*dialogflowpb.Context{
 		&dialogflowpb.Context{
 			Name:          utils.MakeContextName(utils.MakeDisplayName(interpreter.ScriptHash, module.GetID())),
 			LifespanCount: 1,
 		},
 	}
-
 	return nil, interpreter.Session.save()
+}
+
+func (interpreter *Interpreter) addResponseText(VoicePromptIDs ivr.ModulePrompts) {
+	promptStrings := VoicePromptIDs.TransformToAI(interpreter.Script.Prompts)
+	intentMessageText := interpreter.WebhookResponse.FulfillmentMessages[0].GetText()
+	intentMessageText.Text = append(intentMessageText.Text, promptStrings...)
 }
 
 func (interpreter *Interpreter) processIfElse(module *ivr.IfElseModule) (ivr.Module, error) {
@@ -183,9 +185,7 @@ func conditionPasses(condition *ivr.Condition) (bool, error) {
 }
 
 func (interpreter *Interpreter) processPlay(module *ivr.PlayModule) (ivr.Module, error) {
-	promptStrings := module.VoicePromptIDs.TransformToAI(interpreter.Script.Prompts)
-	intentMessageText := interpreter.WebhookResponse.FulfillmentMessages[0].GetText()
-	intentMessageText.Text = append(intentMessageText.Text, promptStrings...)
+	interpreter.addResponseText(module.VoicePromptIDs)
 	return getModuleByID(interpreter.Script, module.GetDescendant())
 }
 
@@ -193,7 +193,7 @@ func (interpreter *Interpreter) processHangup(module *ivr.HangupModule) (ivr.Mod
 	return nil, interpreter.Session.delete()
 }
 
-func getModuleByID(script *ivr.IVRScript, moduleID ivr.ModuleID) (ivr.Module, error) { // probably an unnecessary function
+func getModuleByID(script *ivr.IVRScript, moduleID ivr.ModuleID) (ivr.Module, error) {
 	module, ok := script.Modules[moduleID]
 	if !ok {
 		return nil, fmt.Errorf("Module not found with ID: %s", moduleID)
