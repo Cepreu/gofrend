@@ -2,7 +2,7 @@ package fulfiller
 
 import "github.com/Cepreu/gofrend/ivr/vars"
 
-// StorageVariable is an un-interfaced struct for
+// StorageVariable is an un-interfaced struct for storing variables between sessions
 type StorageVariable struct {
 	Type         string
 	Name         string
