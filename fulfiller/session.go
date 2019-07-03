@@ -8,6 +8,7 @@ import (
 	"github.com/Cepreu/gofrend/cloud"
 	"github.com/Cepreu/gofrend/ivr"
 	"github.com/Cepreu/gofrend/ivr/vars"
+	"github.com/Cepreu/gofrend/utils"
 	structpb "github.com/golang/protobuf/ptypes/struct"
 	"google.golang.org/api/option"
 )
@@ -69,6 +70,7 @@ func (session *Session) setParameterString(name string, str string) error {
 func (session *Session) setParameter(name string, value *structpb.Value) error {
 	variable, ok := session.getParameter(name)
 	if !ok {
+		utils.PrettyLog(session.Data)
 		return fmt.Errorf("Could not find session variable with name: %s", name)
 	}
 	switch v := variable.value().(type) {
