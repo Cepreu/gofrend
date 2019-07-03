@@ -55,10 +55,28 @@ func prepareIntents(script *ivr.IVRScript, scriptHash string) error {
 			Intent: intent,
 		}
 
+		err = softDeleteIntent(ctx, client, request)
+		if err != nil {
+			return err
+		}
+
 		_, err = client.CreateIntent(ctx, request)
 		if err != nil {
 			return err
 		}
 	}
 	return nil
+}
+
+func softDeleteIntent(ctx context.Context, client *dialogflow.IntentsClient, request *dialogflowpb.CreateIntentRequest) error {
+	intentsIterator := client.ListIntents(ctx, &dialogflowpb.ListIntentsRequest{Parent: request.Parent})
+	intent, err := intentsIterator.Next()
+	for err == nil && intent != nil {
+		if intent.DisplayName == request.Intent.DisplayName {
+			client.DeleteIntent(ctx, &dialogflowpb.DeleteIntentRequest{Name: intent.Name})
+			break
+		}
+		intent, err = intentsIterator.Next()
+	}
+	return err
 }
