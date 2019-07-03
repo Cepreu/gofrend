@@ -1,8 +1,12 @@
 package fulfiller
 
 import (
+	"bytes"
 	"fmt"
+	"io/ioutil"
 	"log"
+	"net/http"
+	"regexp"
 
 	"github.com/Cepreu/gofrend/ivr"
 	"github.com/Cepreu/gofrend/ivr/vars"
@@ -110,6 +114,54 @@ func (interpreter *Interpreter) addResponseText(VoicePromptIDs ivr.ModulePrompts
 	promptStrings := VoicePromptIDs.TransformToAI(interpreter.Script.Prompts)
 	intentMessageText := interpreter.WebhookResponse.FulfillmentMessages[0].GetText()
 	intentMessageText.Text = append(intentMessageText.Text, promptStrings...)
+}
+
+func (interpreter *Interpreter) processQuery(module *ivr.QueryModule) (ivr.Module, error) {
+	interpreter.addResponseText(module.VoicePromptIDs)
+	body, err := utils.CmdUnzip(module.RequestInfo.Base64)
+	if err != nil {
+		return nil, err
+	}
+	request, err := http.NewRequest(module.Method, module.URL, bytes.NewReader([]byte(body)))
+	for _, h := range module.Headers {
+		request.Header.Add(h.Key, h.Value.Value.String())
+	}
+	client := &http.Client{}
+	response, err := client.Do(request)
+	if err != nil {
+		return nil, err
+	}
+	defer response.Body.Close()
+	contents, err := ioutil.ReadAll(response.Body)
+	if err != nil {
+		return nil, err
+	}
+	for _, responseInfo := range module.ResponseInfos {
+		if response.StatusCode >= responseInfo.HTTPCodeFrom && response.StatusCode <= responseInfo.HTTPCodeTo {
+			switch responseInfo.ParsingMethod {
+			case "REG_EXP":
+				expression, err := regexp.Compile(responseInfo.Regexp.RegexpBody)
+				if err != nil {
+					return nil, err
+				}
+				matches := expression.FindStringSubmatch(string(contents))
+				if matches != nil {
+					for i, match := range matches[1:] {
+						if responseInfo.TargetVariables[i] != "" {
+							err = interpreter.Session.setParameterString(responseInfo.TargetVariables[i], match)
+							if err != nil {
+								return nil, err
+							}
+						}
+					}
+				}
+			default:
+				return nil, fmt.Errorf("Parsing method not understood: '%s'", responseInfo.ParsingMethod)
+			}
+
+		}
+	}
+	return getModuleByID(interpreter.Script, module.GetDescendant())
 }
 
 func (interpreter *Interpreter) processIfElse(module *ivr.IfElseModule) (ivr.Module, error) {

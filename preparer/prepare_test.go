@@ -1,8 +1,10 @@
 package preparer
 
-import "testing"
+import (
+	"testing"
+)
 
-var filename1 = "test_files/comparison_test.five9ivr"
+var filename1 = "test_files/sk_F9SOAP - Copy.five9ivr"
 
 func TestPrepareFile(t *testing.T) {
 	err := PrepareFile(filename1)

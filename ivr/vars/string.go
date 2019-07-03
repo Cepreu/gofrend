@@ -13,7 +13,7 @@ type StringVar struct {
 
 // String - value of String type
 type String struct {
-	value        string
+	Value        string
 	fileNameType FileNameType
 	id           int
 }
@@ -27,7 +27,7 @@ const (
 )
 
 func (sval *String) new(strValue string) error {
-	sval.value = strValue
+	sval.Value = strValue
 	return nil
 }
 
@@ -35,7 +35,7 @@ func (sval *String) new(strValue string) error {
 func (sval *String) SetValue(fieldName string, fieldStrValue string) (err error) {
 	switch fieldName {
 	case "value":
-		sval.value = fieldStrValue
+		sval.Value = fieldStrValue
 	case "id":
 		sval.id, err = strconv.Atoi(fieldStrValue)
 	default:
@@ -82,7 +82,7 @@ func NewString(v string, i int) *String {
 // }
 
 func (sval *String) String() string {
-	return sval.value
+	return sval.Value
 }
 
 // func (sval *String) toBigDecimal() (float64, error) {

@@ -40,7 +40,7 @@ func PrepareFile(filename string) error {
 func prepareIntents(script *ivr.IVRScript, scriptHash string) error {
 	intents, err := intentsGenerator(script, scriptHash)
 	if err != nil {
-		return err
+		return fmt.Errorf("Error generating intents: %v", err)
 	}
 
 	ctx := context.Background()
@@ -55,7 +55,7 @@ func prepareIntents(script *ivr.IVRScript, scriptHash string) error {
 			Intent: intent,
 		}
 
-		err = softDeleteIntent(ctx, client, request)
+		softDeleteIntent(ctx, client, request)
 		if err != nil {
 			return err
 		}
@@ -68,7 +68,7 @@ func prepareIntents(script *ivr.IVRScript, scriptHash string) error {
 	return nil
 }
 
-func softDeleteIntent(ctx context.Context, client *dialogflow.IntentsClient, request *dialogflowpb.CreateIntentRequest) error {
+func softDeleteIntent(ctx context.Context, client *dialogflow.IntentsClient, request *dialogflowpb.CreateIntentRequest) {
 	intentsIterator := client.ListIntents(ctx, &dialogflowpb.ListIntentsRequest{Parent: request.Parent})
 	intent, err := intentsIterator.Next()
 	for err == nil && intent != nil {
@@ -78,5 +78,4 @@ func softDeleteIntent(ctx context.Context, client *dialogflow.IntentsClient, req
 		}
 		intent, err = intentsIterator.Next()
 	}
-	return err
 }

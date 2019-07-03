@@ -57,6 +57,15 @@ func (session *Session) delete() error {
 	return session.client.Delete(session.ctx, session.key)
 }
 
+func (session *Session) setParameterString(name string, str string) error {
+	value := &structpb.Value{
+		Kind: &structpb.Value_StringValue{
+			StringValue: str,
+		},
+	}
+	return session.setParameter(name, value)
+}
+
 func (session *Session) setParameter(name string, value *structpb.Value) error {
 	variable, ok := session.getParameter(name)
 	if !ok {
@@ -65,6 +74,10 @@ func (session *Session) setParameter(name string, value *structpb.Value) error {
 	switch v := variable.value().(type) {
 	case *vars.Integer:
 		v.Value = int(value.GetNumberValue())
+	case *vars.String:
+		v.Value = value.GetStringValue()
+	default:
+		panic("Not implemented")
 	}
 	return nil
 }
