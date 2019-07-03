@@ -35,7 +35,7 @@ func HandleWebhook(w http.ResponseWriter, r *http.Request) {
 	marshaler := jsonpb.Marshaler{}
 	marshaler.Marshal(w, response)
 
-	//Need to implement storing session
+	log.Print("Webhook execution complete.")
 }
 
 func getScriptHash(webhookRequest dialogflowpb.WebhookRequest) string {
