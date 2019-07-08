@@ -37,3 +37,14 @@ func (storageVar *StorageVariable) value() vars.Value {
 		panic("Not implemented")
 	}
 }
+
+func (storageVar *StorageVariable) valueAsString() string {
+	switch storageVar.Type {
+	case "Integer":
+		return string(storageVar.IntegerValue.Value)
+	case "String":
+		return storageVar.StringValue.Value
+	default:
+		panic("Not implemented")
+	}
+}

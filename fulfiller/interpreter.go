@@ -115,6 +115,18 @@ func (interpreter *Interpreter) processInput(module *ivr.InputModule) (ivr.Modul
 
 func (interpreter *Interpreter) addResponseText(VoicePromptIDs ivr.ModulePrompts) {
 	promptStrings := VoicePromptIDs.TransformToAI(interpreter.Script.Prompts)
+	expression := regexp.MustCompile("@.+@")
+	f := func(s string) string {
+		varName := s[1 : len(s)-1]
+		variable, found := interpreter.Session.getParameter(varName)
+		if !found {
+			return ""
+		}
+		return variable.valueAsString()
+	}
+	for i := range promptStrings {
+		promptStrings[i] = expression.ReplaceAllStringFunc(promptStrings[i], f)
+	}
 	intentMessageText := interpreter.WebhookResponse.FulfillmentMessages[0].GetText()
 	intentMessageText.Text = append(intentMessageText.Text, promptStrings...)
 }
