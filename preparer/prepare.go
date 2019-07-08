@@ -38,7 +38,7 @@ func PrepareFile(filename string) error {
 }
 
 func prepareIntents(script *ivr.IVRScript, scriptHash string) error {
-	intents, err := intentsGenerator(script, scriptHash)
+	intents, err := generateIntents(script, scriptHash)
 	if err != nil {
 		return fmt.Errorf("Error generating intents: %v", err)
 	}

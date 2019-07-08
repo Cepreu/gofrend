@@ -28,7 +28,7 @@ func TestIntent(t *testing.T) {
 	scriptHash := utils.HashToString(data)
 	script, err := xmlparser.NewIVRScript(bytes.NewReader(data))
 	checkNil(err, t)
-	intents, err := intentsGenerator(script, scriptHash)
+	intents, err := generateIntents(script, scriptHash)
 	checkNil(err, t)
 
 	request := &dialogflowpb.CreateIntentRequest{
@@ -53,7 +53,7 @@ func TestComparisonIntent(t *testing.T) {
 	scriptHash := utils.HashToString(data)
 	script, err := xmlparser.NewIVRScript(bytes.NewReader(data))
 	checkNil(err, t)
-	intents, err := intentsGenerator(script, scriptHash)
+	intents, err := generateIntents(script, scriptHash)
 	checkNil(err, t)
 	if len(intents) != 2 {
 		t.Fatalf("Len of intents expected to be 2, instead: %d", len(intents))

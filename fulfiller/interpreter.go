@@ -51,9 +51,6 @@ func Interpret(wr dialogflowpb.WebhookRequest, script *ivr.IVRScript, scriptHash
 	if err != nil {
 		return nil, err
 	}
-	if !isInputOrMenu(module) {
-		return nil, fmt.Errorf("Expected input or menu module to start processing, instead got: %T", module)
-	}
 	module, err = interpreter.processInitial(module)
 	if err != nil {
 		return nil, err
@@ -70,10 +67,13 @@ func Interpret(wr dialogflowpb.WebhookRequest, script *ivr.IVRScript, scriptHash
 // ProcessInitial process a module and returns the next module to be processed
 func (interpreter *Interpreter) processInitial(module ivr.Module) (ivr.Module, error) {
 	switch v := module.(type) {
+	case *ivr.IncomingCallModule:
+		return interpreter.processIncomingCall(v)
 	case *ivr.InputModule:
 		return interpreter.processInputInitial(v)
+	default:
+		panic("Not implemented")
 	}
-	return nil, nil
 }
 
 // Process processes a module and returns the next module to be processed
@@ -90,8 +90,13 @@ func (interpreter *Interpreter) process(module ivr.Module) (ivr.Module, error) {
 		return interpreter.processQuery(v)
 	case *ivr.HangupModule:
 		return nil, nil
+	default:
+		panic("Not implemented")
 	}
-	return nil, nil
+}
+
+func (interpreter *Interpreter) processIncomingCall(module *ivr.IncomingCallModule) (ivr.Module, error) {
+	return getModuleByID(interpreter.Script, module.GetDescendant())
 }
 
 func (interpreter *Interpreter) processInputInitial(module *ivr.InputModule) (ivr.Module, error) {
@@ -268,13 +273,11 @@ func getModuleByID(script *ivr.IVRScript, moduleID ivr.ModuleID) (ivr.Module, er
 	return module, nil
 }
 
-func isInputOrMenu(module ivr.Module) bool {
-	switch module.(type) {
-	case *ivr.MenuModule:
-		return true
-	case *ivr.InputModule:
-		return true
-	default:
-		return false
+func getIncomingCallModule(script *ivr.IVRScript) ivr.Module {
+	for _, module := range script.Modules {
+		if _, ok := module.(*ivr.IncomingCallModule); ok {
+			return module
+		}
 	}
+	return nil
 }
