@@ -121,6 +121,7 @@ func (session *Session) initializeVariables(variables map[string]*vars.Variable)
 		}
 		session.Data.Variables = append(session.Data.Variables, storageVar)
 	}
+	utils.PrettyLog(session.Data.Variables)
 }
 
 func (session *Session) initializeDefaultVariables() {
