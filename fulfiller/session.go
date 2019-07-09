@@ -3,6 +3,7 @@ package fulfiller
 import (
 	"context"
 	"fmt"
+	"log"
 
 	"cloud.google.com/go/datastore"
 	"github.com/Cepreu/gofrend/cloud"
@@ -56,10 +57,12 @@ func loadSession(sessionID string, script *ivr.IVRScript) (*Session, error) { //
 }
 
 func (session *Session) delete() error {
+	log.Printf("Deleting datastore session")
 	return session.client.Delete(session.ctx, session.key)
 }
 
 func (session *Session) close() error {
+	log.Printf("Closing datastore session")
 	return session.client.Close()
 }
 
