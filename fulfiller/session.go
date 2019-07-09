@@ -103,9 +103,6 @@ func (session *Session) getParameter(name string) (*StorageVariable, bool) {
 }
 
 func (session *Session) initializeVariables(variables map[string]*vars.Variable) {
-	if session.Data.Variables == nil {
-		session.Data.Variables = []*StorageVariable{}
-	}
 	var storageVar *StorageVariable
 	for name, variable := range variables {
 		storageVar = &StorageVariable{
@@ -133,7 +130,7 @@ func (session *Session) initializeDefaultVariables() {
 				Value: "",
 			},
 		},
-		// TODO __ExtContactFields__
+		// TODO __ExtContactFields__ once kvlist variables are implemented
 	}
 	session.initializeVariables(defaults)
 }
