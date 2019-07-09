@@ -78,7 +78,6 @@ func (interpreter *Interpreter) processInitial(module ivr.Module) (ivr.Module, e
 
 // Process processes a module and returns the next module to be processed
 func (interpreter *Interpreter) process(module ivr.Module) (ivr.Module, error) {
-	utils.PrettyLog(module)
 	switch v := module.(type) {
 	case *ivr.IfElseModule:
 		return interpreter.processIfElse(v)

@@ -4,7 +4,7 @@
     <properties/>
     <modules>
         <incomingCall>
-            <singleDescendant>29123007B6984683AA94F31AF1676E04</singleDescendant>
+            <singleDescendant>8BA7208C924845ADAA5193480808B192</singleDescendant>
             <moduleName>IncomingCall1</moduleName>
             <locationX>204</locationX>
             <locationY>265</locationY>
@@ -12,7 +12,7 @@
             <data/>
         </incomingCall>
         <query>
-            <ascendants>29123007B6984683AA94F31AF1676E04</ascendants>
+            <ascendants>19A00093C1294682BA698D2C5AF2E3D8</ascendants>
             <singleDescendant>279C407AFD5F44F78177C56DAF73CB72</singleDescendant>
             <moduleName>Query2</moduleName>
             <locationX>490</locationX>
@@ -200,212 +200,6 @@ rI0QfocfuPHFw1YCAAA=</xml>
                 <collapsible>false</collapsible>
             </data>
         </play>
-        <input>
-            <ascendants>19A00093C1294682BA698D2C5AF2E3D8</ascendants>
-            <singleDescendant>8BA7208C924845ADAA5193480808B192</singleDescendant>
-            <moduleName>Input4</moduleName>
-            <locationX>352</locationX>
-            <locationY>265</locationY>
-            <moduleId>29123007B6984683AA94F31AF1676E04</moduleId>
-            <data>
-                <dispo>
-                    <id>-17</id>
-                    <name>Caller Disconnected</name>
-                </dispo>
-                <vivrPrompts>
-                    <interruptible>false</interruptible>
-                    <canChangeInterruptableOption>true</canChangeInterruptableOption>
-                    <ttsEnumed>false</ttsEnumed>
-                    <exitModuleOnException>false</exitModuleOnException>
-                </vivrPrompts>
-                <vivrHeader>
-                    <interruptible>false</interruptible>
-                    <canChangeInterruptableOption>true</canChangeInterruptableOption>
-                    <ttsEnumed>false</ttsEnumed>
-                    <exitModuleOnException>false</exitModuleOnException>
-                </vivrHeader>
-                <textChannelData>
-                    <textPrompts>
-                        <interruptible>false</interruptible>
-                        <canChangeInterruptableOption>true</canChangeInterruptableOption>
-                        <ttsEnumed>false</ttsEnumed>
-                        <exitModuleOnException>false</exitModuleOnException>
-                    </textPrompts>
-                    <isUsedVivrPrompts>true</isUsedVivrPrompts>
-                    <isTextOnly>true</isTextOnly>
-                </textChannelData>
-                <grammar xsi:type="intNumber" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-                    <mainReturnValue>
-                        <name>MEANING</name>
-                        <type>INTEGER</type>
-                        <varName>dummy</varName>
-                    </mainReturnValue>
-                    <stringProperty>
-                        <type>LANGUAGE</type>
-                        <value xsi:type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema">en-US</value>
-                        <enabled>true</enabled>
-                    </stringProperty>
-                    <intProperty>
-                        <type>MINALLOWED</type>
-                        <value xsi:type="xs:int" xmlns:xs="http://www.w3.org/2001/XMLSchema">0</value>
-                        <enabled>true</enabled>
-                    </intProperty>
-                    <intProperty>
-                        <type>MAXALLOWED</type>
-                        <value xsi:type="xs:int" xmlns:xs="http://www.w3.org/2001/XMLSchema">1000</value>
-                        <enabled>true</enabled>
-                    </intProperty>
-                    <intProperty>
-                        <type>MINEXPECTED</type>
-                        <value xsi:type="xs:int" xmlns:xs="http://www.w3.org/2001/XMLSchema">0</value>
-                        <enabled>true</enabled>
-                    </intProperty>
-                    <intProperty>
-                        <type>MAXEXPECTED</type>
-                        <value xsi:type="xs:int" xmlns:xs="http://www.w3.org/2001/XMLSchema">1000</value>
-                        <enabled>true</enabled>
-                    </intProperty>
-                    <listProperty>
-                        <type>GRANULARITYALLOWED</type>
-                        <value xsi:type="xs:int" xmlns:xs="http://www.w3.org/2001/XMLSchema">1</value>
-                        <enabled>true</enabled>
-                        <list xsi:type="xs:int" xmlns:xs="http://www.w3.org/2001/XMLSchema">1</list>
-                        <list xsi:type="xs:int" xmlns:xs="http://www.w3.org/2001/XMLSchema">10</list>
-                        <list xsi:type="xs:int" xmlns:xs="http://www.w3.org/2001/XMLSchema">100</list>
-                        <list xsi:type="xs:int" xmlns:xs="http://www.w3.org/2001/XMLSchema">1000</list>
-                    </listProperty>
-                    <listProperty>
-                        <type>GRANULARITYEXPECTED</type>
-                        <value xsi:type="xs:int" xmlns:xs="http://www.w3.org/2001/XMLSchema">1</value>
-                        <enabled>true</enabled>
-                        <list xsi:type="xs:int" xmlns:xs="http://www.w3.org/2001/XMLSchema">1</list>
-                        <list xsi:type="xs:int" xmlns:xs="http://www.w3.org/2001/XMLSchema">10</list>
-                        <list xsi:type="xs:int" xmlns:xs="http://www.w3.org/2001/XMLSchema">100</list>
-                        <list xsi:type="xs:int" xmlns:xs="http://www.w3.org/2001/XMLSchema">1000</list>
-                    </listProperty>
-                    <additionalReturnValues>
-                        <name>SWI_literal</name>
-                        <type>STRING</type>
-                    </additionalReturnValues>
-                    <propertiesToVariables/>
-                </grammar>
-                <prompts>
-                    <prompt>
-                        <ttsPrompt>
-                            <xml>H4sIAAAAAAAAAIWRwW7CMBBE73yF5XtYeqsqJwhE+wMtvS9khSLsdZTdIPL3DakUcFJUn+w3q5nR
-2q2vwZsLNVJFzu3LcmUN8TGWFZ9yu//6yF6tEUUu0Uem3HYkdl0snNSE53dPgViLhemPQ9WmOrRK
-8gsG6JFPm164owEzBir66Leb7mB4phOj2zf6lrYoZC63W26Js/2nhYcQSFMcTKu4Sik81hLsNpLU
-nwcLTJSJyciVrvqn1/+eqfcz8RDLrti1IXSmbmKodelgYPMu8LSMg+kSYL6FcagXkx/+AdMjYHgp
-AgAA</xml>
-                            <promptTTSEnumed>false</promptTTSEnumed>
-                        </ttsPrompt>
-                        <interruptible>false</interruptible>
-                        <canChangeInterruptableOption>true</canChangeInterruptableOption>
-                        <ttsEnumed>false</ttsEnumed>
-                        <exitModuleOnException>false</exitModuleOnException>
-                    </prompt>
-                    <count>1</count>
-                </prompts>
-                <recoEvents>
-                    <event>NO_MATCH</event>
-                    <count>1</count>
-                    <compoundPrompt>
-                        <multiLanguagesPromptItem>
-                            <prompt>30E35D8D9B384EE0A3C5815B32F8F4FD</prompt>
-                        </multiLanguagesPromptItem>
-                        <interruptible>false</interruptible>
-                        <canChangeInterruptableOption>true</canChangeInterruptableOption>
-                        <ttsEnumed>false</ttsEnumed>
-                        <exitModuleOnException>false</exitModuleOnException>
-                    </compoundPrompt>
-                    <action>CONTINUE</action>
-                </recoEvents>
-                <recoEvents>
-                    <event>NO_INPUT</event>
-                    <count>1</count>
-                    <compoundPrompt>
-                        <multiLanguagesPromptItem>
-                            <prompt>A9EF0FBEC7A94AE1B421C564FB8E2FA4</prompt>
-                        </multiLanguagesPromptItem>
-                        <interruptible>false</interruptible>
-                        <canChangeInterruptableOption>true</canChangeInterruptableOption>
-                        <ttsEnumed>false</ttsEnumed>
-                        <exitModuleOnException>false</exitModuleOnException>
-                    </compoundPrompt>
-                    <action>REPROMPT</action>
-                </recoEvents>
-                <confirmData>
-                    <confirmRequired>REQUIRED</confirmRequired>
-                    <requiredConfidence>75</requiredConfidence>
-                    <maxAttemptsToConfirm>3</maxAttemptsToConfirm>
-                    <noInputTimeout>3</noInputTimeout>
-                    <maxTimeToEnter>3</maxTimeToEnter>
-                    <completeTimeout>0</completeTimeout>
-                    <confidenceTreshold>75</confidenceTreshold>
-                    <sensitivity>0</sensitivity>
-                    <incompleteTimeout>0</incompleteTimeout>
-                    <swirecNbestListLength>0</swirecNbestListLength>
-                    <recognizeConfigParameters>
-                        <recognizeConfigParameter>NO_INPUT_TIMEOUT</recognizeConfigParameter>
-                        <recognizeConfigParameter>CONFIDENCE_TRESHOLD</recognizeConfigParameter>
-                        <recognizeConfigParameter>MAX_TIME_TO_ENTER</recognizeConfigParameter>
-                    </recognizeConfigParameters>
-                    <prompt>
-                        <multiLanguagesPromptItem>
-                            <prompt>D5A47D1C6DBA4499B659519AE0000856</prompt>
-                        </multiLanguagesPromptItem>
-                        <interruptible>true</interruptible>
-                        <canChangeInterruptableOption>true</canChangeInterruptableOption>
-                        <ttsEnumed>false</ttsEnumed>
-                        <exitModuleOnException>false</exitModuleOnException>
-                    </prompt>
-                    <recoEvents>
-                        <event>NO_MATCH</event>
-                        <count>1</count>
-                        <compoundPrompt>
-                            <multiLanguagesPromptItem>
-                                <prompt>30E35D8D9B384EE0A3C5815B32F8F4FD</prompt>
-                            </multiLanguagesPromptItem>
-                            <interruptible>false</interruptible>
-                            <canChangeInterruptableOption>true</canChangeInterruptableOption>
-                            <ttsEnumed>false</ttsEnumed>
-                            <exitModuleOnException>false</exitModuleOnException>
-                        </compoundPrompt>
-                        <action>REPROMPT</action>
-                    </recoEvents>
-                    <recoEvents>
-                        <event>NO_INPUT</event>
-                        <count>1</count>
-                        <compoundPrompt>
-                            <multiLanguagesPromptItem>
-                                <prompt>A9EF0FBEC7A94AE1B421C564FB8E2FA4</prompt>
-                            </multiLanguagesPromptItem>
-                            <interruptible>false</interruptible>
-                            <canChangeInterruptableOption>true</canChangeInterruptableOption>
-                            <ttsEnumed>false</ttsEnumed>
-                            <exitModuleOnException>false</exitModuleOnException>
-                        </compoundPrompt>
-                        <action>REPROMPT</action>
-                    </recoEvents>
-                </confirmData>
-                <confidenceTreshold>5</confidenceTreshold>
-                <maxTimeToEnter>15</maxTimeToEnter>
-                <noInputTimeout>5</noInputTimeout>
-                <sensitivity>50</sensitivity>
-                <incompleteTimeout>2</incompleteTimeout>
-                <completeTimeout>0</completeTimeout>
-                <swirecNbestListLength>2</swirecNbestListLength>
-                <maxAttempts>3</maxAttempts>
-                <collapsible>false</collapsible>
-                <recognizeConfigParameters>
-                    <recognizeConfigParameter>NO_INPUT_TIMEOUT</recognizeConfigParameter>
-                    <recognizeConfigParameter>CONFIDENCE_TRESHOLD</recognizeConfigParameter>
-                    <recognizeConfigParameter>MAX_TIME_TO_ENTER</recognizeConfigParameter>
-                </recognizeConfigParameters>
-                <recordUserInput>false</recordUserInput>
-                <dtmfHelpButton>null</dtmfHelpButton>
-            </data>
-        </input>
     </modules>
     <modulesOnHangup>
         <startOnHangup>
@@ -446,6 +240,18 @@ AgAA</xml>
     </modulesOnHangup>
     <userVariables>
         <entry>
+            <key>dummy</key>
+            <value>
+                <name>dummy</name>
+                <description></description>
+                <integerValue>
+                    <value>0</value>
+                </integerValue>
+                <attributes>8</attributes>
+                <isNullValue>true</isNullValue>
+            </value>
+        </entry>
+        <entry>
             <key>ext</key>
             <value>
                 <name>ext</name>
@@ -454,18 +260,6 @@ AgAA</xml>
                     <value></value>
                     <id>0</id>
                 </stringValue>
-                <attributes>8</attributes>
-                <isNullValue>true</isNullValue>
-            </value>
-        </entry>
-        <entry>
-            <key>dummy</key>
-            <value>
-                <name>dummy</name>
-                <description></description>
-                <integerValue>
-                    <value>0</value>
-                </integerValue>
                 <attributes>8</attributes>
                 <isNullValue>true</isNullValue>
             </value>
