@@ -3,7 +3,6 @@ package fulfiller
 import (
 	"context"
 	"fmt"
-	"log"
 
 	"cloud.google.com/go/datastore"
 	"github.com/Cepreu/gofrend/cloud"
@@ -33,7 +32,15 @@ func (session *Session) save() error {
 	return err
 }
 
+func initSession(sessionID string, script *ivr.IVRScript) (*Session, error) {
+	return getSession(sessionID, script, true)
+}
+
 func loadSession(sessionID string, script *ivr.IVRScript) (*Session, error) { // Eventually should split into load/init
+	return getSession(sessionID, script, false)
+}
+
+func getSession(sessionID string, script *ivr.IVRScript, initialize bool) (*Session, error) {
 	ctx := context.Background()
 	client, err := datastore.NewClient(ctx, cloud.GcpProjectID, option.WithCredentialsFile(cloud.GcpCredentialsFileName))
 	if err != nil {
@@ -46,23 +53,20 @@ func loadSession(sessionID string, script *ivr.IVRScript) (*Session, error) { //
 		ctx:    ctx,
 		Data:   new(SessionData),
 	}
-	err = client.Get(ctx, key, session.Data)
-	if err == datastore.ErrNoSuchEntity {
+	if initialize {
 		session.initializeVariables(script.Variables)
 		session.initializeDefaultVariables()
-	} else if err != nil {
-		return nil, err
+	} else {
+		err = client.Get(ctx, key, session.Data)
 	}
-	return session, nil
+	return session, err
 }
 
 func (session *Session) delete() error {
-	log.Printf("Deleting datastore session")
 	return session.client.Delete(session.ctx, session.key)
 }
 
 func (session *Session) close() error {
-	log.Printf("Closing datastore session")
 	return session.client.Close()
 }
 
