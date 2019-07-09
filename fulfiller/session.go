@@ -3,7 +3,6 @@ package fulfiller
 import (
 	"context"
 	"fmt"
-	"log"
 
 	"cloud.google.com/go/datastore"
 	"github.com/Cepreu/gofrend/cloud"
@@ -29,8 +28,6 @@ type SessionData struct {
 }
 
 func (session *Session) save() error {
-	log.Print("Saving...")
-	utils.PrettyLog(session.Data)
 	_, err := session.client.Put(session.ctx, session.key, session.Data)
 	return err
 }
@@ -50,8 +47,6 @@ func loadSession(sessionID string, script *ivr.IVRScript) (*Session, error) { //
 	}
 	err = client.Get(ctx, key, session.Data)
 	if err == datastore.ErrNoSuchEntity {
-		log.Printf("Initializing script variables")
-		utils.PrettyLog(script.Variables)
 		session.initializeVariables(script.Variables)
 		session.initializeDefaultVariables()
 	} else if err != nil {
@@ -62,6 +57,10 @@ func loadSession(sessionID string, script *ivr.IVRScript) (*Session, error) { //
 
 func (session *Session) delete() error {
 	return session.client.Delete(session.ctx, session.key)
+}
+
+func (session *Session) close() error {
+	return session.client.Close()
 }
 
 func (session *Session) setParameterString(name string, str string) error {
@@ -120,7 +119,6 @@ func (session *Session) initializeVariables(variables map[string]*vars.Variable)
 		}
 		session.Data.Variables = append(session.Data.Variables, storageVar)
 	}
-	utils.PrettyLog(session.Data.Variables)
 }
 
 func (session *Session) initializeDefaultVariables() {

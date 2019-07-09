@@ -61,7 +61,7 @@ func Interpret(wr dialogflowpb.WebhookRequest, script *ivr.IVRScript, scriptHash
 			return nil, err
 		}
 	}
-	return interpreter.WebhookResponse, nil
+	return interpreter.WebhookResponse, interpreter.Session.close()
 }
 
 // ProcessInitial process a module and returns the next module to be processed
@@ -249,7 +249,6 @@ func conditionPasses(condition *ivr.Condition) (bool, error) {
 		default:
 			log.Fatalf("Expected int or numeric in more than comparison, instead got: %T", v)
 		}
-		log.Printf("Left: %f, Right: %f.", left, right)
 		return left > right, nil
 	}
 	return false, nil

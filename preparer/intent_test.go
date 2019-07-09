@@ -17,7 +17,7 @@ import (
 
 func checkNil(err error, t *testing.T) {
 	if err != nil {
-		panic(err)
+		t.Fatal(err)
 	}
 }
 
