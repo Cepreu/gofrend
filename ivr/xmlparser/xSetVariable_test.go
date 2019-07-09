@@ -7,7 +7,6 @@ import (
 	"testing"
 
 	"github.com/Cepreu/gofrend/ivr"
-	"github.com/Cepreu/gofrend/ivr/vars"
 	"golang.org/x/net/html/charset"
 )
 
@@ -134,12 +133,19 @@ func TestSetVariables(t *testing.T) {
 		t.Fatal("nSetVariables module wasn't parsed...")
 	}
 	var mhu = (res.(xmlSetVariablesModule)).m
+	costr, _ := ivr.NewStringValue("CONST STRING")
+	mln, _ := ivr.NewNumericValue(1000000)
+	nov, _ := ivr.NewDateValue(2019, 1, 11)
+	fiveninenine, _ := ivr.NewUSCurrencyValue(599.99)
+	onetwo, _ := ivr.NewTimeValue(1267)
+	threethousand, _ := ivr.NewUSCurrencyValue(3000)
+
 	var expected = ivr.SetVariableModule{
 		Exprs: []*ivr.Expression{
 			{
 				Lval: "__BUFFER__",
 				Rval: ivr.Assigner{
-					P: &ivr.Parametrized{Value: vars.NewString("CONST STRING", 0)},
+					P: &ivr.Parametrized{Value: costr},
 				},
 			},
 
@@ -155,7 +161,7 @@ func TestSetVariables(t *testing.T) {
 			{
 				Lval: "myint",
 				Rval: ivr.Assigner{
-					P: &ivr.Parametrized{Value: vars.NewNumeric(1000000)},
+					P: &ivr.Parametrized{Value: mln},
 				},
 			},
 
@@ -177,14 +183,14 @@ func TestSetVariables(t *testing.T) {
 			{
 				Lval: "mydate",
 				Rval: ivr.Assigner{
-					P: &ivr.Parametrized{Value: vars.NewDate(2019, 1, 11)},
+					P: &ivr.Parametrized{Value: nov},
 				},
 			},
 
 			{
 				Lval: "mycurr_dlr",
 				Rval: ivr.Assigner{
-					P: &ivr.Parametrized{Value: vars.NewCurrency(599.99)},
+					P: &ivr.Parametrized{Value: fiveninenine},
 				},
 			},
 
@@ -200,7 +206,7 @@ func TestSetVariables(t *testing.T) {
 						},
 						Params: []*ivr.Parametrized{
 							{VariableName: "mycurr_dlr"},
-							{Value: vars.NewCurrency(3000)},
+							{Value: threethousand},
 						},
 					},
 				},
@@ -208,7 +214,7 @@ func TestSetVariables(t *testing.T) {
 			{
 				Lval: "mytime",
 				Rval: ivr.Assigner{
-					P: &ivr.Parametrized{Value: vars.NewTime(1267)},
+					P: &ivr.Parametrized{Value: onetwo},
 				},
 			},
 

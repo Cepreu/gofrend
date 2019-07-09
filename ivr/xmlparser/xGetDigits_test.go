@@ -84,27 +84,15 @@ ckTTpV5Mvv8HvZuE1kYCAAA=</xml>
 		t.Errorf("Play module wasn't parsed...")
 	}
 	//res.normalize()
-	var mhu = (res.(xmlGetDigitsModule)).m
+	var mGD = (res.(xmlGetDigitsModule)).m
 
 	expected := &ivr.GetDigitsModule{
 		VoicePromptIDs: ivr.ModulePrompts{
 			ivr.AttemptPrompts{
 				LangPrArr: []ivr.LanguagePrompts{
 					{
-						PrArr: []ivr.PromptID{"F1E142D8CF27471D8940713A637A1C1D_G__T_24",
-							"8917F7BDD985458F9E9D33445F4D941D_en-US_T_31"},
+						PrArr:    []ivr.PromptID{"8917F7BDD985458F9E9D33445F4D941D"},
 						Language: "Default",
-					},
-					{
-						PrArr: []ivr.PromptID{"F1E142D8CF27471D8940713A637A1C1D_G__T_24",
-							"8917F7BDD985458F9E9D33445F4D941D_en-US_T_31"},
-						Language: "en-US",
-					},
-					{
-						PrArr: []ivr.PromptID{
-							"F1E142D8CF27471D8940713A637A1C1D_G__T_24",
-						},
-						Language: "ru",
 					},
 				},
 				Count: 1,
@@ -123,13 +111,14 @@ ckTTpV5Mvv8HvZuE1kYCAAA=</xml>
 		}{4, "#", false, 20, 2, "HHMMP"},
 	}
 
-	expected.SetGeneralInfo("Case3", "D2CC05B0F6FC44F29B04C1C9E42DF732",
-		[]ivr.ModuleID{"368A8C40D5AD48668FB2DC7ED894B3BA"}, "", "", "Caller Disconnected", "false")
+	expected.SetGeneralInfo("GetDigits6", "F1E142D8CF27471D8940713A637A1C1D",
+		[]ivr.ModuleID{"B612F85EA52D4B2586CE5F57579D6EC7"}, "A96A2609FDDE4C499773122F6C6296A1", "ED132095BE1E4F47B51DA0BB842C3EEF",
+		"Caller Disconnected", "true")
 
 	exp, err1 := json.MarshalIndent(expected, "", "  ")
-	setv, err2 := json.MarshalIndent(mhu, "", "  ")
+	setv, err2 := json.MarshalIndent(mGD, "", "  ")
 
 	if err1 != nil || err2 != nil || string(exp) != string(setv) {
-		t.Errorf("\nCase module: \n%s \n\nwas expected, in reality: \n\n%s", string(exp), string(setv))
+		t.Errorf("\nGetDigits module: \n%s \n\nwas expected, in reality: \n\n%s", string(exp), string(setv))
 	}
 }

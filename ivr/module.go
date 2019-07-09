@@ -124,8 +124,6 @@ type HangupModule struct {
 	OverwriteDisp bool
 }
 
-type groupingType string //"ALL", "ANY", or "CUSTOM"
-
 type IfElseModule struct {
 	module
 	BranchIf   OutputBranch

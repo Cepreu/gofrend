@@ -49,7 +49,7 @@ func NewIVRScript(src io.Reader) (*ivr.IVRScript, error) {
 			} else if v.Name.Local == "modulesOnHangup" {
 				xmlModulesOnHangup = parseModules(s, decoder, &v)
 			} else if v.Name.Local == "userVariables" {
-				parseVars(s.Variables, decoder)
+				parseVars(s, decoder)
 			} else if v.Name.Local == "multiLanguagesVIVRPrompts" {
 				//				inMLVIVRPrompts = true
 			} else if v.Name.Local == "multiLanguagesPrompts" {

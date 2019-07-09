@@ -389,10 +389,10 @@ hS0CAAA=</xml>
 			},
 		},
 		Branches: []*ivr.OutputBranch{
-			{"No Match", "C4BA62EF0F3F406A819ADE2CABD1669C", nil},
-			{"apples", "C4BA62EF0F3F406A819ADE2CABD1669C", nil},
-			{"plums", "C4BA62EF0F3F406A819ADE2CABD1669C", nil},
-			{"tutti frutti", "C4BA62EF0F3F406A819ADE2CABD1669C", nil},
+			{Name: "No Match", Descendant: "C4BA62EF0F3F406A819ADE2CABD1669C", Cond: nil},
+			{Name: "apples", Descendant: "C4BA62EF0F3F406A819ADE2CABD1669C", Cond: nil},
+			{Name: "plums", Descendant: "C4BA62EF0F3F406A819ADE2CABD1669C", Cond: nil},
+			{Name: "tutti frutti", Descendant: "C4BA62EF0F3F406A819ADE2CABD1669C", Cond: nil},
 		},
 		Items: []*ivr.MenuItem{
 			{

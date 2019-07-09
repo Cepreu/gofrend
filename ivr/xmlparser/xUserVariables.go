@@ -6,21 +6,21 @@ import (
 	"strconv"
 
 	"github.com/Cepreu/gofrend/ivr"
-	"github.com/Cepreu/gofrend/ivr/vars"
 )
 
-func parseVars(vs ivr.Variables, decoder *xml.Decoder) (err error) {
+func parseVars(s *ivr.IVRScript, decoder *xml.Decoder) (err error) {
 	var (
 		immersion                                        = 1
-		userVar                                          *vars.Variable
-		val                                              vars.Value
+		vs                                               = s.Variables
+		userVar                                          *ivr.Variable
+		val                                              *ivr.Value
 		inEntry                                          = false
 		inName, inDescription, inAttributes, inNullValue = false, false, false, false
 		name, description                                string
 		attrs                                            int
 		nullVal                                          bool
 		inDateValue, inYear, inMonth, inDay              = false, false, false, false
-		date                                             struct{ y, m, d int }
+		y, m, d                                          int
 		inTimeValue, inMinutes                           = false, false
 		minutes                                          int
 		inValue                                          = false
@@ -34,6 +34,20 @@ func parseVars(vs ivr.Variables, decoder *xml.Decoder) (err error) {
 		inCurrencyValue                                  = false
 		currValue                                        float64
 		inKVListValue                                    = false
+		vtype                                            = ivr.ValUndefined
+	)
+	const (
+		attrSystem         uint8 = 1
+		attrCRM            uint8 = 2
+		attrExternal             = 4
+		attrInternal             = 8
+		attrUserPredefined       = 16
+		attrTTSEnumeration       = 32
+		attrInput                = 64
+		attrOutput               = 128
+		attrUserDefined          = attrExternal | attrInternal | attrUserPredefined
+		attrWritable             = attrCRM | attrUserDefined
+		attrAny                  = attrSystem | attrCRM | attrUserDefined
 	)
 	for immersion > 0 {
 		t, err := decoder.Token()
@@ -96,11 +110,11 @@ func parseVars(vs ivr.Variables, decoder *xml.Decoder) (err error) {
 				nullVal = string(v) == "true"
 
 			} else if inDateValue && inDay {
-				date.d, _ = strconv.Atoi(string(v))
+				d, _ = strconv.Atoi(string(v))
 			} else if inDateValue && inMonth {
-				date.m, _ = strconv.Atoi(string(v))
+				m, _ = strconv.Atoi(string(v))
 			} else if inDateValue && inYear {
-				date.y, _ = strconv.Atoi(string(v))
+				y, _ = strconv.Atoi(string(v))
 
 			} else if inTimeValue && inMinutes {
 				minutes, _ = strconv.Atoi(string(v))
@@ -123,17 +137,24 @@ func parseVars(vs ivr.Variables, decoder *xml.Decoder) (err error) {
 			immersion--
 			if v.Name.Local == "entry" {
 				inEntry = false
-
-				userVar = vars.NewVariable(name, description, attrs, nullVal)
-				if val != nil {
-					userVar.SetValue(val)
+				if nullVal {
+					val = nil
 				}
+				userVar = ivr.NewVariable(name, description, vtype, val)
 				vs[name] = userVar
+				if attrs&attrInput == attrInput {
+					s.Input = append(s.Input, userVar.ID)
+				}
+				if attrs&attrOutput == attrOutput {
+					s.Output = append(s.Output, userVar.ID)
+				}
 
 				name, description = "", ""
 				attrs = 0
 				nullVal = false
 				val = nil
+				vtype = ivr.ValUndefined
+
 			} else if v.Name.Local == "name" && inEntry {
 				inName = false
 			} else if v.Name.Local == "description" && inEntry {
@@ -147,8 +168,9 @@ func parseVars(vs ivr.Variables, decoder *xml.Decoder) (err error) {
 
 			} else if v.Name.Local == "dateValue" {
 				inDateValue = false
-				val = vars.NewDate(date.y, date.m, date.d)
-				date.m, date.d, date.y = 0, 0, 0
+				val, _ = ivr.NewDateValue(y, m, d)
+				m, d, y = 0, 0, 0
+				vtype = ivr.ValDate
 			} else if v.Name.Local == "day" {
 				inDay = false
 			} else if v.Name.Local == "month" {
@@ -158,40 +180,48 @@ func parseVars(vs ivr.Variables, decoder *xml.Decoder) (err error) {
 
 			} else if v.Name.Local == "timeValue" {
 				inTimeValue = false
-				val = vars.NewTime(minutes)
+				val, _ = ivr.NewTimeValue(minutes)
 				minutes = 0
+				vtype = ivr.ValTime
 			} else if v.Name.Local == "minutes" {
 				inMinutes = false
 
 			} else if v.Name.Local == "numericValue" {
 				inNumericValue = false
-				val = vars.NewNumeric(numValue)
+				val, _ = ivr.NewNumericValue(numValue)
 				numValue = 0
+				vtype = ivr.ValNumeric
 
 			} else if v.Name.Local == "integerValue" {
 				inIntegerValue = false
-				val = vars.NewInteger(intValue)
+				val, _ = ivr.NewIntegerValue(intValue)
 				intValue = 0
+				vtype = ivr.ValInteger
 
 			} else if v.Name.Local == "stringValue" {
 				inStringValue = false
-				val = vars.NewString(strValue, id)
+				val, _ = ivr.NewStringValue(strValue)
 				strValue = ""
-				id = 0
+				vtype = ivr.ValString
+
 			} else if v.Name.Local == "id" {
 				inID = false
+				val, _ = ivr.NewIDValue(id)
+				id = 0
+				vtype = ivr.ValID
 
 			} else if v.Name.Local == "currencyValue" {
 				inCurrencyValue = false
-				val = vars.NewCurrency(currValue)
+				val, _ = ivr.NewUSCurrencyValue(currValue)
 				currValue = 0.0
+				vtype = ivr.ValCurrency
 
 			} else if v.Name.Local == "kvListValue" {
 				sDec, _ := base64.StdEncoding.DecodeString(strValue)
-				val = vars.NewKVList(string(sDec))
-
+				val, _ = ivr.NewKeyValue(string(sDec))
 				inKVListValue = false
 				strValue = ""
+				vtype = ivr.ValKVList
 			}
 		}
 	}

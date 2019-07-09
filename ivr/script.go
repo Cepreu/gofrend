@@ -1,7 +1,5 @@
 package ivr
 
-import "github.com/Cepreu/gofrend/ivr/vars"
-
 type (
 	IVRScript struct {
 		Domain          string
@@ -9,17 +7,18 @@ type (
 		Modules         map[ModuleID]Module
 		ModulesOnHangup map[ModuleID]Module
 		Prompts         ScriptPrompts
-		//		MLPrompts       []*MultilingualPrompt
-		MLChoices   []*MultilanguageMenuChoice
-		Variables   Variables
-		Languages   []Language
-		JSFunctions []*JsFunction
-		Menus       []ModuleID
+		MLChoices       []*MultilanguageMenuChoice
+		Variables       Variables
+		Input           []VariableID
+		Output          []VariableID
+		Languages       []Language
+		JSFunctions     []*JsFunction
+		Menus           []ModuleID
 	}
 
 	ScriptPrompts map[PromptID]prompt
 
-	Variables map[string]*vars.Variable
+	Variables map[string]*Variable
 
 	Languages struct {
 		Langs []Language `xml:"languages"`

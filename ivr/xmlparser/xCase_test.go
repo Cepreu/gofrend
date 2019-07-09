@@ -7,7 +7,6 @@ import (
 	"testing"
 
 	"github.com/Cepreu/gofrend/ivr"
-	"github.com/Cepreu/gofrend/ivr/vars"
 	"golang.org/x/net/html/charset"
 )
 
@@ -95,25 +94,28 @@ func TestCase(t *testing.T) {
 		t.Fatal("Case module wasn't parsed...")
 	}
 	var mCase = (res.(xmlCaseModule)).m
+	qwerty, _ := ivr.NewStringValue("qwerty")
 	var expected = &ivr.CaseModule{
 		Branches: []*ivr.OutputBranch{
-			&ivr.OutputBranch{"bA", "D7F8916C13384EE08A6109F54109307E",
-				&ivr.ComplexCondition{
-					CustomCondition:   "1",
-					ConditionGrouping: "CUSTOM",
+			&ivr.OutputBranch{
+				Name:       "bA",
+				Descendant: "D7F8916C13384EE08A6109F54109307E",
+				Cond: &ivr.ComplexCondition{
+					CustomCondition: "1",
 					Conditions: []*ivr.Condition{
 						{
 							ComparisonType: "EQUALS",
-							RightOperand:   ivr.Parametrized{Value: vars.NewString("qwerty", 0)},
+							RightOperand:   ivr.Parametrized{Value: qwerty},
 							LeftOperand:    ivr.Parametrized{VariableName: "__BUFFER__"},
 						},
 					},
 				},
 			},
-			&ivr.OutputBranch{"bB", "D7F8916C13384EE08A6109F54109307E",
-				&ivr.ComplexCondition{
-					CustomCondition:   "1",
-					ConditionGrouping: "CUSTOM",
+			&ivr.OutputBranch{
+				Name:       "bB",
+				Descendant: "D7F8916C13384EE08A6109F54109307E",
+				Cond: &ivr.ComplexCondition{
+					CustomCondition: "1",
 					Conditions: []*ivr.Condition{
 						{
 							ComparisonType: "LIKE",
@@ -123,10 +125,11 @@ func TestCase(t *testing.T) {
 					},
 				},
 			},
-			&ivr.OutputBranch{"bC", "D7F8916C13384EE08A6109F54109307E",
-				&ivr.ComplexCondition{
-					CustomCondition:   "1",
-					ConditionGrouping: "CUSTOM",
+			&ivr.OutputBranch{
+				Name:       "bC",
+				Descendant: "D7F8916C13384EE08A6109F54109307E",
+				Cond: &ivr.ComplexCondition{
+					CustomCondition: "1",
 					Conditions: []*ivr.Condition{
 						{
 							ComparisonType: "IS_NULL",
@@ -135,7 +138,7 @@ func TestCase(t *testing.T) {
 					},
 				},
 			},
-			&ivr.OutputBranch{"No Match", "D7F8916C13384EE08A6109F54109307E", nil},
+			&ivr.OutputBranch{Name: "No Match", Descendant: "D7F8916C13384EE08A6109F54109307E", Cond: nil},
 		},
 	}
 	expected.SetGeneralInfo("Case3", "D2CC05B0F6FC44F29B04C1C9E42DF732",

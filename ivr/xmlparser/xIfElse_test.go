@@ -7,7 +7,6 @@ import (
 	"testing"
 
 	"github.com/Cepreu/gofrend/ivr"
-	"github.com/Cepreu/gofrend/ivr/vars"
 	"golang.org/x/net/html/charset"
 )
 
@@ -88,11 +87,13 @@ func TestIfElse(t *testing.T) {
 		t.Fatal("IfElse module wasn't parsed...")
 	}
 	var mie = (res.(xmlIfElseModule)).s
+	ninetwofive, _ := ivr.NewStringValue("9252012040")
 	var expected = &ivr.IfElseModule{
-		BranchIf: ivr.OutputBranch{"IF", "4663D0E48FA048CF938695D75A06739D",
-			&ivr.ComplexCondition{
-				CustomCondition:   "(1 or 2) AND 3",
-				ConditionGrouping: "CUSTOM",
+		BranchIf: ivr.OutputBranch{
+			Name:       "IF",
+			Descendant: "4663D0E48FA048CF938695D75A06739D",
+			Cond: &ivr.ComplexCondition{
+				CustomCondition: "(1 or 2) AND 3",
 				Conditions: []*ivr.Condition{
 					{ComparisonType: "EQUALS",
 						RightOperand: ivr.Parametrized{VariableName: "Call.ANI"},
@@ -103,7 +104,7 @@ func TestIfElse(t *testing.T) {
 						LeftOperand:  ivr.Parametrized{VariableName: "Contact.number2"},
 					},
 					{ComparisonType: "EQUALS",
-						RightOperand: ivr.Parametrized{Value: vars.NewString("9252012040", 0)},
+						RightOperand: ivr.Parametrized{Value: ninetwofive},
 						LeftOperand:  ivr.Parametrized{VariableName: "Contact.number3"},
 					},
 				},

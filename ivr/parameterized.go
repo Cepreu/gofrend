@@ -1,10 +1,8 @@
 package ivr
 
-import "github.com/Cepreu/gofrend/ivr/vars"
-
 type Parametrized struct {
 	VariableName string
-	Value        vars.Value
+	Value        *Value
 }
 
 func (p *Parametrized) IsVarSelected() bool { return p.VariableName != "" }
