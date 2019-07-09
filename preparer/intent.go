@@ -2,6 +2,7 @@ package preparer
 
 import (
 	"fmt"
+	"strings"
 
 	ivr "github.com/Cepreu/gofrend/ivr"
 	"github.com/Cepreu/gofrend/utils"
@@ -11,11 +12,13 @@ import (
 func generateIntents(ivrScript *ivr.IVRScript, scriptHash string) ([]*dialogflowpb.Intent, error) {
 	intents := []*dialogflowpb.Intent{}
 	for _, module := range ivrScript.Modules {
-		intent, err := createIntent(ivrScript, module, scriptHash)
-		if err != nil {
-			return nil, err
+		if requiresIntent(module) {
+			intent, err := createIntent(ivrScript, module, scriptHash)
+			if err != nil {
+				return nil, err
+			}
+			intents = append(intents, intent)
 		}
-		intents = append(intents, intent)
 	}
 	return intents, nil
 }
@@ -25,13 +28,14 @@ func createIntent(ivrScript *ivr.IVRScript, module ivr.Module, scriptHash string
 	trainingPhrases := createTrainingPhrases(module)
 	parameters := createParameters(module)
 	events := createEvents(module)
+	inputContextNames := createInputContextNames(module, displayName)
 	intent := &dialogflowpb.Intent{
 		DisplayName: displayName,
 		WebhookState: (dialogflowpb.Intent_WebhookState(
 			dialogflowpb.Intent_WebhookState_value["WEBHOOK_STATE_ENABLED"])),
 		Priority:                 500000,
 		MlDisabled:               false,
-		InputContextNames:        []string{utils.MakeContextName(displayName)},
+		InputContextNames:        inputContextNames,
 		Events:                   events,
 		TrainingPhrases:          trainingPhrases,
 		Action:                   "input.sayvalue",
@@ -57,7 +61,17 @@ func createIntent(ivrScript *ivr.IVRScript, module ivr.Module, scriptHash string
 func createTrainingPhrases(module ivr.Module) []*dialogflowpb.Intent_TrainingPhrase {
 	switch v := module.(type) {
 	case *ivr.IncomingCallModule:
-		return []*dialogflowpb.Intent_TrainingPhrase{}
+		return []*dialogflowpb.Intent_TrainingPhrase{
+			&dialogflowpb.Intent_TrainingPhrase{
+				Name: utils.GenUUIDv4(),
+				Type: dialogflowpb.Intent_TrainingPhrase_Type(1),
+				Parts: []*dialogflowpb.Intent_TrainingPhrase_Part{
+					&dialogflowpb.Intent_TrainingPhrase_Part{
+						Text: "invoke",
+					},
+				},
+			},
+		}
 	case *ivr.InputModule:
 		parameterName := v.Grammar.MRVvariable
 		return []*dialogflowpb.Intent_TrainingPhrase{
@@ -122,5 +136,30 @@ func createEvents(module ivr.Module) []string {
 		return []string{}
 	default:
 		panic("Not implemented")
+	}
+}
+
+func createInputContextNames(module ivr.Module, displayName string) []string {
+	switch module.(type) {
+	case *ivr.IncomingCallModule:
+		return []string{}
+	case *ivr.InputModule:
+		return []string{utils.MakeContextName(displayName)}
+	default:
+		panic("Not implemented")
+	}
+}
+
+func requiresIntent(module ivr.Module) bool {
+	switch v := module.(type) {
+	case *ivr.IncomingCallModule: // Eventually need parser to stop parsing pickup on hangup module
+		if strings.Contains(v.Name, "Hangup") {
+			return false
+		}
+		return true
+	case *ivr.InputModule:
+		return true
+	default:
+		return false
 	}
 }

@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"regexp"
 
@@ -16,6 +15,7 @@ import (
 
 // Interpreter can process modules and populate its WebhookResponse as necessary
 type Interpreter struct {
+	SessionID       string
 	Session         *Session
 	Script          *ivr.IVRScript
 	ScriptHash      string
@@ -25,11 +25,8 @@ type Interpreter struct {
 
 // Interpret - main interpreter loop
 func Interpret(wr dialogflowpb.WebhookRequest, script *ivr.IVRScript, scriptHash string) (*dialogflowpb.WebhookResponse, error) {
-	sessionID := wr.Session
-	session, err := loadSession(sessionID, script)
-
 	interpreter := &Interpreter{
-		Session:     session,
+		SessionID:   wr.Session,
 		Script:      script,
 		ScriptHash:  scriptHash,
 		QueryResult: wr.QueryResult,
@@ -61,7 +58,7 @@ func Interpret(wr dialogflowpb.WebhookRequest, script *ivr.IVRScript, scriptHash
 			return nil, err
 		}
 	}
-	return interpreter.WebhookResponse, nil
+	return interpreter.WebhookResponse, interpreter.Session.close()
 }
 
 // ProcessInitial process a module and returns the next module to be processed
@@ -78,7 +75,6 @@ func (interpreter *Interpreter) processInitial(module ivr.Module) (ivr.Module, e
 
 // Process processes a module and returns the next module to be processed
 func (interpreter *Interpreter) process(module ivr.Module) (ivr.Module, error) {
-	utils.PrettyLog(module)
 	switch v := module.(type) {
 	case *ivr.IfElseModule:
 		return interpreter.processIfElse(v)
@@ -89,17 +85,43 @@ func (interpreter *Interpreter) process(module ivr.Module) (ivr.Module, error) {
 	case *ivr.QueryModule:
 		return interpreter.processQuery(v)
 	case *ivr.HangupModule:
-		return nil, nil
+		return interpreter.processHangup(v)
 	default:
 		panic("Not implemented")
 	}
 }
 
+func (interpreter *Interpreter) initSession() error {
+	session, err := initSession(interpreter.SessionID, interpreter.Script)
+	if err != nil {
+		return err
+	}
+	interpreter.Session = session
+	return nil
+}
+
+func (interpreter *Interpreter) loadSession() error {
+	session, err := loadSession(interpreter.SessionID, interpreter.Script)
+	if err != nil {
+		return err
+	}
+	interpreter.Session = session
+	return nil
+}
+
 func (interpreter *Interpreter) processIncomingCall(module *ivr.IncomingCallModule) (ivr.Module, error) {
+	err := interpreter.initSession()
+	if err != nil {
+		return nil, err
+	}
 	return getModuleByID(interpreter.Script, module.GetDescendant())
 }
 
 func (interpreter *Interpreter) processInputInitial(module *ivr.InputModule) (ivr.Module, error) {
+	err := interpreter.loadSession()
+	if err != nil {
+		return nil, err
+	}
 	parameters := interpreter.QueryResult.Parameters.Fields
 	for name, value := range parameters {
 		interpreter.Session.setParameter(name, value)
@@ -194,7 +216,10 @@ func (interpreter *Interpreter) processIfElse(module *ivr.IfElseModule) (ivr.Mod
 	case "ALL":
 		conditionsPass = true
 		for _, condition := range conditions {
-			populateCondition(interpreter.Session, condition)
+			err := populateCondition(interpreter.Session, condition)
+			if err != nil {
+				return nil, err
+			}
 			passes, err := conditionPasses(condition)
 			if err != nil {
 				return nil, err
@@ -210,12 +235,12 @@ func (interpreter *Interpreter) processIfElse(module *ivr.IfElseModule) (ivr.Mod
 	return getModuleByID(interpreter.Script, module.BranchElse.Descendant)
 }
 
-func populateCondition(session *Session, condition *ivr.Condition) {
+func populateCondition(session *Session, condition *ivr.Condition) error {
 	varName := condition.LeftOperand.VariableName
 	if varName != "" { // varName is empty if comparison is against constant
 		storageVar, ok := session.getParameter(varName)
 		if !ok {
-			log.Fatalf("Error finding session variable with name: %s", varName)
+			return fmt.Errorf("Error finding session variable with name: %s", varName)
 		}
 		condition.LeftOperand.Value = storageVar.value()
 	}
@@ -223,10 +248,11 @@ func populateCondition(session *Session, condition *ivr.Condition) {
 	if varName != "" {
 		storageVar, ok := session.getParameter(varName)
 		if !ok {
-			log.Fatalf("Error finding session variable with name: %s", varName)
+			return fmt.Errorf("Error finding session variable with name: %s", varName)
 		}
 		condition.RightOperand.Value = storageVar.value()
 	}
+	return nil
 }
 
 func conditionPasses(condition *ivr.Condition) (bool, error) {
@@ -239,7 +265,7 @@ func conditionPasses(condition *ivr.Condition) (bool, error) {
 		case *vars.Numeric:
 			left = v.Value
 		default:
-			log.Fatalf("Expected int or numeric in more than comparison, instead got: %T", v)
+			return false, fmt.Errorf("Expected int or numeric in more than comparison, instead got: %T", v)
 		}
 		var right float64
 		switch v := condition.RightOperand.Value.(type) {
@@ -248,9 +274,8 @@ func conditionPasses(condition *ivr.Condition) (bool, error) {
 		case *vars.Numeric:
 			right = v.Value
 		default:
-			log.Fatalf("Expected int or numeric in more than comparison, instead got: %T", v)
+			return false, fmt.Errorf("Expected int or numeric in more than comparison, instead got: %T", v)
 		}
-		log.Printf("Left: %f, Right: %f.", left, right)
 		return left > right, nil
 	}
 	return false, nil
