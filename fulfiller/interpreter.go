@@ -88,7 +88,7 @@ func (interpreter *Interpreter) process(module ivr.Module) (ivr.Module, error) {
 	case *ivr.QueryModule:
 		return interpreter.processQuery(v)
 	case *ivr.HangupModule:
-		return nil, nil
+		return interpreter.processHangup(v)
 	default:
 		panic("Not implemented")
 	}
