@@ -43,12 +43,13 @@ func Interpret(wr dialogflowpb.WebhookRequest, script *ivr.IVRScript, scriptHash
 		},
 	}
 
-	moduleID := utils.DisplayNameToModuleID(wr.QueryResult.Intent.DisplayName)
+	displayName := wr.QueryResult.Intent.DisplayName
+	moduleID := utils.DisplayNameToModuleID(displayName)
 	module, err := getModuleByID(script, ivr.ModuleID(moduleID))
 	if err != nil {
 		return nil, err
 	}
-	module, err = interpreter.processInitial(module)
+	module, err = interpreter.processInitial(module, displayName)
 	if err != nil {
 		return nil, err
 	}
@@ -62,12 +63,14 @@ func Interpret(wr dialogflowpb.WebhookRequest, script *ivr.IVRScript, scriptHash
 }
 
 // ProcessInitial process a module and returns the next module to be processed
-func (interpreter *Interpreter) processInitial(module ivr.Module) (ivr.Module, error) {
+func (interpreter *Interpreter) processInitial(module ivr.Module, displayName string) (ivr.Module, error) {
 	switch v := module.(type) {
 	case *ivr.IncomingCallModule:
 		return interpreter.processIncomingCall(v)
 	case *ivr.InputModule:
 		return interpreter.processInputInitial(v)
+	case *ivr.MenuModule:
+		return interpreter.processMenuInitial(v, displayName)
 	default:
 		panic("Not implemented")
 	}
@@ -131,13 +134,39 @@ func (interpreter *Interpreter) processInputInitial(module *ivr.InputModule) (iv
 
 func (interpreter *Interpreter) processInput(module *ivr.InputModule) (ivr.Module, error) {
 	interpreter.addResponseText(module.VoicePromptIDs)
+	interpreter.populateWebhookContext(module.GetID())
+	return nil, interpreter.Session.save()
+}
+
+func (interpreter *Interpreter) processMenuInitial(module *ivr.MenuModule, displayName string) (ivr.Module, error) {
+	err := interpreter.loadSession()
+	if err != nil {
+		return nil, err
+	}
+	branchName := utils.MenuDisplayNameToBranchName(displayName)
+	var branch *ivr.OutputBranch
+	for _, b := range module.Branches {
+		if b.Name == branchName {
+			branch = b
+			break
+		}
+	}
+	return getModuleByID(interpreter.Script, branch.Descendant)
+}
+
+func (interpreter *Interpreter) processMenu(module *ivr.MenuModule) (ivr.Module, error) {
+	interpreter.addResponseText(module.VoicePromptIDs)
+	interpreter.populateWebhookContext(module.GetID())
+	return nil, interpreter.Session.save()
+}
+
+func (interpreter *Interpreter) populateWebhookContext(moduleID ivr.ModuleID) {
 	interpreter.WebhookResponse.OutputContexts = []*dialogflowpb.Context{
 		&dialogflowpb.Context{
-			Name:          utils.MakeContextName(utils.MakeDisplayName(interpreter.ScriptHash, module.GetID())),
+			Name:          utils.MakeInputContextName(utils.MakeInputDisplayName(interpreter.ScriptHash, moduleID)),
 			LifespanCount: 1,
 		},
 	}
-	return nil, interpreter.Session.save()
 }
 
 func (interpreter *Interpreter) addResponseText(VoicePromptIDs ivr.ModulePrompts) {
