@@ -8,6 +8,8 @@ import (
 	"net/http"
 	"net/url"
 	"strconv"
+	"strings"
+	"time"
 )
 
 type CampaignStateResp struct {
@@ -55,7 +57,7 @@ type SessionStateResp struct {
 type SessionState struct {
 	SessionURL          string                 `json:"sessionURL"`
 	ModuleID            string                 `json:"moduleId"`
-	ScriptID            int                    `json:"scriptId"`
+	ScriptID            string                 `json:"scriptId"`
 	Stage               int                    `json:"stage"`
 	IsFinal             bool                   `json:"isFinal"`
 	IsFeedbackRequested bool                   `json:"isFeedbackRequested"`
@@ -110,21 +112,16 @@ type Client struct {
 	httpClient *http.Client
 }
 
-func (c *Client) getDomainCampaignIDs(domainName, campaignName string) (domainID, campaignID string, err error) {
-	req, err := c.newRequest("GET", fmt.Sprintf("/users/%s/campaigns/?name=%s", domainName, campaignName), nil)
-	if err == nil {
-		var cs = CampaignStateResp{}
-		_, err = c.do(req, &cs)
-		if err == nil {
-			domainID = strconv.Itoa(cs.Items[0].DomainID)
-			campaignID = strconv.Itoa(cs.Items[0].ID)
-			return
-		}
+func (c *Client) newRequest(method, path string, queryParams map[string]string, body interface{}) (*http.Request, error) {
+	var rel = &url.URL{}
+	rel.Scheme = "https"
+	rel.Host = "api.five9.com"
+	rel.Path = path
+	q := rel.Query()
+	for p, v := range queryParams {
+		q.Set(p, v)
 	}
-	return "", "", err
-}
-func (c *Client) newRequest(method, path string, body interface{}) (*http.Request, error) {
-	rel := &url.URL{Path: path}
+	rel.RawQuery = q.Encode()
 	u := c.BaseURL.ResolveReference(rel)
 	var buf io.ReadWriter
 	if body != nil {
@@ -142,7 +139,6 @@ func (c *Client) newRequest(method, path string, body interface{}) (*http.Reques
 		req.Header.Set("Content-Type", "application/json")
 	}
 	req.Header.Set("Accept", "application/json")
-	req.Header.Set("User-Agent", c.UserAgent)
 	return req, nil
 }
 func (c *Client) do(req *http.Request, v interface{}) (*http.Response, error) {
@@ -150,7 +146,59 @@ func (c *Client) do(req *http.Request, v interface{}) (*http.Response, error) {
 	if err != nil {
 		return nil, err
 	}
+	fmt.Println("+++++", resp)
 	defer resp.Body.Close()
 	err = json.NewDecoder(resp.Body).Decode(v)
 	return resp, err
+}
+
+func (c *Client) getDomainCampaignIDs(domainName, campaignName string) (domainID, campaignID string, err error) {
+	req, err := c.newRequest("GET", fmt.Sprintf("ivr/1/domains/%s/campaigns", domainName), map[string]string{"name": campaignName}, nil)
+	if err == nil {
+		var cs = CampaignStateResp{}
+		_, err = c.do(req, &cs)
+		if err == nil {
+			domainID = strconv.Itoa(cs.Items[0].DomainID)
+			campaignID = strconv.Itoa(cs.Items[0].ID)
+			return
+		}
+	}
+	return "", "", err
+}
+
+func (c *Client) newIVRSession(domainID, campaignID string) (sessionID string, err error) {
+	req, err := c.newRequest("GET", fmt.Sprintf("ivr/1/%s/campaigns/%s/new_ivr_session", domainID, campaignID), map[string]string{}, nil)
+	if err != nil {
+		return "", err
+	}
+	c.httpClient.CheckRedirect = func(req *http.Request, via []*http.Request) error { return http.ErrUseLastResponse }
+	resp, err := c.httpClient.Do(req)
+	if err != nil {
+		return "", err
+	}
+	defer resp.Body.Close()
+	location, err := resp.Location()
+	if err != nil {
+		return "", err
+	}
+	parts := strings.Split(location.Path, "/")
+	if len(parts) < 2 {
+		return "", fmt.Errorf("Incorrect location: %s", location.Path)
+	}
+	sessionID = parts[len(parts)-2]
+	return
+}
+
+func (c *Client) getSessionState(domainID, sessionID string, stage int64) (*SessionState, error) {
+	req, err := c.newRequest("GET", fmt.Sprintf("ivr/1/%s/sessions/%s/", domainID, sessionID),
+		map[string]string{"stage": strconv.FormatInt(stage, 10), "_": strconv.FormatInt(time.Now().UnixNano()/1000000, 10)}, nil)
+	if err == nil {
+		var ss = SessionStateResp{}
+		_, err = c.do(req, &ss)
+		fmt.Println("--------", req)
+		if err == nil {
+			return &ss.Items[0], nil
+		}
+	}
+	return nil, err
 }
