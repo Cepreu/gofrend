@@ -12,8 +12,19 @@ import (
 func generateIntents(ivrScript *ivr.IVRScript, scriptHash string) ([]*dialogflowpb.Intent, error) {
 	intents := []*dialogflowpb.Intent{}
 	for _, module := range ivrScript.Modules {
-		if requiresIntent(module) {
-			intent, err := createIntent(ivrScript, module, scriptHash)
+		if menu, ok := module.(*ivr.MenuModule); ok {
+			branches := menu.Branches
+			for _, branch := range branches {
+				intent, err := createIntent(ivrScript, menu, scriptHash, branch.Name)
+				if err != nil {
+					return nil, err
+				}
+				if intent != nil {
+					intents = append(intents, intent)
+				}
+			}
+		} else if requiresIntent(module) {
+			intent, err := createIntent(ivrScript, module, scriptHash, "")
 			if err != nil {
 				return nil, err
 			}
@@ -23,9 +34,12 @@ func generateIntents(ivrScript *ivr.IVRScript, scriptHash string) ([]*dialogflow
 	return intents, nil
 }
 
-func createIntent(ivrScript *ivr.IVRScript, module ivr.Module, scriptHash string) (*dialogflowpb.Intent, error) {
-	displayName := utils.MakeDisplayName(scriptHash, module.GetID())
-	trainingPhrases := createTrainingPhrases(module)
+func createIntent(ivrScript *ivr.IVRScript, module ivr.Module, scriptHash string, branchName string) (*dialogflowpb.Intent, error) {
+	displayName := createDisplayName(module, scriptHash, branchName)
+	trainingPhrases := createTrainingPhrases(module, ivrScript, branchName)
+	if len(trainingPhrases) == 0 {
+		return nil, nil
+	}
 	parameters := createParameters(module)
 	events := createEvents(module)
 	inputContextNames := createInputContextNames(module, displayName)
@@ -58,7 +72,20 @@ func createIntent(ivrScript *ivr.IVRScript, module ivr.Module, scriptHash string
 	return intent, nil
 }
 
-func createTrainingPhrases(module ivr.Module) []*dialogflowpb.Intent_TrainingPhrase {
+func createDisplayName(module ivr.Module, scriptHash string, branchName string) string {
+	switch module.(type) {
+	case *ivr.IncomingCallModule:
+		return utils.MakeInputDisplayName(scriptHash, module.GetID())
+	case *ivr.InputModule:
+		return utils.MakeInputDisplayName(scriptHash, module.GetID())
+	case *ivr.MenuModule:
+		return utils.MakeMenuDisplayName(scriptHash, module.GetID(), branchName)
+	default:
+		panic("Not implemented")
+	}
+}
+
+func createTrainingPhrases(module ivr.Module, script *ivr.IVRScript, branchName string) []*dialogflowpb.Intent_TrainingPhrase {
 	switch v := module.(type) {
 	case *ivr.IncomingCallModule:
 		return []*dialogflowpb.Intent_TrainingPhrase{
@@ -89,7 +116,7 @@ func createTrainingPhrases(module ivr.Module) []*dialogflowpb.Intent_TrainingPhr
 			},
 			&dialogflowpb.Intent_TrainingPhrase{
 				Name: utils.GenUUIDv4(),
-				Type: 1,
+				Type: dialogflowpb.Intent_TrainingPhrase_Type(1),
 				Parts: []*dialogflowpb.Intent_TrainingPhrase_Part{
 					&dialogflowpb.Intent_TrainingPhrase_Part{
 						Text: "My number is ",
@@ -103,9 +130,33 @@ func createTrainingPhrases(module ivr.Module) []*dialogflowpb.Intent_TrainingPhr
 				},
 			},
 		}
+	case *ivr.MenuModule:
+		phrases := []*dialogflowpb.Intent_TrainingPhrase{}
+		for _, item := range v.Items {
+			var phrase *dialogflowpb.Intent_TrainingPhrase
+			if item.Action.Name == branchName {
+				phrase = &dialogflowpb.Intent_TrainingPhrase{
+					Name: utils.GenUUIDv4(),
+					Type: dialogflowpb.Intent_TrainingPhrase_Type(1),
+					Parts: []*dialogflowpb.Intent_TrainingPhrase_Part{
+						&dialogflowpb.Intent_TrainingPhrase_Part{
+							Text: getMenuItemText(item, script.Prompts),
+						},
+					},
+				}
+				phrases = append(phrases, phrase)
+			}
+		}
+		return phrases
 	default:
 		panic("Not implemented")
 	}
+}
+
+func getMenuItemText(item *ivr.MenuItem, scriptPrompts ivr.ScriptPrompts) string {
+	promptID := item.Prompt.LangPrArr[0].PrArr[0]
+	prompt := scriptPrompts[promptID]
+	return prompt.TransformToAI()
 }
 
 func createParameters(module ivr.Module) []*dialogflowpb.Intent_Parameter {
@@ -123,6 +174,8 @@ func createParameters(module ivr.Module) []*dialogflowpb.Intent_Parameter {
 				Mandatory:             true,
 			},
 		}
+	case *ivr.MenuModule:
+		return []*dialogflowpb.Intent_Parameter{}
 	default:
 		panic("Not implemented")
 	}
@@ -134,6 +187,8 @@ func createEvents(module ivr.Module) []string {
 		return []string{"WELCOME"}
 	case *ivr.InputModule:
 		return []string{}
+	case *ivr.MenuModule:
+		return []string{}
 	default:
 		panic("Not implemented")
 	}
@@ -144,7 +199,9 @@ func createInputContextNames(module ivr.Module, displayName string) []string {
 	case *ivr.IncomingCallModule:
 		return []string{}
 	case *ivr.InputModule:
-		return []string{utils.MakeContextName(displayName)}
+		return []string{utils.MakeInputContextName(displayName)}
+	case *ivr.MenuModule:
+		return []string{utils.MakeMenuContextName(displayName)}
 	default:
 		panic("Not implemented")
 	}
