@@ -7,7 +7,7 @@ func TestInitialize(t *testing.T) {
 }
 
 func TestConfig(t *testing.T) {
-	config := map[string]interface{}{"Color": "Red"}
+	config := map[string]interface{}{"Color": "Red", "Number": 1}
 	err := UpdateConfig(config)
 	checkNil(err, t)
 	config, err = GetConfig()

@@ -1,6 +1,9 @@
 package cloud
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"fmt"
+)
 
 // GetConfig returns the config currently in
 func GetConfig() (map[string]interface{}, error) {
@@ -20,6 +23,12 @@ func UpdateConfig(newConfig map[string]interface{}) error {
 		return err
 	}
 	for k, v := range newConfig {
+		switch v.(type) {
+		case int, string, float64:
+			break
+		default:
+			return fmt.Errorf("Config value type must be int, string, or float64, instead got: %T", v)
+		}
 		config[k] = v
 	}
 	marshaled, err := json.Marshal(config)
