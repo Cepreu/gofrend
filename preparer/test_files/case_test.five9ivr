@@ -1,0 +1,638 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
+<ivrScript>
+    <domainId>115675</domainId>
+    <properties/>
+    <modules>
+        <incomingCall>
+            <singleDescendant>28E59A8DA5A645648216848E222CB544</singleDescendant>
+            <moduleName>IncomingCall4</moduleName>
+            <locationX>265</locationX>
+            <locationY>196</locationY>
+            <moduleId>959C5370F3ED4EFE9D21287D9FAA356C</moduleId>
+            <data/>
+        </incomingCall>
+        <case>
+            <ascendants>28E59A8DA5A645648216848E222CB544</ascendants>
+            <moduleName>Case3</moduleName>
+            <locationX>533</locationX>
+            <locationY>196</locationY>
+            <moduleId>8B23F109A3F24F1FA7B15CCA191C7DD5</moduleId>
+            <data>
+                <branches>
+                    <entry>
+                        <key>Small</key>
+                        <value>
+                            <name>Small</name>
+                            <desc>6F308477C5B6415499777F62DCE05201</desc>
+                            <conditions>
+                                <comparisonType>LESS_THAN</comparisonType>
+                                <rightOperand>
+                                    <isVarSelected>false</isVarSelected>
+                                    <integerValue>
+                                        <value>10</value>
+                                    </integerValue>
+                                </rightOperand>
+                                <leftOperand>
+                                    <isVarSelected>true</isVarSelected>
+                                    <variableName>MyNumber</variableName>
+                                </leftOperand>
+                            </conditions>
+                        </value>
+                    </entry>
+                    <entry>
+                        <key>Medium</key>
+                        <value>
+                            <name>Medium</name>
+                            <desc>40D708361F4446B0B44460C050352B31</desc>
+                            <conditions>
+                                <comparisonType>LESS_THAN</comparisonType>
+                                <rightOperand>
+                                    <isVarSelected>false</isVarSelected>
+                                    <integerValue>
+                                        <value>100</value>
+                                    </integerValue>
+                                </rightOperand>
+                                <leftOperand>
+                                    <isVarSelected>true</isVarSelected>
+                                    <variableName>MyNumber</variableName>
+                                </leftOperand>
+                            </conditions>
+                        </value>
+                    </entry>
+                    <entry>
+                        <key>No Match</key>
+                        <value>
+                            <name>No Match</name>
+                            <desc>EF88A6BA3E864FD1BC9698624A94B355</desc>
+                            <conditions/>
+                        </value>
+                    </entry>
+                </branches>
+            </data>
+        </case>
+        <input>
+            <ascendants>959C5370F3ED4EFE9D21287D9FAA356C</ascendants>
+            <singleDescendant>8B23F109A3F24F1FA7B15CCA191C7DD5</singleDescendant>
+            <moduleName>Input3</moduleName>
+            <locationX>404</locationX>
+            <locationY>196</locationY>
+            <moduleId>28E59A8DA5A645648216848E222CB544</moduleId>
+            <data>
+                <dispo>
+                    <id>-17</id>
+                    <name>Caller Disconnected</name>
+                </dispo>
+                <vivrPrompts>
+                    <interruptible>false</interruptible>
+                    <canChangeInterruptableOption>true</canChangeInterruptableOption>
+                    <ttsEnumed>false</ttsEnumed>
+                    <exitModuleOnException>false</exitModuleOnException>
+                </vivrPrompts>
+                <vivrHeader>
+                    <interruptible>false</interruptible>
+                    <canChangeInterruptableOption>true</canChangeInterruptableOption>
+                    <ttsEnumed>false</ttsEnumed>
+                    <exitModuleOnException>false</exitModuleOnException>
+                </vivrHeader>
+                <textChannelData>
+                    <textPrompts>
+                        <interruptible>false</interruptible>
+                        <canChangeInterruptableOption>true</canChangeInterruptableOption>
+                        <ttsEnumed>false</ttsEnumed>
+                        <exitModuleOnException>false</exitModuleOnException>
+                    </textPrompts>
+                    <isUsedVivrPrompts>true</isUsedVivrPrompts>
+                    <isTextOnly>true</isTextOnly>
+                </textChannelData>
+                <grammar xsi:type="intNumber" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                    <mainReturnValue>
+                        <name>MEANING</name>
+                        <type>INTEGER</type>
+                        <varName>MyNumber</varName>
+                    </mainReturnValue>
+                    <stringProperty>
+                        <type>LANGUAGE</type>
+                        <value xsi:type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema">en-US</value>
+                        <enabled>true</enabled>
+                    </stringProperty>
+                    <intProperty>
+                        <type>MINALLOWED</type>
+                        <value xsi:type="xs:int" xmlns:xs="http://www.w3.org/2001/XMLSchema">0</value>
+                        <enabled>true</enabled>
+                    </intProperty>
+                    <intProperty>
+                        <type>MAXALLOWED</type>
+                        <value xsi:type="xs:int" xmlns:xs="http://www.w3.org/2001/XMLSchema">1000</value>
+                        <enabled>true</enabled>
+                    </intProperty>
+                    <intProperty>
+                        <type>MINEXPECTED</type>
+                        <value xsi:type="xs:int" xmlns:xs="http://www.w3.org/2001/XMLSchema">0</value>
+                        <enabled>true</enabled>
+                    </intProperty>
+                    <intProperty>
+                        <type>MAXEXPECTED</type>
+                        <value xsi:type="xs:int" xmlns:xs="http://www.w3.org/2001/XMLSchema">1000</value>
+                        <enabled>true</enabled>
+                    </intProperty>
+                    <listProperty>
+                        <type>GRANULARITYALLOWED</type>
+                        <value xsi:type="xs:int" xmlns:xs="http://www.w3.org/2001/XMLSchema">1</value>
+                        <enabled>true</enabled>
+                        <list xsi:type="xs:int" xmlns:xs="http://www.w3.org/2001/XMLSchema">1</list>
+                        <list xsi:type="xs:int" xmlns:xs="http://www.w3.org/2001/XMLSchema">10</list>
+                        <list xsi:type="xs:int" xmlns:xs="http://www.w3.org/2001/XMLSchema">100</list>
+                        <list xsi:type="xs:int" xmlns:xs="http://www.w3.org/2001/XMLSchema">1000</list>
+                    </listProperty>
+                    <listProperty>
+                        <type>GRANULARITYEXPECTED</type>
+                        <value xsi:type="xs:int" xmlns:xs="http://www.w3.org/2001/XMLSchema">1</value>
+                        <enabled>true</enabled>
+                        <list xsi:type="xs:int" xmlns:xs="http://www.w3.org/2001/XMLSchema">1</list>
+                        <list xsi:type="xs:int" xmlns:xs="http://www.w3.org/2001/XMLSchema">10</list>
+                        <list xsi:type="xs:int" xmlns:xs="http://www.w3.org/2001/XMLSchema">100</list>
+                        <list xsi:type="xs:int" xmlns:xs="http://www.w3.org/2001/XMLSchema">1000</list>
+                    </listProperty>
+                    <additionalReturnValues>
+                        <name>SWI_literal</name>
+                        <type>STRING</type>
+                    </additionalReturnValues>
+                    <propertiesToVariables/>
+                </grammar>
+                <prompts>
+                    <prompt>
+                        <ttsPrompt>
+                            <xml>H4sIAAAAAAAAAIWRT4vCMBDF7/0UIfc6uzdZ0orCehb8c5/aQcomU+mkYr/9phWqaVc2p+T9hvce
+E7O6O6tu1EhVc6Y/Fx9aEZ/rsuJLpo+HbbrUSjxyibZmynRHold5YuRK+PNtyRH7PFHhGPS+qYrW
+kzyEQbTIl3UAT2mQGR3lIfqr5waGZzwxup3QtrRBIXXrb5kmTo97DS8hEKcYmFYxlSf3WkuwW0tU
+fx4sMCETk1H3dPd/ev3vGXu/g0VddvnOUr+EEEKNQsWtK6hZJAYGOm8Fb2sZmK4D5vsYhwKM/voX
+duQIADMCAAA=</xml>
+                            <promptTTSEnumed>false</promptTTSEnumed>
+                        </ttsPrompt>
+                        <interruptible>false</interruptible>
+                        <canChangeInterruptableOption>true</canChangeInterruptableOption>
+                        <ttsEnumed>false</ttsEnumed>
+                        <exitModuleOnException>false</exitModuleOnException>
+                    </prompt>
+                    <count>1</count>
+                </prompts>
+                <recoEvents>
+                    <event>NO_MATCH</event>
+                    <count>1</count>
+                    <compoundPrompt>
+                        <multiLanguagesPromptItem>
+                            <prompt>BD9975D6D3F6446DB219A43F72A2CAEE</prompt>
+                        </multiLanguagesPromptItem>
+                        <interruptible>false</interruptible>
+                        <canChangeInterruptableOption>true</canChangeInterruptableOption>
+                        <ttsEnumed>false</ttsEnumed>
+                        <exitModuleOnException>false</exitModuleOnException>
+                    </compoundPrompt>
+                    <action>CONTINUE</action>
+                </recoEvents>
+                <recoEvents>
+                    <event>NO_INPUT</event>
+                    <count>1</count>
+                    <compoundPrompt>
+                        <multiLanguagesPromptItem>
+                            <prompt>C5A99ADEB92447F29B0F0F934F990102</prompt>
+                        </multiLanguagesPromptItem>
+                        <interruptible>false</interruptible>
+                        <canChangeInterruptableOption>true</canChangeInterruptableOption>
+                        <ttsEnumed>false</ttsEnumed>
+                        <exitModuleOnException>false</exitModuleOnException>
+                    </compoundPrompt>
+                    <action>REPROMPT</action>
+                </recoEvents>
+                <confirmData>
+                    <confirmRequired>REQUIRED</confirmRequired>
+                    <requiredConfidence>75</requiredConfidence>
+                    <maxAttemptsToConfirm>3</maxAttemptsToConfirm>
+                    <noInputTimeout>3</noInputTimeout>
+                    <maxTimeToEnter>3</maxTimeToEnter>
+                    <completeTimeout>0</completeTimeout>
+                    <confidenceTreshold>75</confidenceTreshold>
+                    <sensitivity>0</sensitivity>
+                    <incompleteTimeout>0</incompleteTimeout>
+                    <swirecNbestListLength>0</swirecNbestListLength>
+                    <recognizeConfigParameters>
+                        <recognizeConfigParameter>NO_INPUT_TIMEOUT</recognizeConfigParameter>
+                        <recognizeConfigParameter>CONFIDENCE_TRESHOLD</recognizeConfigParameter>
+                        <recognizeConfigParameter>MAX_TIME_TO_ENTER</recognizeConfigParameter>
+                    </recognizeConfigParameters>
+                    <prompt>
+                        <multiLanguagesPromptItem>
+                            <prompt>739C959430D74CF28B4DDABD55D195DF</prompt>
+                        </multiLanguagesPromptItem>
+                        <interruptible>true</interruptible>
+                        <canChangeInterruptableOption>true</canChangeInterruptableOption>
+                        <ttsEnumed>false</ttsEnumed>
+                        <exitModuleOnException>false</exitModuleOnException>
+                    </prompt>
+                    <recoEvents>
+                        <event>NO_MATCH</event>
+                        <count>1</count>
+                        <compoundPrompt>
+                            <multiLanguagesPromptItem>
+                                <prompt>BD9975D6D3F6446DB219A43F72A2CAEE</prompt>
+                            </multiLanguagesPromptItem>
+                            <interruptible>false</interruptible>
+                            <canChangeInterruptableOption>true</canChangeInterruptableOption>
+                            <ttsEnumed>false</ttsEnumed>
+                            <exitModuleOnException>false</exitModuleOnException>
+                        </compoundPrompt>
+                        <action>REPROMPT</action>
+                    </recoEvents>
+                    <recoEvents>
+                        <event>NO_INPUT</event>
+                        <count>1</count>
+                        <compoundPrompt>
+                            <multiLanguagesPromptItem>
+                                <prompt>C5A99ADEB92447F29B0F0F934F990102</prompt>
+                            </multiLanguagesPromptItem>
+                            <interruptible>false</interruptible>
+                            <canChangeInterruptableOption>true</canChangeInterruptableOption>
+                            <ttsEnumed>false</ttsEnumed>
+                            <exitModuleOnException>false</exitModuleOnException>
+                        </compoundPrompt>
+                        <action>REPROMPT</action>
+                    </recoEvents>
+                </confirmData>
+                <confidenceTreshold>5</confidenceTreshold>
+                <maxTimeToEnter>15</maxTimeToEnter>
+                <noInputTimeout>5</noInputTimeout>
+                <sensitivity>50</sensitivity>
+                <incompleteTimeout>2</incompleteTimeout>
+                <completeTimeout>0</completeTimeout>
+                <swirecNbestListLength>2</swirecNbestListLength>
+                <maxAttempts>3</maxAttempts>
+                <collapsible>false</collapsible>
+                <recognizeConfigParameters>
+                    <recognizeConfigParameter>NO_INPUT_TIMEOUT</recognizeConfigParameter>
+                    <recognizeConfigParameter>CONFIDENCE_TRESHOLD</recognizeConfigParameter>
+                    <recognizeConfigParameter>MAX_TIME_TO_ENTER</recognizeConfigParameter>
+                </recognizeConfigParameters>
+                <recordUserInput>false</recordUserInput>
+                <dtmfHelpButton>null</dtmfHelpButton>
+            </data>
+        </input>
+        <hangup>
+            <ascendants>6F308477C5B6415499777F62DCE05201</ascendants>
+            <ascendants>40D708361F4446B0B44460C050352B31</ascendants>
+            <ascendants>EF88A6BA3E864FD1BC9698624A94B355</ascendants>
+            <moduleName>Hangup9</moduleName>
+            <locationX>988</locationX>
+            <locationY>196</locationY>
+            <moduleId>030EEFC8BEB94928987DCD496032782A</moduleId>
+            <data>
+                <dispo>
+                    <id>0</id>
+                    <name>No Disposition</name>
+                </dispo>
+                <returnToCallingModule>true</returnToCallingModule>
+                <errCode>
+                    <isVarSelected>false</isVarSelected>
+                    <integerValue>
+                        <value>0</value>
+                    </integerValue>
+                </errCode>
+                <errDescription>
+                    <isVarSelected>false</isVarSelected>
+                    <stringValue>
+                        <value></value>
+                        <id>0</id>
+                    </stringValue>
+                </errDescription>
+                <overwriteDisposition>true</overwriteDisposition>
+            </data>
+        </hangup>
+        <play>
+            <ascendants>8B23F109A3F24F1FA7B15CCA191C7DD5</ascendants>
+            <singleDescendant>030EEFC8BEB94928987DCD496032782A</singleDescendant>
+            <moduleName>Play5</moduleName>
+            <locationX>749</locationX>
+            <locationY>88</locationY>
+            <moduleId>6F308477C5B6415499777F62DCE05201</moduleId>
+            <data>
+                <prompt>
+                    <ttsPrompt>
+                        <xml>H4sIAAAAAAAAAIWRQYvCMBCF7/6KkHud9SZLWlHQP+Aq7HFqBwmbTKSTiv331i5U065sTsn7hvce
+E7O6eaeuVIsNnOvF/EMr4lOoLJ9zffjaZUutJCJX6AJTrlsSvSpmRi6EP1tHnjgWM9UdgzHWtmwi
+ya/Qiw75vO7AU+plRk9FF/354Ab6ZzoxuB3RNbRBIXV93HJNnB32Gl5CIE0xMK5ibCT/WkuwXUtS
+fxosMCIjk0GPdIt/ev3vmXq/g2Wo2uI7NLXixpdUKytKPDo3N9CzaSd4W8rAeBkw3cYw1MHkp+8p
+/8XfMQIAAA==</xml>
+                        <promptTTSEnumed>false</promptTTSEnumed>
+                    </ttsPrompt>
+                    <interruptible>false</interruptible>
+                    <canChangeInterruptableOption>true</canChangeInterruptableOption>
+                    <ttsEnumed>false</ttsEnumed>
+                    <exitModuleOnException>false</exitModuleOnException>
+                </prompt>
+                <dispo>
+                    <id>-17</id>
+                    <name>Caller Disconnected</name>
+                </dispo>
+                <vivrPrompts>
+                    <interruptible>false</interruptible>
+                    <canChangeInterruptableOption>true</canChangeInterruptableOption>
+                    <ttsEnumed>false</ttsEnumed>
+                    <exitModuleOnException>false</exitModuleOnException>
+                </vivrPrompts>
+                <vivrHeader>
+                    <interruptible>false</interruptible>
+                    <canChangeInterruptableOption>true</canChangeInterruptableOption>
+                    <ttsEnumed>false</ttsEnumed>
+                    <exitModuleOnException>false</exitModuleOnException>
+                </vivrHeader>
+                <textChannelData>
+                    <textPrompts>
+                        <interruptible>false</interruptible>
+                        <canChangeInterruptableOption>true</canChangeInterruptableOption>
+                        <ttsEnumed>false</ttsEnumed>
+                        <exitModuleOnException>false</exitModuleOnException>
+                    </textPrompts>
+                    <isUsedVivrPrompts>true</isUsedVivrPrompts>
+                    <isTextOnly>true</isTextOnly>
+                </textChannelData>
+                <numberOfDigits>0</numberOfDigits>
+                <terminateDigit>N/A</terminateDigit>
+                <clearDigitBuffer>false</clearDigitBuffer>
+                <collapsible>false</collapsible>
+            </data>
+        </play>
+        <play>
+            <ascendants>8B23F109A3F24F1FA7B15CCA191C7DD5</ascendants>
+            <singleDescendant>030EEFC8BEB94928987DCD496032782A</singleDescendant>
+            <moduleName>Play6</moduleName>
+            <locationX>754</locationX>
+            <locationY>196</locationY>
+            <moduleId>40D708361F4446B0B44460C050352B31</moduleId>
+            <data>
+                <prompt>
+                    <ttsPrompt>
+                        <xml>H4sIAAAAAAAAAIWRwWrDMBBE7/kKobuz6a0U2SGB9gfaFHpcx0sQkVbFK4X47+u44ER2QnSS5i0z
+w8qsz96pE7ViA5f6ZbnSingfGsuHUu++PopXrSQiN+gCU6k7Er2uFkZ+CY/vjjxxrBaqPwZjbG2d
+Ism/MIgO+bDpwVUaZEZPVR/9duEGhmc+Mbp9o0u0RSF1utxKTVzsPjXchECeYmBaxdhI/raWYLeR
+rP48WGBCJiajHukc73o998y9H8E6NF31E1KrOPmaWmVFeWps8ksDA5yXgoetDEy3AfN1jEM9zL76
+D1ZFFQcyAgAA</xml>
+                        <promptTTSEnumed>false</promptTTSEnumed>
+                    </ttsPrompt>
+                    <interruptible>false</interruptible>
+                    <canChangeInterruptableOption>true</canChangeInterruptableOption>
+                    <ttsEnumed>false</ttsEnumed>
+                    <exitModuleOnException>false</exitModuleOnException>
+                </prompt>
+                <dispo>
+                    <id>-17</id>
+                    <name>Caller Disconnected</name>
+                </dispo>
+                <vivrPrompts>
+                    <interruptible>false</interruptible>
+                    <canChangeInterruptableOption>true</canChangeInterruptableOption>
+                    <ttsEnumed>false</ttsEnumed>
+                    <exitModuleOnException>false</exitModuleOnException>
+                </vivrPrompts>
+                <vivrHeader>
+                    <interruptible>false</interruptible>
+                    <canChangeInterruptableOption>true</canChangeInterruptableOption>
+                    <ttsEnumed>false</ttsEnumed>
+                    <exitModuleOnException>false</exitModuleOnException>
+                </vivrHeader>
+                <textChannelData>
+                    <textPrompts>
+                        <interruptible>false</interruptible>
+                        <canChangeInterruptableOption>true</canChangeInterruptableOption>
+                        <ttsEnumed>false</ttsEnumed>
+                        <exitModuleOnException>false</exitModuleOnException>
+                    </textPrompts>
+                    <isUsedVivrPrompts>true</isUsedVivrPrompts>
+                    <isTextOnly>true</isTextOnly>
+                </textChannelData>
+                <numberOfDigits>0</numberOfDigits>
+                <terminateDigit>N/A</terminateDigit>
+                <clearDigitBuffer>false</clearDigitBuffer>
+                <collapsible>false</collapsible>
+            </data>
+        </play>
+        <play>
+            <ascendants>8B23F109A3F24F1FA7B15CCA191C7DD5</ascendants>
+            <singleDescendant>030EEFC8BEB94928987DCD496032782A</singleDescendant>
+            <moduleName>Play7</moduleName>
+            <locationX>753</locationX>
+            <locationY>305</locationY>
+            <moduleId>EF88A6BA3E864FD1BC9698624A94B355</moduleId>
+            <data>
+                <prompt>
+                    <ttsPrompt>
+                        <xml>H4sIAAAAAAAAAIWRwWrDMBBE7/kKoXuy7S0U2SGB9gfSBHJc14sRlVZFK4f47+M44EZ2Q3WS5i0z
+w8psLt6pM0WxgQv9unrRivgr1JabQh8+P5ZrrSQh1+gCU6E7Er0pF0Z+CL/fHXniVC5UfwymFG3V
+JpK7MIgOudn24FcaZEZPZR/9duMGhmc+Mbod0bW0QyF1vt0KTbw87DU8hECeYmBaxdhE/rGWYLeV
+rP48WGBCJiajnuiS/vT63zP3fgarUHflKbRRcesrisqKchgbWhkY2LwTPC1lYLoMmG9jHOph9tNX
+0Za0kTECAAA=</xml>
+                        <promptTTSEnumed>false</promptTTSEnumed>
+                    </ttsPrompt>
+                    <interruptible>false</interruptible>
+                    <canChangeInterruptableOption>true</canChangeInterruptableOption>
+                    <ttsEnumed>false</ttsEnumed>
+                    <exitModuleOnException>false</exitModuleOnException>
+                </prompt>
+                <dispo>
+                    <id>-17</id>
+                    <name>Caller Disconnected</name>
+                </dispo>
+                <vivrPrompts>
+                    <interruptible>false</interruptible>
+                    <canChangeInterruptableOption>true</canChangeInterruptableOption>
+                    <ttsEnumed>false</ttsEnumed>
+                    <exitModuleOnException>false</exitModuleOnException>
+                </vivrPrompts>
+                <vivrHeader>
+                    <interruptible>false</interruptible>
+                    <canChangeInterruptableOption>true</canChangeInterruptableOption>
+                    <ttsEnumed>false</ttsEnumed>
+                    <exitModuleOnException>false</exitModuleOnException>
+                </vivrHeader>
+                <textChannelData>
+                    <textPrompts>
+                        <interruptible>false</interruptible>
+                        <canChangeInterruptableOption>true</canChangeInterruptableOption>
+                        <ttsEnumed>false</ttsEnumed>
+                        <exitModuleOnException>false</exitModuleOnException>
+                    </textPrompts>
+                    <isUsedVivrPrompts>true</isUsedVivrPrompts>
+                    <isTextOnly>true</isTextOnly>
+                </textChannelData>
+                <numberOfDigits>0</numberOfDigits>
+                <terminateDigit>N/A</terminateDigit>
+                <clearDigitBuffer>false</clearDigitBuffer>
+                <collapsible>false</collapsible>
+            </data>
+        </play>
+    </modules>
+    <modulesOnHangup>
+        <startOnHangup>
+            <singleDescendant>698C2D692E5C41CBB9EE0F93F115B036</singleDescendant>
+            <moduleName>StartOnHangup4</moduleName>
+            <locationX>20</locationX>
+            <locationY>10</locationY>
+            <moduleId>22B863AA796B4672B36333DB29A39F1F</moduleId>
+        </startOnHangup>
+        <hangup>
+            <ascendants>22B863AA796B4672B36333DB29A39F1F</ascendants>
+            <moduleName>Hangup5</moduleName>
+            <locationX>120</locationX>
+            <locationY>10</locationY>
+            <moduleId>698C2D692E5C41CBB9EE0F93F115B036</moduleId>
+            <data>
+                <dispo>
+                    <id>-17</id>
+                    <name>Caller Disconnected</name>
+                </dispo>
+                <returnToCallingModule>true</returnToCallingModule>
+                <errCode>
+                    <isVarSelected>false</isVarSelected>
+                    <integerValue>
+                        <value>0</value>
+                    </integerValue>
+                </errCode>
+                <errDescription>
+                    <isVarSelected>false</isVarSelected>
+                    <stringValue>
+                        <value></value>
+                        <id>0</id>
+                    </stringValue>
+                </errDescription>
+                <overwriteDisposition>false</overwriteDisposition>
+            </data>
+        </hangup>
+    </modulesOnHangup>
+    <userVariables>
+        <entry>
+            <key>MyNumber</key>
+            <value>
+                <name>MyNumber</name>
+                <description></description>
+                <integerValue>
+                    <value>0</value>
+                </integerValue>
+                <attributes>8</attributes>
+                <isNullValue>true</isNullValue>
+            </value>
+        </entry>
+    </userVariables>
+    <multiLanguagesPrompts>
+        <entry>
+            <key>739C959430D74CF28B4DDABD55D195DF</key>
+            <value>
+                <promptId>739C959430D74CF28B4DDABD55D195DF</promptId>
+                <name>ConfirmPrompt</name>
+                <description>Default prompt for user input confirmation</description>
+                <type>AUDIO</type>
+                <prompts>
+                    <entry key="en-US">
+                        <ttsPrompt>
+                            <xml>H4sIAAAAAAAAANVTUWvCMBB+91ccebeZexqSVhw4EMTB1A2fSrQ3DWsTyaXO/vulHXNttQwGe1jI
+Q/J9ue++3CVidMpSOKIlZXTIBsENA9Rbkyi9C9lq+dC/Y0BO6kSmRmPICiQ2inqCDijfJilmqF3U
+Az+EdM6qTe6QPoEKTKXejT3xDVWwlhlGPvWw5AWvts0TZ7VnmeZ4LwnhWK5Chrq/WjBeS8KbWQRv
+WxHKYVa3RbIYU8P+ZWLiLaYlcsYdntxVrZ81m9pd5MYkRbQ2uW+NQ4vJ0F+xwi698E4zgreLwK9X
+QRylVXKT4q/q0wa/xOZli+N48TKNZ9Pl5Gk8i2PBG2zNWaeF/9i5ABayALb2XweMhYNFImADBuoV
+3F4R+Lk11uLWBfDo9mjflX/uVAbNTT3mlv1V48+HPNn42h9LoLssIgQAAA==</xml>
+                            <promptTTSEnumed>false</promptTTSEnumed>
+                        </ttsPrompt>
+                    </entry>
+                </prompts>
+                <defaultLanguage>en-US</defaultLanguage>
+                <isPersistent>true</isPersistent>
+            </value>
+        </entry>
+        <entry>
+            <key>BD9975D6D3F6446DB219A43F72A2CAEE</key>
+            <value>
+                <promptId>BD9975D6D3F6446DB219A43F72A2CAEE</promptId>
+                <name>NoMatchPrompt</name>
+                <description>Default prompt for NoMatch event</description>
+                <type>AUDIO</type>
+                <prompts>
+                    <entry key="en-US">
+                        <ttsPrompt>
+                            <xml>H4sIAAAAAAAAAIWRQYvCMBCF7/6KkLvO7k0krSis4Fnd+2gHCZtOpTMV++83VqimXdmcku+F9x4z
+bnkrg7lSLb7izH7OPqwhPlWF53NmD/vNdG6NKHKBoWLKbEtil/nEyYXw5ytQSaz5xMTjULX2x0ZJ
+HqCDAfm8isITdZixpDxGL+66g+6Z/ujdvjE0tEYhc73fMks8PewsvIRAmuJgWMV5pfK1lmC7kqT+
+OFhgoAxMeq500z+9/vdMvd+Jx6po821cS13TSY3nS6MzBx0e14G3fRwM5wDjQfSfopgs+RfRtLpi
+LAIAAA==</xml>
+                            <promptTTSEnumed>false</promptTTSEnumed>
+                        </ttsPrompt>
+                    </entry>
+                </prompts>
+                <defaultLanguage>en-US</defaultLanguage>
+                <isPersistent>true</isPersistent>
+            </value>
+        </entry>
+        <entry>
+            <key>C5A99ADEB92447F29B0F0F934F990102</key>
+            <value>
+                <promptId>C5A99ADEB92447F29B0F0F934F990102</promptId>
+                <name>NoInputPrompt</name>
+                <description>Default prompt for NoInput event</description>
+                <type>AUDIO</type>
+                <prompts>
+                    <entry key="en-US">
+                        <ttsPrompt>
+                            <xml>H4sIAAAAAAAAAIWRQYvCMBCF7/6KkHsdvS1LWnFhBc+7eh/toMV0Ip2p2H9vrVBNu7I5Je8b3ntM
+3OJaenOhSorAqZ1PZ9YQ70Ne8CG1m99V8mGNKHKOPjCltiGxi2zi5Ex4+vZUEms2Me1xqFoVu1pJ
+HkIneuTDsgVPqZMZS8ra6M87d9A944nebYu+pi8UMpf7LbXEyebHwksIxCkOhlVcoVS+1hJslhLV
+HwcLDMjApNeVrvqn1/+esfc7uAt5k63NHpmDmiNhZZpQTx10YFwI3jZyMNwEjFfRD7Uw+uYbQw31
+uC4CAAA=</xml>
+                            <promptTTSEnumed>false</promptTTSEnumed>
+                        </ttsPrompt>
+                    </entry>
+                </prompts>
+                <defaultLanguage>en-US</defaultLanguage>
+                <isPersistent>true</isPersistent>
+            </value>
+        </entry>
+        <entry>
+            <key>EBDBBACBDE37433F8AA16B178AF80F84</key>
+            <value>
+                <promptId>EBDBBACBDE37433F8AA16B178AF80F84</promptId>
+                <name>ConfirmPromptWithoutVSR</name>
+                <description>Default prompt for user input confirmation with disabled voice recognition</description>
+                <type>AUDIO</type>
+                <prompts>
+                    <entry key="en-US">
+                        <ttsPrompt>
+                            <xml>H4sIAAAAAAAAANVT0UrDMBR931eEvK9xPslIOypMGAwVtyk+lbS9bsE0GUla17837bA23YYg+GDJ
+Q3PO5ZyTexM6OxQCVaANVzLEk+AKI5CZyrnchnizvhvfYGQskzkTSkKIazB4Fo2o2QN7nwsoQNpo
+hNxHmbWap6UFcwRaUDC5jR3xDbWwZAVEznra8JS0W7+iU3tmooRbZgBVzV+IQY43K0x6JsR3oWQY
+hXILRT+WYXVsvPinxoYMmIFIh1s42LNaP2v62pfIVOV19KpKNxoLGvKpO2KLnWYhF8NQMmwCOd8F
+WjHNWSrgV/0Zgl9i982Ik2T1skiWi/X8KV4mCSUe20t2McJ/nFyAHjUYg/AEI/6G7I4b5FamtIbM
+BujB7kB/cHfD98e6a/xX8+2KHOm94E/oteYzCQQAAA==</xml>
+                            <promptTTSEnumed>false</promptTTSEnumed>
+                        </ttsPrompt>
+                    </entry>
+                </prompts>
+                <defaultLanguage>en-US</defaultLanguage>
+                <isPersistent>true</isPersistent>
+            </value>
+        </entry>
+    </multiLanguagesPrompts>
+    <multiLanguagesVIVRPrompts/>
+    <multiLanguagesTextPrompts/>
+    <multiLanguagesMenuChoices/>
+    <multiLanguagesEwtAnnouncement/>
+    <languages/>
+    <functions/>
+    <defaultLanguage>en-US</defaultLanguage>
+    <defaultMethod>GET</defaultMethod>
+    <defaultFetchTimeout>5</defaultFetchTimeout>
+    <showLabelNames>true</showLabelNames>
+    <defaultVivrTimeout>5</defaultVivrTimeout>
+    <unicodeEncoding>false</unicodeEncoding>
+    <useShortcut>false</useShortcut>
+    <resetErrorCode>true</resetErrorCode>
+    <showAllChannelPrompts>false</showAllChannelPrompts>
+    <extContactFieldsInput>true</extContactFieldsInput>
+    <extContactFieldsOutput>true</extContactFieldsOutput>
+    <timeoutInMilliseconds>3600000</timeoutInMilliseconds>
+    <version>1100008</version>
+</ivrScript>

@@ -2,24 +2,42 @@ package cloud
 
 import (
 	"context"
-	"fmt"
 	"io/ioutil"
 
 	"cloud.google.com/go/storage"
-	"github.com/Cepreu/gofrend/utils"
 	"google.golang.org/api/option"
 )
 
-// UploadXML uploads static xml file to cloud
-func UploadXML(data []byte) error {
-	object, err := getObjectHandleFromData(data)
+func download(filename string) ([]byte, error) {
+	ctx := context.Background()
+	client, err := storage.NewClient(ctx, option.WithCredentialsFile(GcpCredentialsFileName))
+	if err != nil {
+		return nil, err
+	}
+	object := client.Bucket(GcpStorageBucketName).Object(filename)
+	reader, err := object.NewReader(ctx)
+	if err != nil {
+		return nil, err
+	}
+	data, err := ioutil.ReadAll(reader)
+	if err != nil {
+		return nil, err
+	}
+	err = reader.Close()
+	if err != nil {
+		return nil, err
+	}
+	return data, client.Close()
+}
+
+func upload(filename string, data []byte) error {
+	ctx := context.Background()
+	client, err := storage.NewClient(ctx, option.WithCredentialsFile(GcpCredentialsFileName))
 	if err != nil {
 		return err
 	}
-
-	ctx := context.Background()
-
-	writer := object.NewWriter(ctx) // Currently writes regardless of whether or not file already exists. There may or may not be reason to rethink.
+	object := client.Bucket(GcpStorageBucketName).Object(filename)
+	writer := object.NewWriter(ctx)
 	_, err = writer.Write(data)
 	if err != nil {
 		return err
@@ -28,38 +46,5 @@ func UploadXML(data []byte) error {
 	if err != nil {
 		return err
 	}
-
-	return nil
-}
-
-// DownloadXML downloads static xml file from cloud
-func DownloadXML(hash string) ([]byte, error) {
-	object, err := getObjectHandleFromHash(hash)
-	if err != nil {
-		return nil, err
-	}
-
-	ctx := context.Background()
-
-	reader, err := object.NewReader(ctx)
-	if err != nil {
-		return nil, err
-	}
-	return ioutil.ReadAll(reader)
-}
-
-func getObjectHandleFromData(data []byte) (*storage.ObjectHandle, error) {
-	hash := utils.HashToString(data)
-	return getObjectHandleFromHash(hash)
-}
-
-func getObjectHandleFromHash(hash string) (*storage.ObjectHandle, error) {
-	ctx := context.Background()
-
-	client, err := storage.NewClient(ctx, option.WithCredentialsFile(GcpCredentialsFileName))
-	if err != nil {
-		return nil, err
-	}
-	object := client.Bucket(GcpStorageBucketName).Object(fmt.Sprintf("five9ivr-files/%s", hash))
-	return object, nil
+	return client.Close()
 }
