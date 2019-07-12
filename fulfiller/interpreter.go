@@ -85,6 +85,8 @@ func (interpreter *Interpreter) process(module ivr.Module) (ivr.Module, error) {
 		return interpreter.processPlay(v)
 	case *ivr.InputModule:
 		return interpreter.processInput(v)
+	case *ivr.MenuModule:
+		return interpreter.processMenu(v)
 	case *ivr.QueryModule:
 		return interpreter.processQuery(v)
 	case *ivr.HangupModule:
