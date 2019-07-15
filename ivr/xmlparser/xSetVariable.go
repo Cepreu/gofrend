@@ -11,7 +11,7 @@ type xmlSetVariablesModule struct {
 	m *ivr.SetVariableModule
 }
 
-func newSetVariablesModule(decoder *xml.Decoder) normalizer {
+func newSetVariablesModule(decoder *xml.Decoder, script *ivr.IVRScript) normalizer {
 	var (
 		immersion = 1
 		pSVM      = new(ivr.SetVariableModule)
@@ -28,7 +28,7 @@ func newSetVariablesModule(decoder *xml.Decoder) normalizer {
 		case xml.StartElement:
 			immersion++
 			if v.Name.Local == "expressions" {
-				e := parseAssignment(decoder)
+				e := parseAssignment(decoder, script)
 				immersion--
 				if e != nil {
 					pSVM.Exprs = append(pSVM.Exprs, e)
@@ -44,15 +44,20 @@ func newSetVariablesModule(decoder *xml.Decoder) normalizer {
 	return xmlSetVariablesModule{pSVM}
 }
 
-func parseAssignment(decoder *xml.Decoder) *ivr.Expression {
+func parseAssignment(decoder *xml.Decoder, script *ivr.IVRScript) *ivr.Expression {
 	var (
 		immersion      = 1
 		inVariableName = false
 		inIsFunction   = false
+		inJsFunction   = false
 		inFunction     = false
 		inReturnType   = false
 		inName         = false
 		inArguments    = false
+		constVal       = new(parametrized)
+		f              ivr.Function
+		params         []*parametrized
+		isFunction     bool
 
 		e = new(ivr.Expression)
 	)
@@ -72,38 +77,39 @@ func parseAssignment(decoder *xml.Decoder) *ivr.Expression {
 			} else if v.Name.Local == "isFunction" {
 				inIsFunction = true
 			} else if v.Name.Local == "constant" {
-				e.Rval.P = new(ivr.Parametrized)
-				parse(e.Rval.P, decoder)
+				_ = parse(constVal, decoder)
 				immersion--
 			} else if v.Name.Local == "function" {
 				inFunction = true
-				e.Rval.F = new(ivr.IvrFuncInvocation)
+				//				e.Rval.F = new(ivr.IvrFuncInvocation)
 			} else if v.Name.Local == "returnType" {
 				inReturnType = true
-			} else if v.Name.Local == "name" {
+			} else if v.Name.Local == "name" || v.Name.Local == "functionName" {
 				inName = true
 			} else if v.Name.Local == "arguments" {
 				inArguments = true
 
 			} else if v.Name.Local == "functionArgs" {
-				p := new(ivr.Parametrized)
-				parse(p, decoder)
+				pp := new(parametrized)
+				parse(pp, decoder)
 				immersion--
-				e.Rval.F.Params = append(e.Rval.F.Params, p)
+				params = append(params, pp)
 			}
 
 		case xml.CharData:
 			if inVariableName {
 				e.Lval = string(v)
 			} else if inIsFunction {
-				e.IsFunc = "true" == string(v)
+				isFunction = "true" == string(v)
 			} else if inFunction {
 				if inName {
-					e.Rval.F.FuncDef.Name = string(v)
+					f.Name = string(v)
 				} else if inReturnType {
-					e.Rval.F.FuncDef.ReturnType = string(v)
+					f.ReturnType = string(v)
 				} else if inArguments {
-					e.Rval.F.FuncDef.ArgTypes = append(e.Rval.F.FuncDef.ArgTypes, string(v))
+					f.Arguments = append(f.Arguments, &ivr.FuncArgument{ArgType: string(v)})
+				} else if inJsFunction {
+					f.ID = ivr.FuncID(v)
 				}
 			}
 
@@ -115,14 +121,33 @@ func parseAssignment(decoder *xml.Decoder) *ivr.Expression {
 				inFunction = false
 			} else if v.Name.Local == "returnType" {
 				inReturnType = false
-			} else if v.Name.Local == "name" {
+			} else if v.Name.Local == "name" || v.Name.Local == "functionName" {
 				inName = false
 			} else if v.Name.Local == "arguments" {
 				inArguments = false
 			} else if v.Name.Local == "isFunction" {
 				inIsFunction = false
+			} else if v.Name.Local == "jsFunction" {
+				inJsFunction = false
 			}
 		}
+	}
+	if isFunction {
+		if f.ID == "" {
+			id := f.ReturnType + "#" + f.Name
+			for _, arg := range f.Arguments {
+				id += "#" + arg.ArgType
+			}
+			e.Rval.FuncDef = ivr.FuncID(id)
+		} else {
+			e.Rval.FuncDef = f.ID
+		}
+		for _, p := range params {
+			e.Rval.Params = append(e.Rval.Params, toID(script, p))
+		}
+	} else {
+		e.Rval.FuncDef = "__COPY__"
+		e.Rval.Params = append(e.Rval.Params, toID(script, constVal))
 	}
 	return e
 }

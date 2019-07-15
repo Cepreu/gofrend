@@ -13,8 +13,9 @@ type xmlQueryModule struct {
 	m *ivr.QueryModule
 }
 
-func newQueryModule(decoder *xml.Decoder, sp ivr.ScriptPrompts) normalizer {
+func newQueryModule(decoder *xml.Decoder, script *ivr.IVRScript) normalizer {
 	var (
+		sp             = script.Prompts
 		immersion      = 1
 		pQM            = new(ivr.QueryModule)
 		inURLParts     = false
@@ -44,15 +45,15 @@ func newQueryModule(decoder *xml.Decoder, sp ivr.ScriptPrompts) normalizer {
 			} else if v.Name.Local == "urlParts" {
 				inURLParts = true
 			} else if v.Name.Local == "holder" && inURLParts {
-				thePart := new(ivr.Parametrized)
+				thePart := new(parametrized)
 				parse(thePart, decoder)
 				immersion--
-				pQM.URLParts = append(pQM.URLParts, thePart)
+				pQM.URLParts = append(pQM.URLParts, toID(script, thePart))
 			} else if v.Name.Local == "parameters" {
-				pQM.Parameters, _ = parseKeyValueListParmetrized(decoder)
+				pQM.Parameters, _ = parseKeyValueListParmetrized(decoder, script)
 				immersion--
 			} else if v.Name.Local == "headers" {
-				pQM.Headers, _ = parseKeyValueListParmetrized(decoder)
+				pQM.Headers, _ = parseKeyValueListParmetrized(decoder, script)
 				immersion--
 			} else if v.Name.Local == "requestInfo" {
 				parseRequestInfo(&pQM.RequestInfo, decoder)
@@ -350,7 +351,7 @@ func parseKeyValueList(decoder *xml.Decoder) (p []ivr.KeyValue, err error) {
 		immersion               = 1
 		inEntry, inKey, inValue = false, false, false
 		key                     string
-		value                   string
+		value                   ivr.VariableID
 	)
 
 	for immersion > 0 {
@@ -374,14 +375,14 @@ func parseKeyValueList(decoder *xml.Decoder) (p []ivr.KeyValue, err error) {
 			if inKey {
 				key = string(v)
 			} else if inValue {
-				value = string(v)
+				value = ivr.VariableID(v)
 			}
 
 		case xml.EndElement:
 			immersion--
 			if v.Name.Local == "entry" {
 				inEntry = false
-				p = append(p, ivr.KeyValue{key, value})
+				p = append(p, ivr.KeyValue{Key: key, Value: value})
 			} else if v.Name.Local == "key" && inEntry {
 				inKey = false
 			} else if v.Name.Local == "value" && inEntry {

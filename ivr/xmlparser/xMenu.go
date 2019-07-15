@@ -12,10 +12,11 @@ type xmlMenuModule struct {
 	m *ivr.MenuModule
 }
 
-func newMenuModule(decoder *xml.Decoder, sp ivr.ScriptPrompts) normalizer {
+func newMenuModule(script *ivr.IVRScript, decoder *xml.Decoder) normalizer {
 	var (
 		pMM      = new(ivr.MenuModule)
 		inModule = true
+		sp       = script.Prompts
 	)
 
 	for inModule {
@@ -70,7 +71,7 @@ func newMenuModule(decoder *xml.Decoder, sp ivr.ScriptPrompts) normalizer {
 
 				// -->branches
 			} else if v.Name.Local == "branches" {
-				pMM.Branches = parseBranches(decoder)
+				pMM.Branches = parseBranches(script, decoder)
 				// -->items
 			} else if v.Name.Local == cMenuItems {
 				pItem := newMenuItem(decoder, sp, getPromptID(string(pMM.ID), "A"))

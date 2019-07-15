@@ -11,7 +11,7 @@ type xmlHangupModule struct {
 	s *ivr.HangupModule
 }
 
-func newHangupModule(decoder *xml.Decoder) normalizer {
+func newHangupModule(script *ivr.IVRScript, decoder *xml.Decoder) normalizer {
 	var (
 		inModule = true
 		pHM      = new(ivr.HangupModule)
@@ -31,9 +31,13 @@ func newHangupModule(decoder *xml.Decoder) normalizer {
 					pHM.Return2Caller = string(innerText.(xml.CharData)) == "true"
 				}
 			} else if v.Name.Local == "errCode" {
-				parse(&pHM.ErrCode, decoder)
+				var errCode parametrized
+				parse(&errCode, decoder)
+				pHM.ErrCode = toID(script, &errCode)
 			} else if v.Name.Local == "errDescription" {
-				parse(&pHM.ErrDescr, decoder)
+				var errDescr parametrized
+				parse(&errDescr, decoder)
+				pHM.ErrDescr = toID(script, &errDescr)
 			} else if v.Name.Local == "overwriteDisposition" {
 				innerText, err := decoder.Token()
 				if err == nil {

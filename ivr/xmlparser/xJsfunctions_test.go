@@ -67,11 +67,12 @@ Sio1AAAA</functionBody>
 		return
 	}
 
-	expected := []*ivr.JsFunction{
+	expected := []*ivr.Function{
 		{
-			JsFunctionID: "01622849F1F54399A411F5DBC9BC80B7",
-			ReturnType:   "KVLIST",
-			Name:         "days_of_week",
+			ID:         "01622849F1F54399A411F5DBC9BC80B7",
+			Type:       ivr.FuncJS,
+			ReturnType: "KVLIST",
+			Name:       "days_of_week",
 			Arguments: []*ivr.FuncArgument{
 				{
 					Name:    "month",
@@ -82,7 +83,7 @@ Sio1AAAA</functionBody>
 					ArgType: "INTEGER",
 				},
 			},
-			FuncBody: `
+			Body: `
 var ndays = new Date(year, month, 0).getDate();
 
 var weekdays = new Array(7);
@@ -102,9 +103,9 @@ for (d=1; d<=ndays; d++) {
 return [{"1":"Monday"},{"1":"Tuesday"}]`,
 		},
 		{
-			JsFunctionID: "D3E76AA32B644F3AB11707B5B26CAF31",
-			ReturnType:   "NUMERIC",
-			Name:         "Calculates Sinus",
+			ID:         "D3E76AA32B644F3AB11707B5B26CAF31",
+			ReturnType: "NUMERIC",
+			Name:       "Calculates Sinus",
 			Arguments: []*ivr.FuncArgument{
 				{
 					Name:        "angle",
@@ -112,20 +113,20 @@ return [{"1":"Monday"},{"1":"Tuesday"}]`,
 					Description: "Angle (degrees)",
 				},
 			},
-			FuncBody: "",
+			Body: "",
 		},
 	}
 	if len(expected) != len(res) {
 		t.Errorf("\nJSFunsctions length: \n%v \nwas expected, in reality: \n%v", len(expected), len(res))
 		return
 	}
-	if len(utils.StripSpaces(expected[0].FuncBody)) != len(utils.StripSpaces(res[0].FuncBody)) {
-		t.Errorf("\nJSFunsctions length: \n%v \nwas expected, in reality: \n%v", len(utils.StripSpaces(expected[0].FuncBody)), len(utils.StripSpaces(res[0].FuncBody)))
+	if len(utils.StripSpaces(expected[0].Body)) != len(utils.StripSpaces(res[0].Body)) {
+		t.Errorf("\nJSFunsctions length: \n%v \nwas expected, in reality: \n%v", len(utils.StripSpaces(expected[0].Body)), len(utils.StripSpaces(res[0].Body)))
 		return
 	}
 	if expected[0].Name != res[0].Name ||
 		expected[0].ReturnType != res[0].ReturnType ||
-		expected[0].JsFunctionID != res[0].JsFunctionID {
+		expected[0].ID != res[0].ID {
 		t.Errorf("\nJSFunsctions: \n%v \nwas expected, in reality: \n%v", expected[0], res[0])
 		return
 	}

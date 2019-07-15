@@ -85,12 +85,13 @@ func (*CaseModule) transformToAI() string {
 	return ""
 }
 
+//ForeignScriptModule - Struct representing IVR's Foreign Script module
 type ForeignScriptModule struct {
 	module
 	IvrScript        string
 	PassCRM          bool
 	ReturnCRM        bool
-	Parameters       []KeyValueParametrized
+	Parameters       []KeyValue
 	ReturnParameters []KeyValue
 	IsConsistent     bool
 }
@@ -115,12 +116,12 @@ type GetDigitsModule struct {
 	}
 }
 
+//HangupModule - Describes IVR's Hangup module
 type HangupModule struct {
 	module
 	Return2Caller bool
-
-	ErrCode       Parametrized
-	ErrDescr      Parametrized
+	ErrCode       VariableID
+	ErrDescr      VariableID
 	OverwriteDisp bool
 }
 
@@ -222,11 +223,11 @@ type (
 		FetchTimeout                         int
 		StoreNumberOfArrayElementsInVariable bool
 
-		Parameters       []KeyValueParametrized
+		Parameters       []KeyValue
 		ReturnValues     []KeyValue
-		URLParts         []*Parametrized
+		URLParts         []VariableID
 		RequestInfo      RequestInfo
-		Headers          []KeyValueParametrized
+		Headers          []KeyValue
 		RequestBodyType  string
 		SaveStatusCode   bool
 		SaveReasonPhrase bool
@@ -235,7 +236,7 @@ type (
 
 	KeyValue struct {
 		Key   string
-		Value string
+		Value VariableID
 	}
 
 	ResponseInfo struct {
@@ -269,27 +270,9 @@ type (
 		module
 		Exprs []*Expression
 	}
-
 	Expression struct {
-		Lval   string
-		IsFunc bool
-		Rval   Assigner
-	}
-
-	Assigner struct {
-		P *Parametrized
-		F *IvrFuncInvocation
-	}
-
-	IvrFunc struct {
-		Name       string
-		ReturnType string
-		ArgTypes   []string
-	}
-
-	IvrFuncInvocation struct {
-		FuncDef IvrFunc
-		Params  []*Parametrized
+		Lval string
+		Rval FuncInvocation
 	}
 )
 

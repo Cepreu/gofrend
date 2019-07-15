@@ -11,7 +11,7 @@ type xmlIfElseModule struct {
 	s *ivr.IfElseModule
 }
 
-func newIfElseModule(decoder *xml.Decoder) normalizer {
+func newIfElseModule(script *ivr.IVRScript, decoder *xml.Decoder) normalizer {
 	var (
 		pIE      = new(ivr.IfElseModule)
 		inModule = true
@@ -31,7 +31,7 @@ func newIfElseModule(decoder *xml.Decoder) normalizer {
 			if v.Name.Local == "customCondition" {
 				inCustomCondition = true
 			} else if v.Name.Local == "branches" {
-				p := parseBranches(decoder)
+				p := parseBranches(script, decoder)
 				for _, pb := range p {
 					if pb.Name == "IF" {
 						pIE.BranchIf = *pb
@@ -41,7 +41,7 @@ func newIfElseModule(decoder *xml.Decoder) normalizer {
 					}
 				}
 			} else if v.Name.Local == "conditions" {
-				if pCond, err := parseCondition(decoder); err == nil {
+				if pCond, err := parseCondition(script, decoder); err == nil {
 					pIE.BranchIf.Cond.Conditions = append(pIE.BranchIf.Cond.Conditions, pCond)
 				}
 			} else {

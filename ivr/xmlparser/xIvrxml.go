@@ -10,6 +10,7 @@ import (
 )
 
 var xMLPrompts []*MultilingualPrompt
+var xListOfFoundVars []string
 
 //NewIVRScript - Parsing of the getIVRResponse received from Five9 Config web service
 func NewIVRScript(src io.Reader) (*ivr.IVRScript, error) {
@@ -86,7 +87,7 @@ func NewIVRScript(src io.Reader) (*ivr.IVRScript, error) {
 				}
 
 			} else if v.Name.Local == "functions" {
-				s.JSFunctions = newJSFunctions(decoder)
+				s.Functions = newJSFunctions(decoder)
 			}
 		case xml.CharData:
 			if inDomainID {

@@ -3,8 +3,6 @@ package ivr
 import (
 	"fmt"
 	"regexp"
-
-	"github.com/Cepreu/gofrend/utils"
 )
 
 type ValType int
@@ -66,7 +64,6 @@ const (
 // Variable - ivr variable description
 type Variable struct {
 	ID          VariableID
-	Name        string
 	Value       *Value
 	Description string
 	ValType     ValType
@@ -91,7 +88,7 @@ func NewNumericValue(numValue float64) (*Value, error) {
 }
 
 func NewUSCurrencyValue(currValue float64) (*Value, error) {
-	return &Value{ValNumeric, fmt.Sprintf("US$%.2f", currValue)}, nil
+	return &Value{ValCurrency, fmt.Sprintf("US$%.2f", currValue)}, nil
 }
 
 func NewEUCurrencyValue(currValue float64) (*Value, error) {
@@ -127,8 +124,7 @@ func NewVariable(name, descr string, t ValType, val *Value) *Variable {
 		return nil
 	}
 	return &Variable{
-		ID:          VariableID(utils.GenUUIDv4()),
-		Name:        name,
+		ID:          VariableID(name),
 		Description: descr,
 		VarType:     VarUserVariable,
 		ValType:     t,

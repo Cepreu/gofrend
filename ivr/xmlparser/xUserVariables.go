@@ -6,6 +6,7 @@ import (
 	"strconv"
 
 	"github.com/Cepreu/gofrend/ivr"
+	"github.com/Cepreu/gofrend/utils"
 )
 
 func parseVars(s *ivr.IVRScript, decoder *xml.Decoder) (err error) {
@@ -141,7 +142,7 @@ func parseVars(s *ivr.IVRScript, decoder *xml.Decoder) (err error) {
 					val = nil
 				}
 				userVar = ivr.NewVariable(name, description, vtype, val)
-				vs[name] = userVar
+				vs[ivr.VariableID(name)] = userVar
 				if attrs&attrInput == attrInput {
 					s.Input = append(s.Input, userVar.ID)
 				}
@@ -226,4 +227,102 @@ func parseVars(s *ivr.IVRScript, decoder *xml.Decoder) (err error) {
 		}
 	}
 	return err
+}
+
+func addConstantVar(s *ivr.IVRScript, t ivr.ValType, v *ivr.Value) ivr.VariableID {
+	for oldID, oldV := range s.Variables {
+		if oldV.VarType == ivr.VarConstant &&
+			oldV.ValType == t &&
+			oldV.Value.StringValue == v.StringValue {
+			return oldID
+		}
+	}
+	newVariable := &ivr.Variable{
+		ID:      ivr.VariableID(utils.GenUUIDv4()),
+		VarType: ivr.VarConstant,
+		ValType: t,
+		Value:   v,
+	}
+	s.Variables[newVariable.ID] = newVariable
+	return newVariable.ID
+}
+
+func addIntegerConstant(s *ivr.IVRScript, intValue int) (ivr.VariableID, error) {
+	v, err := ivr.NewIntegerValue(intValue)
+	if err != nil {
+		return "", err
+	}
+	return addConstantVar(s, ivr.ValInteger, v), nil
+}
+
+func addIDConstant(s *ivr.IVRScript, intValue int) (ivr.VariableID, error) {
+	v, err := ivr.NewIDValue(intValue)
+	if err != nil {
+		return "", err
+	}
+	return addConstantVar(s, ivr.ValID, v), nil
+}
+
+func addStringConstant(s *ivr.IVRScript, strValue string) (ivr.VariableID, error) {
+	v, err := ivr.NewStringValue(strValue)
+	if err != nil {
+		return "", err
+	}
+	return addConstantVar(s, ivr.ValString, v), nil
+}
+
+func addNumericConstant(s *ivr.IVRScript, numValue float64) (ivr.VariableID, error) {
+	v, err := ivr.NewNumericValue(numValue)
+	if err != nil {
+		return "", err
+	}
+	return addConstantVar(s, ivr.ValNumeric, v), nil
+}
+
+func addUSCurrencyConstant(s *ivr.IVRScript, currValue float64) (ivr.VariableID, error) {
+	v, err := ivr.NewUSCurrencyValue(currValue)
+	if err != nil {
+		return "", err
+	}
+	return addConstantVar(s, ivr.ValCurrency, v), nil
+}
+
+func addEUCurrencyConstant(s *ivr.IVRScript, currValue float64) (ivr.VariableID, error) {
+	v, err := ivr.NewEUCurrencyValue(currValue)
+	if err != nil {
+		return "", err
+	}
+	return addConstantVar(s, ivr.ValCurrencyEuro, v), nil
+}
+
+func addUKCurrencyConstant(s *ivr.IVRScript, currValue float64) (ivr.VariableID, error) {
+	v, err := ivr.NewUKCurrencyValue(currValue)
+	if err != nil {
+		return "", err
+	}
+	return addConstantVar(s, ivr.ValCurrencyPound, v), nil
+}
+
+func addDateConstant(s *ivr.IVRScript, y int, m int, d int) (ivr.VariableID, error) {
+	v, err := ivr.NewDateValue(y, m, d)
+	if err != nil {
+		return "", err
+	}
+	return addConstantVar(s, ivr.ValDate, v), nil
+}
+
+func addTimeConstant(s *ivr.IVRScript, minutes int) (ivr.VariableID, error) {
+	v, err := ivr.NewTimeValue(minutes)
+	if err != nil {
+		return "", err
+	}
+	return addConstantVar(s, ivr.ValTime, v), nil
+}
+
+func addSKeyValueConstant(s *ivr.IVRScript, kv string) (ivr.VariableID, error) {
+	v, err := ivr.NewKeyValue(kv)
+	if err != nil {
+		return "", err
+	}
+	return addConstantVar(s, ivr.ValKVList, v), nil
 }

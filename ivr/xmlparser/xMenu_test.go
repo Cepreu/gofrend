@@ -346,9 +346,11 @@ hS0CAAA=</xml>
 `
 	decoder := xml.NewDecoder(strings.NewReader(xmlData))
 	decoder.CharsetReader = charset.NewReaderLabel
-
-	prompts := make(ivr.ScriptPrompts)
-	res := newMenuModule(decoder, prompts)
+	s := &ivr.IVRScript{
+		Variables: make(ivr.Variables),
+		Prompts:   make(ivr.ScriptPrompts),
+	}
+	res := newMenuModule(s, decoder)
 	if res == nil {
 		t.Fatalf("Menu module wasn't parsed...")
 	}

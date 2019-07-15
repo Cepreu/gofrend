@@ -89,12 +89,15 @@ func TestCase(t *testing.T) {
 	decoder := xml.NewDecoder(strings.NewReader(xmlData))
 	decoder.CharsetReader = charset.NewReaderLabel
 
-	res := newCaseModule(decoder)
+	s := &ivr.IVRScript{
+		Variables: make(ivr.Variables),
+	}
+	res := newCaseModule(s, decoder)
 	if res == nil {
 		t.Fatal("Case module wasn't parsed...")
 	}
 	var mCase = (res.(xmlCaseModule)).m
-	qwerty, _ := ivr.NewStringValue("qwerty")
+	qwerty, _ := addStringConstant(s, "qwerty")
 	var expected = &ivr.CaseModule{
 		Branches: []*ivr.OutputBranch{
 			&ivr.OutputBranch{
@@ -105,8 +108,8 @@ func TestCase(t *testing.T) {
 					Conditions: []*ivr.Condition{
 						{
 							ComparisonType: "EQUALS",
-							RightOperand:   ivr.Parametrized{Value: qwerty},
-							LeftOperand:    ivr.Parametrized{VariableName: "__BUFFER__"},
+							RightOperand:   qwerty,
+							LeftOperand:    "__BUFFER__",
 						},
 					},
 				},
@@ -119,8 +122,8 @@ func TestCase(t *testing.T) {
 					Conditions: []*ivr.Condition{
 						{
 							ComparisonType: "LIKE",
-							RightOperand:   ivr.Parametrized{VariableName: "Contact.city"},
-							LeftOperand:    ivr.Parametrized{VariableName: "__BUFFER__"},
+							RightOperand:   "Contact.city",
+							LeftOperand:    "__BUFFER__",
 						},
 					},
 				},
@@ -133,7 +136,7 @@ func TestCase(t *testing.T) {
 					Conditions: []*ivr.Condition{
 						{
 							ComparisonType: "IS_NULL",
-							LeftOperand:    ivr.Parametrized{VariableName: "__BUFFER__"},
+							LeftOperand:    "__BUFFER__",
 						},
 					},
 				},

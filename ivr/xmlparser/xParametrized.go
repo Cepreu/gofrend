@@ -7,9 +7,18 @@ import (
 	"github.com/Cepreu/gofrend/ivr"
 )
 
-func IsVarSelected(p *ivr.Parametrized) bool { return p.VariableName != "" }
+type parametrized struct {
+	variableName string
+	value        *ivr.Value
+}
 
-func parse(p *ivr.Parametrized, decoder *xml.Decoder) (err error) {
+func (p *parametrized) isVarSelected() bool { return p.variableName != "" }
+
+func isVarSelected(p *parametrized) bool {
+	return p.variableName != ""
+}
+
+func parse(p *parametrized, decoder *xml.Decoder) (err error) {
 	var (
 		immersion                                                  = 1
 		inValue, inID, inVariable, inIsVarSelected                 = false, false, false, false
@@ -79,7 +88,7 @@ func parse(p *ivr.Parametrized, decoder *xml.Decoder) (err error) {
 			} else if inDay {
 				day, err = strconv.Atoi(string(v))
 			} else if inVariable && IsVarSelected {
-				p.VariableName = string(v)
+				p.variableName = string(v)
 			} else if inIsVarSelected {
 				IsVarSelected = string(v) == "true"
 			}
@@ -89,31 +98,31 @@ func parse(p *ivr.Parametrized, decoder *xml.Decoder) (err error) {
 			if v.Name.Local == "isVarSelected" {
 				inIsVarSelected = false
 			} else if v.Name.Local == "integerValue" {
-				p.Value, err = ivr.NewIntegerValue(integerVal)
+				p.value, err = ivr.NewIntegerValue(integerVal)
 				integerVal = 0
 				inIValue = false
 			} else if v.Name.Local == "currencyValue" {
-				p.Value, err = ivr.NewUSCurrencyValue(numericVal)
+				p.value, err = ivr.NewUSCurrencyValue(numericVal)
 				numericVal = 0
 				inCValue = false
 			} else if v.Name.Local == "numericValue" {
-				p.Value, err = ivr.NewNumericValue(numericVal)
+				p.value, err = ivr.NewNumericValue(numericVal)
 				numericVal = 0
 				inNValue = false
 			} else if v.Name.Local == "stringValue" {
-				p.Value, err = ivr.NewStringValue(stringVal)
+				p.value, err = ivr.NewStringValue(stringVal)
 				stringVal = ""
 				inSValue = false
 			} else if v.Name.Local == "dateValue" {
-				p.Value, err = ivr.NewDateValue(year, month, day)
+				p.value, err = ivr.NewDateValue(year, month, day)
 				year, month, day = 0, 0, 0
 				inDValue = false
 			} else if v.Name.Local == "timeValue" {
-				p.Value, err = ivr.NewTimeValue(integerVal)
+				p.value, err = ivr.NewTimeValue(integerVal)
 				integerVal = 0
 				inTValue = false
 			} else if v.Name.Local == "id" {
-				p.Value, err = ivr.NewIDValue(integerVal)
+				p.value, err = ivr.NewIDValue(integerVal)
 				integerVal = 0
 				inID = false
 			} else if v.Name.Local == "value" {
@@ -134,12 +143,12 @@ func parse(p *ivr.Parametrized, decoder *xml.Decoder) (err error) {
 	return err
 }
 
-func parseKeyValueListParmetrized(decoder *xml.Decoder) (p []ivr.KeyValueParametrized, err error) {
+func parseKeyValueListParmetrized(decoder *xml.Decoder, script *ivr.IVRScript) (p []ivr.KeyValue, err error) {
 	var (
 		immersion      = 1
 		inEntry, inKey = false, false
 		key            string
-		value          *ivr.Parametrized
+		value          ivr.VariableID
 	)
 
 	for immersion > 0 {
@@ -156,9 +165,10 @@ func parseKeyValueListParmetrized(decoder *xml.Decoder) (p []ivr.KeyValueParamet
 			} else if v.Name.Local == "key" && inEntry {
 				inKey = true
 			} else if v.Name.Local == "value" && inEntry {
-				value = new(ivr.Parametrized)
-				parse(value, decoder)
+				pv := new(parametrized)
+				parse(pv, decoder)
 				immersion--
+				value = toID(script, pv)
 			}
 
 		case xml.CharData:
@@ -170,7 +180,7 @@ func parseKeyValueListParmetrized(decoder *xml.Decoder) (p []ivr.KeyValueParamet
 			immersion--
 			if v.Name.Local == "entry" {
 				inEntry = false
-				p = append(p, ivr.KeyValueParametrized{key, value})
+				p = append(p, ivr.KeyValue{Key: key, Value: value})
 			} else if v.Name.Local == "key" && inEntry {
 				inKey = false
 			}
@@ -178,4 +188,11 @@ func parseKeyValueListParmetrized(decoder *xml.Decoder) (p []ivr.KeyValueParamet
 	}
 
 	return p, nil
+}
+
+func toID(s *ivr.IVRScript, pv *parametrized) ivr.VariableID {
+	if isVarSelected(pv) {
+		return ivr.VariableID(pv.variableName)
+	}
+	return addConstantVar(s, pv.value.VType, pv.value)
 }

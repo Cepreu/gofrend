@@ -12,13 +12,13 @@ type (
 		Input           []VariableID
 		Output          []VariableID
 		Languages       []Language
-		JSFunctions     []*JsFunction
+		Functions       []*Function
 		Menus           []ModuleID
 	}
 
 	ScriptPrompts map[PromptID]prompt
 
-	Variables map[string]*Variable
+	Variables map[VariableID]*Variable
 
 	Languages struct {
 		Langs []Language `xml:"languages"`
@@ -28,17 +28,35 @@ type (
 		TtsLang  LangCode `xml:"ttsLanguage"`
 		TtsVoice string   `xml:"ttsVoice"`
 	}
-	JsFunction struct {
-		JsFunctionID string
-		Description  string
-		ReturnType   string //varType
-		Name         string
-		Arguments    []*FuncArgument
-		FuncBody     string
+
+	//FuncID - ID of the function
+	FuncID string
+	//FuncType - Type of the function (build-in, javascript, or copy operator)
+	FuncType int
+	Function struct {
+		ID          FuncID
+		Type        FuncType
+		Description string
+		ReturnType  string //varType
+		Name        string
+		Arguments   []*FuncArgument
+		Body        string
 	}
 	FuncArgument struct {
 		Name        string
 		Description string
 		ArgType     string
 	}
+
+	FuncInvocation struct {
+		FuncDef FuncID
+		Params  []VariableID
+	}
+)
+
+const (
+	FuncUndefined FuncType = iota
+	FuncStandard
+	FuncJS
+	FuncCopy
 )

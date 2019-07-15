@@ -53,7 +53,7 @@ F:
 			case cIncomingCall, cStartOnHangup:
 				m = newIncomingCallModule(decoder)
 			case cHangup:
-				m = newHangupModule(decoder)
+				m = newHangupModule(s, decoder)
 			case cPlay:
 				m = newPlayModule(decoder, s.Prompts)
 			case cInput:
@@ -61,18 +61,20 @@ F:
 			case cVoiceInput:
 				m = newVoiceInput(decoder, s.Prompts)
 			case cMenu:
-				m = newMenuModule(decoder, s.Prompts)
+				m = newMenuModule(s, decoder)
 				//				s.Menus = append(s.Menus, m.GetID())
 			case cGetDigits:
 				m = newGetDigitsModule(decoder, s.Prompts)
 			case cQuery:
-				m = newQueryModule(decoder, s.Prompts)
+				m = newQueryModule(decoder, s)
 			case cSetVariables:
-				m = newSetVariablesModule(decoder)
+				m = newSetVariablesModule(decoder, s)
 			case cIfElse:
-				m = newIfElseModule(decoder)
+				m = newIfElseModule(s, decoder)
+			case cCase:
+				m = newCaseModule(s, decoder)
 			case cForeignScript:
-				m = newForeignScriptModule(decoder)
+				m = newForeignScriptModule(decoder, s)
 			default:
 				fmt.Printf("Warning: unsupported module '%s'\n", v.Name.Local)
 				//				m = newUnknownModule(decoder, &v)
