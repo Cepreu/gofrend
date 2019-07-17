@@ -15,7 +15,7 @@ import (
 	dialogflowpb "google.golang.org/genproto/googleapis/cloud/dialogflow/v2"
 )
 
-// Prepare creates necessary DialogflowIntents and uploads XML to gcp storage
+// Prepare creates necessary Dialogflow intents and uploads XML to gcp storage
 func Prepare(data []byte) error {
 	err := cloud.UploadXML(data)
 	if err != nil {
