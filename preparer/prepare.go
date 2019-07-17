@@ -23,6 +23,7 @@ func Prepare(data []byte) error {
 	}
 
 	script, err := xmlparser.NewIVRScript(bytes.NewReader(data))
+	utils.PrettyLog(script)
 	if err != nil {
 		return err
 	}
