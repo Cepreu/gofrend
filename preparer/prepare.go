@@ -15,23 +15,9 @@ import (
 	dialogflowpb "google.golang.org/genproto/googleapis/cloud/dialogflow/v2"
 )
 
-// PrepareFile creates necessary DialogFlow intents and uploads XML to gcp storage
-func PrepareFile(filename string) error {
-	config, err := getConfig(configFileName)
-	if err != nil {
-		return err
-	}
-	err = cloud.UpdateConfig(config)
-	if err != nil {
-		return err
-	}
-
-	data, err := ioutil.ReadFile(filename)
-	if err != nil {
-		return err
-	}
-
-	err = cloud.UploadXML(data)
+// Prepare creates necessary DialogflowIntents and uploads XML to gcp storage
+func Prepare(data []byte) error {
+	err := cloud.UploadXML(data)
 	if err != nil {
 		return err
 	}
@@ -44,6 +30,15 @@ func PrepareFile(filename string) error {
 	scriptHash := utils.HashToString(data)
 
 	return prepareIntents(script, scriptHash)
+}
+
+// PrepareFile creates necessary DialogFlow intents and uploads XML to gcp storage
+func PrepareFile(filename string) error {
+	data, err := ioutil.ReadFile(filename)
+	if err != nil {
+		return err
+	}
+	return Prepare(data)
 }
 
 func prepareIntents(script *ivr.IVRScript, scriptHash string) error {
