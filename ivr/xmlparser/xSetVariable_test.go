@@ -7,7 +7,6 @@ import (
 	"testing"
 
 	"github.com/Cepreu/gofrend/ivr"
-	"github.com/Cepreu/gofrend/ivr/vars"
 	"golang.org/x/net/html/charset"
 )
 
@@ -129,94 +128,60 @@ func TestSetVariables(t *testing.T) {
 	decoder.CharsetReader = charset.NewReaderLabel
 	_, _ = decoder.Token()
 
-	res := newSetVariablesModule(decoder)
+	s := &ivr.IVRScript{
+		Variables: make(ivr.Variables),
+	}
+	res := newSetVariablesModule(decoder, s)
 	if res == nil {
 		t.Fatal("nSetVariables module wasn't parsed...")
 	}
 	var mhu = (res.(xmlSetVariablesModule)).m
+	costr, _ := addStringConstant(s, "CONST STRING")
+	mln, _ := addNumericConstant(s, 1000000)
+	nov, _ := addDateConstant(s, 2019, 1, 11)
+	fiveninenine, _ := addUSCurrencyConstant(s, 599.99)
+	onetwo, _ := addTimeConstant(s, 1267)
+	threethousand, _ := addUSCurrencyConstant(s, 3000)
+
 	var expected = ivr.SetVariableModule{
 		Exprs: []*ivr.Expression{
 			{
 				Lval: "__BUFFER__",
-				Rval: ivr.Assigner{
-					P: &ivr.Parametrized{Value: vars.NewString("CONST STRING", 0)},
-				},
+				Rval: ivr.FuncInvocation{FuncDef: "__COPY__", Params: []ivr.VariableID{costr}},
 			},
-
 			{
 				Lval: "mystring",
-				Rval: ivr.Assigner{
-					P: &ivr.Parametrized{
-						VariableName: "__BUFFER__",
-					},
-				},
+				Rval: ivr.FuncInvocation{FuncDef: "__COPY__", Params: []ivr.VariableID{"__BUFFER__"}},
 			},
-
 			{
 				Lval: "myint",
-				Rval: ivr.Assigner{
-					P: &ivr.Parametrized{Value: vars.NewNumeric(1000000)},
-				},
+				Rval: ivr.FuncInvocation{FuncDef: "__COPY__", Params: []ivr.VariableID{mln}},
 			},
-
 			{
-				Lval:   "__BUFFER__",
-				IsFunc: true,
-				Rval: ivr.Assigner{
-					F: &ivr.IvrFuncInvocation{
-						FuncDef: ivr.IvrFunc{
-							Name:       "TOSTRING",
-							ReturnType: "STRING",
-							ArgTypes:   []string{"INTEGER"},
-						},
-						Params: []*ivr.Parametrized{{VariableName: "Contact.order_id"}},
-					},
-				},
+				Lval: "__BUFFER__",
+				Rval: ivr.FuncInvocation{FuncDef: "STRING#TOSTRING#INTEGER",
+					Params: []ivr.VariableID{"Contact.order_id"}},
 			},
-
 			{
 				Lval: "mydate",
-				Rval: ivr.Assigner{
-					P: &ivr.Parametrized{Value: vars.NewDate(2019, 1, 11)},
-				},
+				Rval: ivr.FuncInvocation{FuncDef: "__COPY__", Params: []ivr.VariableID{nov}},
 			},
-
 			{
 				Lval: "mycurr_dlr",
-				Rval: ivr.Assigner{
-					P: &ivr.Parametrized{Value: vars.NewCurrency(599.99)},
-				},
+				Rval: ivr.FuncInvocation{FuncDef: "__COPY__", Params: []ivr.VariableID{fiveninenine}},
 			},
-
 			{
-				Lval:   "mycurr_dlr",
-				IsFunc: true,
-				Rval: ivr.Assigner{
-					F: &ivr.IvrFuncInvocation{
-						FuncDef: ivr.IvrFunc{
-							Name:       "SUM",
-							ReturnType: "CURRENCY",
-							ArgTypes:   []string{"CURRENCY", "CURRENCY"},
-						},
-						Params: []*ivr.Parametrized{
-							{VariableName: "mycurr_dlr"},
-							{Value: vars.NewCurrency(3000)},
-						},
-					},
-				},
+				Lval: "mycurr_dlr",
+				Rval: ivr.FuncInvocation{FuncDef: "CURRENCY#SUM#CURRENCY#CURRENCY",
+					Params: []ivr.VariableID{"mycurr_dlr", threethousand}},
 			},
 			{
 				Lval: "mytime",
-				Rval: ivr.Assigner{
-					P: &ivr.Parametrized{Value: vars.NewTime(1267)},
-				},
+				Rval: ivr.FuncInvocation{FuncDef: "__COPY__", Params: []ivr.VariableID{onetwo}},
 			},
-
 			{
 				Lval: "mydate",
-				Rval: ivr.Assigner{
-					P: &ivr.Parametrized{VariableName: "__DATE__"},
-				},
+				Rval: ivr.FuncInvocation{FuncDef: "__COPY__", Params: []ivr.VariableID{"__DATE__"}},
 			},
 		},
 	}
@@ -230,5 +195,4 @@ func TestSetVariables(t *testing.T) {
 	if err1 != nil || err2 != nil || string(exp) != string(setv) {
 		t.Errorf("\nSetVariables module: \n%s \nwas expected, in reality: \n%s", string(exp), string(setv))
 	}
-
 }

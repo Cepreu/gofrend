@@ -11,7 +11,7 @@ type xmlForeignScriptModule struct {
 	s *ivr.ForeignScriptModule
 }
 
-func newForeignScriptModule(decoder *xml.Decoder) normalizer {
+func newForeignScriptModule(decoder *xml.Decoder, script *ivr.IVRScript) normalizer {
 	var (
 		inModule       = true
 		pFSM           = new(ivr.ForeignScriptModule)
@@ -41,7 +41,7 @@ func newForeignScriptModule(decoder *xml.Decoder) normalizer {
 			} else if v.Name.Local == "returnCRM" {
 				inReturnCRM = true
 			} else if v.Name.Local == "params" {
-				pFSM.Parameters, _ = parseKeyValueListParmetrized(decoder)
+				pFSM.Parameters, _ = parseKeyValueListParmetrized(decoder, script)
 			} else if v.Name.Local == "returnVals" {
 				pFSM.ReturnParameters, _ = parseKeyValueList(decoder)
 			} else if v.Name.Local == "isConsistent" {

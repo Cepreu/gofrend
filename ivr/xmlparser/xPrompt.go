@@ -39,6 +39,7 @@ const defaultLang = "Default"
 // 	return
 // }
 
+//MultilingualPrompt - set of ML prompts
 type MultilingualPrompt struct {
 	ID          string
 	Name        string
@@ -49,10 +50,12 @@ type MultilingualPrompt struct {
 	//	IsPersistent bool       `xml:"isPersistent"`
 }
 
+//XMultiLanguagesPromptItem - a single multilingual prompt
 type XMultiLanguagesPromptItem struct {
 	MLPromptID string `xml:"prompt"`
 }
 
+//TransformToAI - generates DialogFlow prompts
 func (t XMultiLanguagesPromptItem) TransformToAI() string { return string(t.MLPromptID) }
 
 func newModulePrompts(c int, p []ivr.PromptID) (ivr.ModulePrompts, error) {

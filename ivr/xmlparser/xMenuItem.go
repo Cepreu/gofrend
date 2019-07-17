@@ -247,8 +247,9 @@ F:
 	case "ML_ITEM":
 		itemPromptID = choice.cMlItem
 	}
-	pItem.Prompt = ivr.AttemptPrompts{[]ivr.LanguagePrompts{
-		{PrArr: []ivr.PromptID{itemPromptID}, Language: defaultLang},
-	}, 1}
+	pItem.Prompt = ivr.AttemptPrompts{
+		LangPrArr: []ivr.LanguagePrompts{
+			{PrArr: []ivr.PromptID{itemPromptID}, Language: defaultLang},
+		}, Count: 1}
 	return pItem
 }

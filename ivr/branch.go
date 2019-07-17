@@ -9,14 +9,13 @@ type OutputBranch struct {
 
 // ComplexCondition - a combinedcondition
 type ComplexCondition struct {
-	CustomCondition   string
-	ConditionGrouping groupingType
-	Conditions        []*Condition
+	CustomCondition string
+	Conditions      []*Condition
 }
 
 //Condition - ifElse module's condition
 type Condition struct {
 	ComparisonType string
-	RightOperand   Parametrized
-	LeftOperand    Parametrized
+	RightOperand   VariableID
+	LeftOperand    VariableID
 }

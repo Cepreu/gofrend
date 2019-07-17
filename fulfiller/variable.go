@@ -1,50 +1,26 @@
 package fulfiller
 
-import "github.com/Cepreu/gofrend/ivr/vars"
+import "github.com/Cepreu/gofrend/ivr"
 
 // StorageVariable is an un-interfaced struct for storing variables between sessions
 type StorageVariable struct {
-	Type         string
-	Name         string
-	IntegerValue *vars.Integer
-	StringValue  *vars.String
+	Type        string
+	Name        string
+	StringValue string
 }
 
-func makeStorageVar(val vars.Value) *StorageVariable {
-	switch v := val.(type) {
-	case *vars.Integer:
-		return &StorageVariable{
-			Type:         "Integer",
-			IntegerValue: v,
-		}
-	case *vars.String:
-		return &StorageVariable{
-			Type:        "String",
-			StringValue: v,
-		}
-	default:
-		panic("Not implemented")
+func makeStorageVar(v ivr.Variable) *StorageVariable {
+	return &StorageVariable{
+		Name:        string(v.ID),
+		Type:        v.ValType.String(),
+		StringValue: v.Value.StringValue,
 	}
 }
 
-func (storageVar *StorageVariable) value() vars.Value {
-	switch storageVar.Type {
-	case "Integer":
-		return storageVar.IntegerValue
-	case "String":
-		return storageVar.StringValue
-	default:
-		panic("Not implemented")
-	}
+func (storageVar *StorageVariable) value() string {
+	return storageVar.StringValue
 }
 
 func (storageVar *StorageVariable) valueAsString() string {
-	switch storageVar.Type {
-	case "Integer":
-		return string(storageVar.IntegerValue.Value)
-	case "String":
-		return storageVar.StringValue.Value
-	default:
-		panic("Not implemented")
-	}
+	return storageVar.StringValue
 }

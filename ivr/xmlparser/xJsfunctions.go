@@ -9,10 +9,10 @@ import (
 	"github.com/Cepreu/gofrend/utils"
 )
 
-func newJSFunctions(decoder *xml.Decoder) []*ivr.JsFunction {
+func newJSFunctions(decoder *xml.Decoder) []*ivr.Function {
 	var (
 		inFunctions = true
-		fa          = []*ivr.JsFunction{}
+		fa          = []*ivr.Function{}
 	)
 	for inFunctions {
 		t, err := decoder.Token()
@@ -35,10 +35,10 @@ func newJSFunctions(decoder *xml.Decoder) []*ivr.JsFunction {
 	return fa
 }
 
-func parseJSFunction(decoder *xml.Decoder) *ivr.JsFunction {
+func parseJSFunction(decoder *xml.Decoder) *ivr.Function {
 	var (
 		inEntry = true
-		f       ivr.JsFunction
+		f       = ivr.Function{Type: ivr.FuncJS}
 
 		inJSFunctionID = false
 		inDescription  = false
@@ -77,7 +77,7 @@ func parseJSFunction(decoder *xml.Decoder) *ivr.JsFunction {
 			if inName {
 				f.Name = string(v)
 			} else if inJSFunctionID {
-				f.JsFunctionID = string(v)
+				f.ID = ivr.FuncID(v)
 			} else if inReturnType {
 				f.ReturnType = string(v)
 			} else if inDescription {
@@ -85,7 +85,7 @@ func parseJSFunction(decoder *xml.Decoder) *ivr.JsFunction {
 			} else if inFunctionBody {
 				b, err := utils.CmdUnzip(string(v))
 				if err == nil {
-					f.FuncBody = b
+					f.Body = b
 				}
 			}
 

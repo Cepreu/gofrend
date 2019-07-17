@@ -2,21 +2,33 @@ package xmlparser
 
 import (
 	"encoding/xml"
+	"strconv"
 
 	"github.com/Cepreu/gofrend/ivr"
-	"github.com/Cepreu/gofrend/ivr/vars"
 )
 
-func IsVarSelected(p *ivr.Parametrized) bool { return p.VariableName != "" }
+type parametrized struct {
+	variableName string
+	value        *ivr.Value
+}
 
-func parse(p *ivr.Parametrized, decoder *xml.Decoder) (err error) {
+func (p *parametrized) isVarSelected() bool { return p.variableName != "" }
+
+func isVarSelected(p *parametrized) bool {
+	return p.variableName != ""
+}
+
+func parse(p *parametrized, decoder *xml.Decoder) (err error) {
 	var (
-		immersion                                  = 1
-		inValue, inID, inVariable, inIsVarSelected = false, false, false, false
-		inYear, inMonth, inDay, inMinutes          = false, false, false, false
-		IsVarSelected                              = false
-
-		val vars.Value
+		immersion                                                  = 1
+		inValue, inID, inVariable, inIsVarSelected                 = false, false, false, false
+		inYear, inMonth, inDay, inMinutes                          = false, false, false, false
+		IsVarSelected                                              = false
+		inIValue, inCValue, inNValue, inSValue, inDValue, inTValue = false, false, false, false, false, false
+		numericVal                                                 float64
+		integerVal                                                 int
+		stringVal                                                  string
+		day, month, year                                           int
 	)
 	for immersion > 0 {
 		t, err := decoder.Token()
@@ -30,17 +42,17 @@ func parse(p *ivr.Parametrized, decoder *xml.Decoder) (err error) {
 			if v.Name.Local == "isVarSelected" {
 				inIsVarSelected = true
 			} else if v.Name.Local == "integerValue" {
-				val = new(vars.Integer)
+				inIValue = true
 			} else if v.Name.Local == "currencyValue" {
-				val = new(vars.Currency)
+				inCValue = true
 			} else if v.Name.Local == "numericValue" {
-				val = new(vars.Numeric)
+				inNValue = true
 			} else if v.Name.Local == "stringValue" {
-				val = new(vars.String)
+				inSValue = true
 			} else if v.Name.Local == "dateValue" {
-				val = new(vars.Date)
+				inDValue = true
 			} else if v.Name.Local == "timeValue" {
-				val = new(vars.Time)
+				inTValue = true
 			} else if v.Name.Local == "value" {
 				inValue = true
 			} else if v.Name.Local == "id" {
@@ -58,19 +70,25 @@ func parse(p *ivr.Parametrized, decoder *xml.Decoder) (err error) {
 			}
 		case xml.CharData:
 			if inValue {
-				val.SetValue("value", string(v))
+				if inIValue {
+					integerVal, err = strconv.Atoi(string(v))
+				} else if inCValue || inNValue {
+					numericVal, err = strconv.ParseFloat(string(v), 64)
+				} else if inSValue {
+					stringVal = string(v)
+				}
+			} else if inTValue && inMinutes {
+				integerVal, err = strconv.Atoi(string(v))
 			} else if inID {
-				val.SetValue("id", string(v))
-			} else if inYear {
-				val.SetValue("year", string(v))
-			} else if inMonth {
-				val.SetValue("month", string(v))
+				integerVal, err = strconv.Atoi(string(v))
+			} else if inYear && inDValue {
+				year, err = strconv.Atoi(string(v))
+			} else if inMonth && inDValue {
+				month, err = strconv.Atoi(string(v))
 			} else if inDay {
-				val.SetValue("day", string(v))
-			} else if inMinutes {
-				val.SetValue("minutes", string(v))
+				day, err = strconv.Atoi(string(v))
 			} else if inVariable && IsVarSelected {
-				p.VariableName = string(v)
+				p.variableName = string(v)
 			} else if inIsVarSelected {
 				IsVarSelected = string(v) == "true"
 			}
@@ -79,10 +97,36 @@ func parse(p *ivr.Parametrized, decoder *xml.Decoder) (err error) {
 			immersion--
 			if v.Name.Local == "isVarSelected" {
 				inIsVarSelected = false
+			} else if v.Name.Local == "integerValue" {
+				p.value, err = ivr.NewIntegerValue(integerVal)
+				integerVal = 0
+				inIValue = false
+			} else if v.Name.Local == "currencyValue" {
+				p.value, err = ivr.NewUSCurrencyValue(numericVal)
+				numericVal = 0
+				inCValue = false
+			} else if v.Name.Local == "numericValue" {
+				p.value, err = ivr.NewNumericValue(numericVal)
+				numericVal = 0
+				inNValue = false
+			} else if v.Name.Local == "stringValue" {
+				p.value, err = ivr.NewStringValue(stringVal)
+				stringVal = ""
+				inSValue = false
+			} else if v.Name.Local == "dateValue" {
+				p.value, err = ivr.NewDateValue(year, month, day)
+				year, month, day = 0, 0, 0
+				inDValue = false
+			} else if v.Name.Local == "timeValue" {
+				p.value, err = ivr.NewTimeValue(integerVal)
+				integerVal = 0
+				inTValue = false
+			} else if v.Name.Local == "id" {
+				p.value, err = ivr.NewIDValue(integerVal)
+				integerVal = 0
+				inID = false
 			} else if v.Name.Local == "value" {
 				inValue = false
-			} else if v.Name.Local == "id" {
-				inID = false
 			} else if v.Name.Local == "year" {
 				inYear = false
 			} else if v.Name.Local == "month" {
@@ -96,18 +140,15 @@ func parse(p *ivr.Parametrized, decoder *xml.Decoder) (err error) {
 			}
 		}
 	}
-	if !IsVarSelected {
-		p.Value = val
-	}
 	return err
 }
 
-func parseKeyValueListParmetrized(decoder *xml.Decoder) (p []ivr.KeyValueParametrized, err error) {
+func parseKeyValueListParmetrized(decoder *xml.Decoder, script *ivr.IVRScript) (p []ivr.KeyValue, err error) {
 	var (
 		immersion      = 1
 		inEntry, inKey = false, false
 		key            string
-		value          *ivr.Parametrized
+		value          ivr.VariableID
 	)
 
 	for immersion > 0 {
@@ -124,9 +165,10 @@ func parseKeyValueListParmetrized(decoder *xml.Decoder) (p []ivr.KeyValueParamet
 			} else if v.Name.Local == "key" && inEntry {
 				inKey = true
 			} else if v.Name.Local == "value" && inEntry {
-				value = new(ivr.Parametrized)
-				parse(value, decoder)
+				pv := new(parametrized)
+				parse(pv, decoder)
 				immersion--
+				value = toID(script, pv)
 			}
 
 		case xml.CharData:
@@ -138,7 +180,7 @@ func parseKeyValueListParmetrized(decoder *xml.Decoder) (p []ivr.KeyValueParamet
 			immersion--
 			if v.Name.Local == "entry" {
 				inEntry = false
-				p = append(p, ivr.KeyValueParametrized{key, value})
+				p = append(p, ivr.KeyValue{Key: key, Value: value})
 			} else if v.Name.Local == "key" && inEntry {
 				inKey = false
 			}
@@ -146,4 +188,11 @@ func parseKeyValueListParmetrized(decoder *xml.Decoder) (p []ivr.KeyValueParamet
 	}
 
 	return p, nil
+}
+
+func toID(s *ivr.IVRScript, pv *parametrized) ivr.VariableID {
+	if isVarSelected(pv) {
+		return ivr.VariableID(pv.variableName)
+	}
+	return addConstantVar(s, pv.value.VType, pv.value)
 }

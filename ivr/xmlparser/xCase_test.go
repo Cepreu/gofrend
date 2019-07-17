@@ -7,7 +7,6 @@ import (
 	"testing"
 
 	"github.com/Cepreu/gofrend/ivr"
-	"github.com/Cepreu/gofrend/ivr/vars"
 	"golang.org/x/net/html/charset"
 )
 
@@ -90,52 +89,59 @@ func TestCase(t *testing.T) {
 	decoder := xml.NewDecoder(strings.NewReader(xmlData))
 	decoder.CharsetReader = charset.NewReaderLabel
 
-	res := newCaseModule(decoder)
+	s := &ivr.IVRScript{
+		Variables: make(ivr.Variables),
+	}
+	res := newCaseModule(s, decoder)
 	if res == nil {
 		t.Fatal("Case module wasn't parsed...")
 	}
 	var mCase = (res.(xmlCaseModule)).m
+	qwerty, _ := addStringConstant(s, "qwerty")
 	var expected = &ivr.CaseModule{
 		Branches: []*ivr.OutputBranch{
-			&ivr.OutputBranch{"bA", "D7F8916C13384EE08A6109F54109307E",
-				&ivr.ComplexCondition{
-					CustomCondition:   "1",
-					ConditionGrouping: "CUSTOM",
+			&ivr.OutputBranch{
+				Name:       "bA",
+				Descendant: "D7F8916C13384EE08A6109F54109307E",
+				Cond: &ivr.ComplexCondition{
+					CustomCondition: "1",
 					Conditions: []*ivr.Condition{
 						{
 							ComparisonType: "EQUALS",
-							RightOperand:   ivr.Parametrized{Value: vars.NewString("qwerty", 0)},
-							LeftOperand:    ivr.Parametrized{VariableName: "__BUFFER__"},
+							RightOperand:   qwerty,
+							LeftOperand:    "__BUFFER__",
 						},
 					},
 				},
 			},
-			&ivr.OutputBranch{"bB", "D7F8916C13384EE08A6109F54109307E",
-				&ivr.ComplexCondition{
-					CustomCondition:   "1",
-					ConditionGrouping: "CUSTOM",
+			&ivr.OutputBranch{
+				Name:       "bB",
+				Descendant: "D7F8916C13384EE08A6109F54109307E",
+				Cond: &ivr.ComplexCondition{
+					CustomCondition: "1",
 					Conditions: []*ivr.Condition{
 						{
 							ComparisonType: "LIKE",
-							RightOperand:   ivr.Parametrized{VariableName: "Contact.city"},
-							LeftOperand:    ivr.Parametrized{VariableName: "__BUFFER__"},
+							RightOperand:   "Contact.city",
+							LeftOperand:    "__BUFFER__",
 						},
 					},
 				},
 			},
-			&ivr.OutputBranch{"bC", "D7F8916C13384EE08A6109F54109307E",
-				&ivr.ComplexCondition{
-					CustomCondition:   "1",
-					ConditionGrouping: "CUSTOM",
+			&ivr.OutputBranch{
+				Name:       "bC",
+				Descendant: "D7F8916C13384EE08A6109F54109307E",
+				Cond: &ivr.ComplexCondition{
+					CustomCondition: "1",
 					Conditions: []*ivr.Condition{
 						{
 							ComparisonType: "IS_NULL",
-							LeftOperand:    ivr.Parametrized{VariableName: "__BUFFER__"},
+							LeftOperand:    "__BUFFER__",
 						},
 					},
 				},
 			},
-			&ivr.OutputBranch{"No Match", "D7F8916C13384EE08A6109F54109307E", nil},
+			&ivr.OutputBranch{Name: "No Match", Descendant: "D7F8916C13384EE08A6109F54109307E", Cond: nil},
 		},
 	}
 	expected.SetGeneralInfo("Case3", "D2CC05B0F6FC44F29B04C1C9E42DF732",

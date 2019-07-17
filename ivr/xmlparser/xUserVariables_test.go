@@ -7,8 +7,6 @@ import (
 	"testing"
 
 	"github.com/Cepreu/gofrend/ivr"
-	"github.com/Cepreu/gofrend/ivr/vars"
-
 	"golang.org/x/net/html/charset"
 )
 
@@ -94,64 +92,59 @@ func TestUserVariables(t *testing.T) {
 	decoder := xml.NewDecoder(strings.NewReader(xmlData))
 	decoder.CharsetReader = charset.NewReaderLabel
 
-	res := make(ivr.Variables)
+	res := &ivr.IVRScript{
+		Variables: make(ivr.Variables),
+	}
 	parseVars(res, decoder)
 
-	if len(res) != 6 {
-		t.Errorf("ForeignScript module wasn't parsed...")
+	if len(res.Variables) != 6 {
+		t.Errorf("UserVariables weren't parsed...")
 		return
 	}
 
 	//	exp := make(map[string]*variables)
 
-	for _, vVar := range res {
-		switch vVal := vVar.GetValue().(type) {
-		case *vars.Time:
-			vExp := vars.NewVariable("var_time", "time var", 0, false)
-			vExp.SetValue(vars.NewTime(60))
-			if false == reflect.DeepEqual(vVar.GetValue(), vExp.GetValue()) {
+	for _, vVar := range res.Variables {
+		switch vVar.ValType {
+		case ivr.ValTime:
+			val, _ := ivr.NewTimeValue(60)
+			vExp := ivr.NewVariable("var_time", "time var", vVar.ValType, val)
+			if false == reflect.DeepEqual(vVar, vExp) {
 				t.Errorf("\nTimeVariables: \n%v \nwas expected, in reality: \n%v", vExp, vVar)
 			}
-		case *vars.Date:
-			vExp := vars.NewVariable("var_date", "date var", 0, false)
-			vExp.SetValue(vars.NewDate(2019, 6, 7))
-			if false == reflect.DeepEqual(vVar.GetValue(), vExp.GetValue()) {
+		case ivr.ValDate:
+			val, _ := ivr.NewDateValue(2019, 6, 7)
+			vExp := ivr.NewVariable("var_date", "date var", vVar.ValType, val)
+
+			if false == reflect.DeepEqual(vVar, vExp) {
 				t.Errorf("\nDateVariables: \n%v \nwas expected, in reality: \n%v", vExp, vVar)
 			}
-		case *vars.Integer:
-			vExp := vars.NewVariable("var_int", "integer var", 0, false)
-			vExp.SetValue(vars.NewInteger(120))
-			if vVal.String() != vExp.GetValue().String() {
+		case ivr.ValInteger:
+			val, _ := ivr.NewIntegerValue(120)
+			vExp := ivr.NewVariable("var_int", "integer var", vVar.ValType, val)
+			if false == reflect.DeepEqual(vVar, vExp) {
 				t.Errorf("\nIntegerVariables: \n%v \nwas expected, in reality: \n%v", vExp, vVar)
 			}
-		case *vars.Numeric:
-			vExp := vars.NewVariable("var_num", "numeric var", 128, false)
-			vExp.SetValue(vars.NewNumeric(3.14))
-			if vVal.String() != vExp.GetValue().String() {
+		case ivr.ValNumeric:
+			val, _ := ivr.NewNumericValue(3.14)
+			vExp := ivr.NewVariable("var_num", "numeric var", vVar.ValType, val)
+			if false == reflect.DeepEqual(vVar, vExp) {
 				t.Errorf("\nNumericVariables: \n%v \nwas expected, in reality: \n%v", vExp, vVar)
 			}
-		case *vars.Currency:
-			vExp := vars.NewVariable("var_currency", "currency evro", 128, false)
-			vExp.SetValue(vars.NewCurrency(100.50))
-			if vVal.String() != vExp.GetValue().String() {
+		case ivr.ValCurrency:
+			val, _ := ivr.NewUSCurrencyValue(100.50)
+			vExp := ivr.NewVariable("var_currency", "currency evro", vVar.ValType, val)
+			if false == reflect.DeepEqual(vVar, vExp) {
 				t.Errorf("\nCurrencyVariables: \n%v \nwas expected, in reality: \n%v", vExp, vVar)
 			}
-		case *vars.KVList:
-			vExp := vars.NewVariable("var_kvlist", "KV list", 128, false)
-			vExp.SetValue(vars.NewKVList(`{"a":"sdfg","q":"werty"}`))
-			if vVal.String() != vExp.GetValue().String() {
+		case ivr.ValKVList:
+			val, _ := ivr.NewKeyValue(`{"a":"sdfg","q":"werty"}`)
+			vExp := ivr.NewVariable("var_kvlist", "KV list", vVar.ValType, val)
+			if false == reflect.DeepEqual(vVar, vExp) {
 				t.Errorf("\nKVListVariables: \n%v \nwas expected, in reality: \n%v", vExp, vVar)
 			}
 		default:
-			vExp := vars.NewVariable("var_int", "integer var", 0, false)
-			vExp.SetValue(vars.NewInteger(120))
-			if false == reflect.DeepEqual(vVar, vExp) ||
-				vVal.String() != vExp.GetValue().String() {
-				t.Errorf("\nVariables: \n%v \nwas expected, in reality: \n%v", reflect.TypeOf(vExp.GetValue()), reflect.TypeOf(vVar.GetValue()))
-				t.Errorf("\nVariables: \n%v \nwas expected, in reality: \n%v", vExp, vVar)
-			}
+			t.Errorf("\nVariables: unknown type: %v", vVar)
 		}
 	}
-
-	// more sanity checking...
 }

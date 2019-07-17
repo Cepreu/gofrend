@@ -346,9 +346,11 @@ hS0CAAA=</xml>
 `
 	decoder := xml.NewDecoder(strings.NewReader(xmlData))
 	decoder.CharsetReader = charset.NewReaderLabel
-
-	prompts := make(ivr.ScriptPrompts)
-	res := newMenuModule(decoder, prompts)
+	s := &ivr.IVRScript{
+		Variables: make(ivr.Variables),
+		Prompts:   make(ivr.ScriptPrompts),
+	}
+	res := newMenuModule(s, decoder)
 	if res == nil {
 		t.Fatalf("Menu module wasn't parsed...")
 	}
@@ -389,10 +391,10 @@ hS0CAAA=</xml>
 			},
 		},
 		Branches: []*ivr.OutputBranch{
-			{"No Match", "C4BA62EF0F3F406A819ADE2CABD1669C", nil},
-			{"apples", "C4BA62EF0F3F406A819ADE2CABD1669C", nil},
-			{"plums", "C4BA62EF0F3F406A819ADE2CABD1669C", nil},
-			{"tutti frutti", "C4BA62EF0F3F406A819ADE2CABD1669C", nil},
+			{Name: "No Match", Descendant: "C4BA62EF0F3F406A819ADE2CABD1669C", Cond: nil},
+			{Name: "apples", Descendant: "C4BA62EF0F3F406A819ADE2CABD1669C", Cond: nil},
+			{Name: "plums", Descendant: "C4BA62EF0F3F406A819ADE2CABD1669C", Cond: nil},
+			{Name: "tutti frutti", Descendant: "C4BA62EF0F3F406A819ADE2CABD1669C", Cond: nil},
 		},
 		Items: []*ivr.MenuItem{
 			{

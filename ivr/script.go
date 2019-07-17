@@ -1,7 +1,5 @@
 package ivr
 
-import "github.com/Cepreu/gofrend/ivr/vars"
-
 type (
 	IVRScript struct {
 		Domain          string
@@ -9,17 +7,18 @@ type (
 		Modules         map[ModuleID]Module
 		ModulesOnHangup map[ModuleID]Module
 		Prompts         ScriptPrompts
-		//		MLPrompts       []*MultilingualPrompt
-		MLChoices   []*MultilanguageMenuChoice
-		Variables   Variables
-		Languages   []Language
-		JSFunctions []*JsFunction
-		Menus       []ModuleID
+		MLChoices       []*MultilanguageMenuChoice
+		Variables       Variables
+		Input           []VariableID
+		Output          []VariableID
+		Languages       []Language
+		Functions       []*Function
+		Menus           []ModuleID
 	}
 
 	ScriptPrompts map[PromptID]prompt
 
-	Variables map[string]*vars.Variable
+	Variables map[VariableID]*Variable
 
 	Languages struct {
 		Langs []Language `xml:"languages"`
@@ -29,17 +28,35 @@ type (
 		TtsLang  LangCode `xml:"ttsLanguage"`
 		TtsVoice string   `xml:"ttsVoice"`
 	}
-	JsFunction struct {
-		JsFunctionID string
-		Description  string
-		ReturnType   string //varType
-		Name         string
-		Arguments    []*FuncArgument
-		FuncBody     string
+
+	//FuncID - ID of the function
+	FuncID string
+	//FuncType - Type of the function (build-in, javascript, or copy operator)
+	FuncType int
+	Function struct {
+		ID          FuncID
+		Type        FuncType
+		Description string
+		ReturnType  string //varType
+		Name        string
+		Arguments   []*FuncArgument
+		Body        string
 	}
 	FuncArgument struct {
 		Name        string
 		Description string
 		ArgType     string
 	}
+
+	FuncInvocation struct {
+		FuncDef FuncID
+		Params  []VariableID
+	}
+)
+
+const (
+	FuncUndefined FuncType = iota
+	FuncStandard
+	FuncJS
+	FuncCopy
 )

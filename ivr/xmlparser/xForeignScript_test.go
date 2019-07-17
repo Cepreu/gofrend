@@ -48,7 +48,11 @@ func TestForeignScript(t *testing.T) {
 	decoder := xml.NewDecoder(strings.NewReader(xmlData))
 	decoder.CharsetReader = charset.NewReaderLabel
 
-	res := newForeignScriptModule(decoder)
+	s := &ivr.IVRScript{
+		Variables: make(ivr.Variables),
+	}
+
+	res := newForeignScriptModule(decoder, s)
 	if res == nil {
 		t.Errorf("ForeignScript module wasn't parsed...")
 		return
@@ -60,12 +64,10 @@ func TestForeignScript(t *testing.T) {
 		IvrScript: "EXAMPLES..Five9..EmailRoutedByRulesEngine",
 		PassCRM:   false,
 		ReturnCRM: false,
-		Parameters: []ivr.KeyValueParametrized{
+		Parameters: []ivr.KeyValue{
 			{
-				Key: "__ExtContactFields__",
-				Value: &ivr.Parametrized{
-					VariableName: "__ExtContactFields__",
-				},
+				Key:   "__ExtContactFields__",
+				Value: "__ExtContactFields__",
 			},
 		},
 		ReturnParameters: []ivr.KeyValue{
@@ -81,6 +83,6 @@ func TestForeignScript(t *testing.T) {
 	setv, err2 := json.MarshalIndent(m, "", "  ")
 
 	if err1 != nil || err2 != nil || string(exp) != string(setv) {
-		t.Errorf("\nMenu module: \n%s \n\nwas expected, in reality: \n\n%s", string(exp), string(setv))
+		t.Errorf("\nForeign module: \n%s \n\nwas expected, in reality: \n\n%s", string(exp), string(setv))
 	}
 }

@@ -1,13 +1,12 @@
 package xmlparser
 
 import (
+	"encoding/json"
 	"encoding/xml"
-	"reflect"
 	"strings"
 	"testing"
 
 	"github.com/Cepreu/gofrend/ivr"
-	"github.com/Cepreu/gofrend/ivr/vars"
 	"golang.org/x/net/html/charset"
 )
 
@@ -48,15 +47,20 @@ func TestHangup(t *testing.T) {
 	decoder := xml.NewDecoder(strings.NewReader(xmlData))
 	decoder.CharsetReader = charset.NewReaderLabel
 
-	res := newHangupModule(decoder)
+	s := &ivr.IVRScript{
+		Variables: make(ivr.Variables),
+	}
+
+	res := newHangupModule(s, decoder)
 	if res == nil {
 		t.Fatal("Hangup module wasn't parsed...")
 	}
-	var mhu = (res.(xmlHangupModule)).s
+	var mHU = (res.(xmlHangupModule)).s
+	hello, _ := addStringConstant(s, "Hello, World!!!")
 	var expected = ivr.HangupModule{
 		Return2Caller: true,
-		ErrCode:       ivr.Parametrized{VariableName: "duration"},
-		ErrDescr:      ivr.Parametrized{Value: vars.NewString("Hello, World!!!", 0)},
+		ErrCode:       "duration",
+		ErrDescr:      hello,
 		OverwriteDisp: true,
 	}
 
@@ -64,8 +68,11 @@ func TestHangup(t *testing.T) {
 		[]ivr.ModuleID{"ED132095BE1E4F47B51DA0BB842C3EEF", "F1E142D8CF27471D8940713A637A1C1D"},
 		"", "", "No Disposition", "false")
 
-	if false == reflect.DeepEqual(&expected, mhu) {
-		t.Errorf("\nHangup module: \n%v \nwas expected, in reality: \n%v", expected, mhu)
+	exp, err1 := json.MarshalIndent(expected, "", "  ")
+	setv, err2 := json.MarshalIndent(mHU, "", "  ")
+
+	if err1 != nil || err2 != nil || string(exp) != string(setv) {
+		t.Errorf("\nHangup module: \n%s \n\nwas expected, in reality: \n\n%s", string(exp), string(setv))
 	}
 
 }

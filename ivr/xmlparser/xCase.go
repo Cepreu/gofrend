@@ -11,7 +11,7 @@ type xmlCaseModule struct {
 	m *ivr.CaseModule
 }
 
-func newCaseModule(decoder *xml.Decoder) normalizer {
+func newCaseModule(script *ivr.IVRScript, decoder *xml.Decoder) normalizer {
 	var (
 		pCase    = new(ivr.CaseModule)
 		inModule = true
@@ -26,7 +26,7 @@ func newCaseModule(decoder *xml.Decoder) normalizer {
 		switch v := t.(type) {
 		case xml.StartElement:
 			if v.Name.Local == "branches" {
-				pCase.Branches = parseBranches(decoder)
+				pCase.Branches = parseBranches(script, decoder)
 			} else {
 				parseGeneralInfo(pCase, decoder, &v)
 			}

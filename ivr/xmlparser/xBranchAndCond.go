@@ -8,7 +8,7 @@ import (
 )
 
 // parseBranches - is used in IfElse, Case, and Menu modules
-func parseBranches(decoder *xml.Decoder) (b []*ivr.OutputBranch) {
+func parseBranches(script *ivr.IVRScript, decoder *xml.Decoder) (b []*ivr.OutputBranch) {
 	var (
 		inName     = false
 		inDesc     = false
@@ -31,11 +31,10 @@ func parseBranches(decoder *xml.Decoder) (b []*ivr.OutputBranch) {
 			} else if v.Name.Local == "desc" {
 				inDesc = true
 			} else if v.Name.Local == "conditions" {
-				if pCond, err := parseCondition(decoder); pCond != nil && err == nil {
+				if pCond, err := parseCondition(script, decoder); pCond != nil && err == nil {
 					pBranch.Cond = &ivr.ComplexCondition{
-						CustomCondition:   "1",
-						ConditionGrouping: "AND",
-						Conditions:        []*ivr.Condition{pCond},
+						CustomCondition: "1",
+						Conditions:      []*ivr.Condition{pCond},
 					}
 				}
 			}
@@ -64,7 +63,7 @@ func parseBranches(decoder *xml.Decoder) (b []*ivr.OutputBranch) {
 }
 
 // parseCondition - is used in IfElse and Case modules
-func parseCondition(decoder *xml.Decoder) (*ivr.Condition, error) {
+func parseCondition(script *ivr.IVRScript, decoder *xml.Decoder) (*ivr.Condition, error) {
 	var (
 		inCondition = true
 		pC          *ivr.Condition
@@ -86,9 +85,13 @@ func parseCondition(decoder *xml.Decoder) (*ivr.Condition, error) {
 			if v.Name.Local == "comparisonType" {
 				inComparisonType = true
 			} else if v.Name.Local == "rightOperand" {
-				parse(&pC.RightOperand, decoder)
+				ro := new(parametrized)
+				parse(ro, decoder)
+				pC.RightOperand = toID(script, ro)
 			} else if v.Name.Local == "leftOperand" {
-				parse(&pC.LeftOperand, decoder)
+				lo := new(parametrized)
+				parse(lo, decoder)
+				pC.LeftOperand = toID(script, lo)
 			}
 
 		case xml.CharData:
