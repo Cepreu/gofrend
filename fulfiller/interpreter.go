@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"regexp"
 	"strconv"
@@ -306,6 +307,7 @@ func conditionPasses(condition *ivr.Condition, script *ivr.IVRScript) (bool, err
 			left, err1 := strconv.Atoi(leftVal.Value)
 			right, err2 := strconv.Atoi(rightVal.Value)
 			if err1 == nil && err2 == nil {
+				log.Printf("Left: %d, Right: %d.", left, right)
 				return left > right, nil
 			}
 		case ivr.ValNumeric:
@@ -321,10 +323,10 @@ func conditionPasses(condition *ivr.Condition, script *ivr.IVRScript) (bool, err
 				return left > right, nil
 			}
 		default:
-			return leftVal.Value >= rightVal.Value, nil
+			return leftVal.Value > rightVal.Value, nil
 		}
 	}
-	return false, fmt.Errorf("Incorrect comparison operands: %v >= %v", leftVal, rightVal)
+	return false, fmt.Errorf("Incorrect comparison operands: %v > %v", leftVal, rightVal)
 }
 
 func (interpreter *Interpreter) processPlay(module *ivr.PlayModule) (ivr.Module, error) {
