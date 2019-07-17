@@ -248,15 +248,19 @@ func (interpreter *Interpreter) processQuery(module *ivr.QueryModule) (ivr.Modul
 }
 
 func (interpreter *Interpreter) processIfElse(module *ivr.IfElseModule) (ivr.Module, error) {
+	log.Printf("Processing if else")
 	var conditionsPass bool
 	conditions := module.BranchIf.Cond.Conditions
 	if module.BranchIf.Cond.CustomCondition == "" { // Parser currently does not populate this field
 		module.BranchIf.Cond.CustomCondition = "ALL"
 	}
+	log.Printf("CustomCondition: %s", module.BranchIf.Cond.CustomCondition)
 	switch module.BranchIf.Cond.CustomCondition {
 	case "ALL":
+		log.Print("CustomCondition is All")
 		conditionsPass = true
 		for _, condition := range conditions {
+			log.Print("Inside condition.")
 			err := populateCondition(interpreter.Session, condition, interpreter.Script)
 			if err != nil {
 				return nil, err
