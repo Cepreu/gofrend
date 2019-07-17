@@ -7,7 +7,6 @@ import (
 	"cloud.google.com/go/datastore"
 	"github.com/Cepreu/gofrend/cloud"
 	"github.com/Cepreu/gofrend/ivr"
-	"github.com/Cepreu/gofrend/ivr/vars"
 	"github.com/Cepreu/gofrend/utils"
 	structpb "github.com/golang/protobuf/ptypes/struct"
 	"google.golang.org/api/option"
@@ -85,14 +84,7 @@ func (session *Session) setParameter(name string, value *structpb.Value) error {
 		utils.PrettyLog(session.Data)
 		return fmt.Errorf("Could not find session variable with name: %s", name)
 	}
-	switch v := variable.value().(type) {
-	case *vars.Integer:
-		v.Value = int(value.GetNumberValue())
-	case *vars.String:
-		v.Value = value.GetStringValue()
-	default:
-		panic("Not implemented")
-	}
+	variable.StringValue = value.GetStringValue()
 	return nil
 }
 
@@ -108,34 +100,32 @@ func (session *Session) getParameter(name string) (*StorageVariable, bool) {
 	return ret, found
 }
 
-func (session *Session) initializeVariables(variables map[string]*vars.Variable) {
+func (session *Session) initializeVariables(variables ivr.Variables) {
 	var storageVar *StorageVariable
 	for name, variable := range variables {
 		storageVar = &StorageVariable{
-			Name: name,
-		}
-		switch v := variable.Value.(type) {
-		case *vars.Integer:
-			storageVar.Type = "Integer"
-			storageVar.IntegerValue = v
-		case *vars.String:
-			storageVar.Type = "String"
-			storageVar.StringValue = v
-		default:
-			panic("Not implemented")
+			Name:        string(name),
+			Type:        variable.ValType.String(),
+			StringValue: variable.Value.StringValue,
 		}
 		session.Data.Variables = append(session.Data.Variables, storageVar)
 	}
 }
 
 func (session *Session) initializeDefaultVariables() {
-	defaults := map[string]*vars.Variable{
-		"__BUFFER__": &vars.Variable{
-			Value: &vars.String{
-				Value: "",
-			},
+	defaults := ivr.Variables{
+		"__BUFFER__": &ivr.Variable{
+			ID:      "__BUFFER__",
+			ValType: ivr.ValString,
+			VarType: ivr.VarUserVariable,
+			Value:   &ivr.Value{StringValue: ""},
 		},
-		// TODO __ExtContactFields__ once kvlist variables are implemented
+		"__ExtContactFields__": &ivr.Variable{
+			ID:      "__ExtContactFields__",
+			ValType: ivr.ValKVList,
+			VarType: ivr.VarUserVariable,
+			Value:   &ivr.Value{StringValue: "{}"},
+		},
 	}
 	session.initializeVariables(defaults)
 }

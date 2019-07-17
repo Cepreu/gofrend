@@ -6,9 +6,9 @@ import (
 	"io/ioutil"
 	"net/http"
 	"regexp"
+	"strconv"
 
 	"github.com/Cepreu/gofrend/ivr"
-	"github.com/Cepreu/gofrend/ivr/vars"
 	"github.com/Cepreu/gofrend/utils"
 	dialogflowpb "google.golang.org/genproto/googleapis/cloud/dialogflow/v2"
 )
@@ -197,7 +197,8 @@ func (interpreter *Interpreter) processQuery(module *ivr.QueryModule) (ivr.Modul
 	}
 	request, err := http.NewRequest(module.Method, module.URL, bytes.NewReader([]byte(body)))
 	for _, h := range module.Headers {
-		request.Header.Add(h.Key, h.Value.Value.String())
+		val := interpreter.Script.Variables[h.Value]
+		request.Header.Add(h.Key, val.Value.StringValue)
 	}
 	client := &http.Client{}
 	response, err := client.Do(request)
@@ -240,18 +241,18 @@ func (interpreter *Interpreter) processQuery(module *ivr.QueryModule) (ivr.Modul
 func (interpreter *Interpreter) processIfElse(module *ivr.IfElseModule) (ivr.Module, error) {
 	var conditionsPass bool
 	conditions := module.BranchIf.Cond.Conditions
-	if module.BranchIf.Cond.ConditionGrouping == "" { // Parser currently does not populate this field
-		module.BranchIf.Cond.ConditionGrouping = "ALL"
+	if module.BranchIf.Cond.CustomCondition == "" { // Parser currently does not populate this field
+		module.BranchIf.Cond.CustomCondition = "ALL"
 	}
-	switch module.BranchIf.Cond.ConditionGrouping {
+	switch module.BranchIf.Cond.CustomCondition {
 	case "ALL":
 		conditionsPass = true
 		for _, condition := range conditions {
-			err := populateCondition(interpreter.Session, condition)
+			err := populateCondition(interpreter.Session, condition, interpreter.Script)
 			if err != nil {
 				return nil, err
 			}
-			passes, err := conditionPasses(condition)
+			passes, err := conditionPasses(condition, interpreter.Script)
 			if err != nil {
 				return nil, err
 			}
@@ -266,50 +267,56 @@ func (interpreter *Interpreter) processIfElse(module *ivr.IfElseModule) (ivr.Mod
 	return getModuleByID(interpreter.Script, module.BranchElse.Descendant)
 }
 
-func populateCondition(session *Session, condition *ivr.Condition) error {
-	varName := condition.LeftOperand.VariableName
-	if varName != "" { // varName is empty if comparison is against constant
-		storageVar, ok := session.getParameter(varName)
-		if !ok {
-			return fmt.Errorf("Error finding session variable with name: %s", varName)
-		}
-		condition.LeftOperand.Value = storageVar.value()
+func populateCondition(session *Session, condition *ivr.Condition, script *ivr.IVRScript) error {
+	storageVar, ok := session.getParameter(string(condition.LeftOperand))
+	if !ok {
+		return fmt.Errorf("Error finding session variable with name: %s", condition.LeftOperand)
 	}
-	varName = condition.RightOperand.VariableName
-	if varName != "" {
-		storageVar, ok := session.getParameter(varName)
+	script.Variables[condition.LeftOperand].Value.StringValue = storageVar.value()
+
+	if script.Variables[condition.RightOperand].VarType != ivr.VarConstant {
+		storageVar, ok := session.getParameter(string(condition.RightOperand))
 		if !ok {
-			return fmt.Errorf("Error finding session variable with name: %s", varName)
+			return fmt.Errorf("Error finding session variable with name: %s", condition.RightOperand)
 		}
-		condition.RightOperand.Value = storageVar.value()
+		script.Variables[condition.RightOperand].Value.StringValue = storageVar.value()
 	}
 	return nil
 }
 
-func conditionPasses(condition *ivr.Condition) (bool, error) {
+func conditionPasses(condition *ivr.Condition, script *ivr.IVRScript) (bool, error) {
+	var leftVal, rightVal *ivr.Variable
+
+	leftVal = script.Variables[condition.LeftOperand]
+	if condition.RightOperand != "" {
+		rightVal = script.Variables[condition.RightOperand]
+	}
 	switch condition.ComparisonType {
 	case "MORE_THAN":
-		var left float64
-		switch v := condition.LeftOperand.Value.(type) {
-		case *vars.Integer:
-			left = float64(v.Value)
-		case *vars.Numeric:
-			left = v.Value
+		switch leftVal.ValType {
+		case ivr.ValInteger, ivr.ValTime:
+			left, err1 := strconv.Atoi(leftVal.Value.StringValue)
+			right, err2 := strconv.Atoi(rightVal.Value.StringValue)
+			if err1 == nil && err2 == nil {
+				return left > right, nil
+			}
+		case ivr.ValNumeric:
+			left, err1 := strconv.ParseFloat(leftVal.Value.StringValue, 64)
+			right, err2 := strconv.ParseFloat(rightVal.Value.StringValue, 64)
+			if err1 == nil && err2 == nil {
+				return left > right, nil
+			}
+		case ivr.ValCurrency, ivr.ValCurrencyPound, ivr.ValCurrencyEuro:
+			left, err1 := strconv.ParseFloat(leftVal.Value.StringValue[2:], 64)
+			right, err2 := strconv.ParseFloat(rightVal.Value.StringValue[2:], 64)
+			if err1 == nil && err2 == nil {
+				return left > right, nil
+			}
 		default:
-			return false, fmt.Errorf("Expected int or numeric in more than comparison, instead got: %T", v)
+			return leftVal.Value.StringValue >= rightVal.Value.StringValue, nil
 		}
-		var right float64
-		switch v := condition.RightOperand.Value.(type) {
-		case *vars.Integer:
-			right = float64(v.Value)
-		case *vars.Numeric:
-			right = v.Value
-		default:
-			return false, fmt.Errorf("Expected int or numeric in more than comparison, instead got: %T", v)
-		}
-		return left > right, nil
 	}
-	return false, nil
+	return false, fmt.Errorf("Incorrect comparison operands: %v >= %v", leftVal, rightVal)
 }
 
 func (interpreter *Interpreter) processPlay(module *ivr.PlayModule) (ivr.Module, error) {
