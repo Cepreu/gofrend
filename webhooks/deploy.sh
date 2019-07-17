@@ -1,0 +1,2 @@
+./setup.sh
+./update.sh
