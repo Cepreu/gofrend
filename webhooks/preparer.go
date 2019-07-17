@@ -1,4 +1,4 @@
-package webhooks
+package webhook
 
 import (
 	"net/http"
@@ -6,7 +6,7 @@ import (
 	"github.com/Cepreu/gofrend/preparer"
 )
 
-// HandleFulfillerWebhook handles the fulfiller webhook
-func HandleFulfillerWebhook(w http.ResponseWriter, r *http.Request) {
+// HandlePreparerWebhook handles the fulfiller webhook
+func HandlePreparerWebhook(w http.ResponseWriter, r *http.Request) {
 	preparer.HandleWebhook(w, r)
 }

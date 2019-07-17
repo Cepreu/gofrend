@@ -18,7 +18,7 @@ func HandleWebhook(w http.ResponseWriter, r *http.Request) {
 		log.Panic(err)
 	}
 
-	_, err = w.Write([]byte("SUCCESS"))
+	_, err = w.Write([]byte("SUCCESS\n"))
 
 	if err != nil {
 		log.Panicf("Error writing response: %v", err)
