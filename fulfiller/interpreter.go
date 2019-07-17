@@ -300,8 +300,10 @@ func conditionPasses(condition *ivr.Condition, script *ivr.IVRScript) (bool, err
 	if condition.RightOperand != "" {
 		rightVal = script.Variables[condition.RightOperand]
 	}
+	log.Print(condition.ComparisonType)
 	switch condition.ComparisonType {
 	case "MORE_THAN":
+		log.Print(leftVal.ValType)
 		switch leftVal.ValType {
 		case ivr.ValInteger, ivr.ValTime:
 			left, err1 := strconv.Atoi(leftVal.Value)
