@@ -12,6 +12,11 @@ func HandleWebhook(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Panicf("Error reading request body: %v", err)
 	}
+	err = r.Body.Close()
+	if err != nil {
+		log.Panicf("Error reading request body: %v", err)
+	}
+	log.Print(string(data))
 
 	err = Prepare(data)
 	if err != nil {
