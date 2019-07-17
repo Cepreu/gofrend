@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
+<ivrScript>
+    <domainId>115675</domainId>
+    <properties/>
+    <modules>
+        <incomingCall>
+            <singleDescendant>73594C84757A47B9AD1ED2CD1FCFD5A8</singleDescendant>
+            <moduleName>IncomingCall1</moduleName>
+            <locationX>97</locationX>
+            <locationY>102</locationY>
+            <moduleId>6647AB96500C4C7DB9A8FB5CFA26FF24</moduleId>
+            <data/>
+        </incomingCall>
+        <hangup>
+            <ascendants>73594C84757A47B9AD1ED2CD1FCFD5A8</ascendants>
+            <moduleName>Hangup5</moduleName>
+            <locationX>379</locationX>
+            <locationY>102</locationY>
+            <moduleId>2984D08D47044541A9C088FC090D7D11</moduleId>
+            <data>
+                <dispo>
+                    <id>0</id>
+                    <name>No Disposition</name>
+                </dispo>
+                <returnToCallingModule>true</returnToCallingModule>
+                <errCode>
+                    <isVarSelected>false</isVarSelected>
+                    <integerValue>
+                        <value>0</value>
+                    </integerValue>
+                </errCode>
+                <errDescription>
+                    <isVarSelected>false</isVarSelected>
+                    <stringValue>
+                        <value></value>
+                        <id>0</id>
+                    </stringValue>
+                </errDescription>
+                <overwriteDisposition>true</overwriteDisposition>
+            </data>
+        </hangup>
+        <skillTransfer>
+            <ascendants>6647AB96500C4C7DB9A8FB5CFA26FF24</ascendants>
+            <singleDescendant>2984D08D47044541A9C088FC090D7D11</singleDescendant>
+            <moduleName>SkillTransfer2</moduleName>
+            <locationX>271</locationX>
+            <locationY>102</locationY>
+            <moduleId>73594C84757A47B9AD1ED2CD1FCFD5A8</moduleId>
+            <data>
+                <dispo>
+                    <id>-5</id>
+                    <name>Abandon</name>
+                </dispo>
+                <maxQueueTime>600</maxQueueTime>
+                <queueIfOnCall>true</queueIfOnCall>
+                <onCallQueueTime>600</onCallQueueTime>
+                <queueIfOnBreakOrLoggedOut>false</queueIfOnBreakOrLoggedOut>
+                <onBreakOrLoggedOutQueueTime>600</onBreakOrLoggedOutQueueTime>
+                <onQueueTimeoutExpiration>false</onQueueTimeoutExpiration>
+                <pauseBeforeTransfer>0</pauseBeforeTransfer>
+                <maxRingTime>15</maxRingTime>
+                <placeOnBreakIfNoAnswer>true</placeOnBreakIfNoAnswer>
+                <vmTransferOnQueueTimeout>false</vmTransferOnQueueTimeout>
+                <vmTransferOnDigit>false</vmTransferOnDigit>
+                <vmBoxType>SKILL</vmBoxType>
+                <clearDigitBuffer>true</clearDigitBuffer>
+                <enableMusicOnHold>true</enableMusicOnHold>
+                <announcements>
+                    <enabled>false</enabled>
+                    <loopped>false</loopped>
+                    <timeout>1</timeout>
+                    <prompt/>
+                    <annType>EWT</annType>
+                </announcements>
+                <announcements>
+                    <enabled>false</enabled>
+                    <loopped>false</loopped>
+                    <timeout>1</timeout>
+                    <prompt/>
+                    <annType>EWT</annType>
+                </announcements>
+                <announcements>
+                    <enabled>false</enabled>
+                    <loopped>false</loopped>
+                    <timeout>1</timeout>
+                    <prompt/>
+                    <annType>EWT</annType>
+                </announcements>
+                <announcements>
+                    <enabled>false</enabled>
+                    <loopped>false</loopped>
+                    <timeout>1</timeout>
+                    <prompt/>
+                    <annType>EWT</annType>
+                </announcements>
+                <announcements>
+                    <enabled>false</enabled>
+                    <loopped>false</loopped>
+                    <timeout>1</timeout>
+                    <prompt/>
+                    <annType>EWT</annType>
+                </announcements>
+                <priorityChangeType>INCREASE</priorityChangeType>
+                <priorityChangeValue>
+                    <isVarSelected>false</isVarSelected>
+                    <integerValue>
+                        <value>10</value>
+                    </integerValue>
+                </priorityChangeValue>
+                <listOfSkillsEx>
+                    <extrnalObj>
+                        <id>266194</id>
+                        <name>sk_skill1</name>
+                    </extrnalObj>
+                    <varSelected>false</varSelected>
+                </listOfSkillsEx>
+                <taskType>0</taskType>
+                <transferAlgorithm>
+                    <algorithmType>LongestReadyTime</algorithmType>
+                    <statAlgorithmTimeWindow>E15minutes</statAlgorithmTimeWindow>
+                </transferAlgorithm>
+                <recordedFilesAction>KEEP_AS_RECORDINGD</recordedFilesAction>
+                <callbackNumberFromCav>
+                    <id>63</id>
+                    <name>number</name>
+                </callbackNumberFromCav>
+                <callbackPhoneNumberPrompt>
+                    <id>-26</id>
+                    <name>QC1YourPhoneNumberIs</name>
+                </callbackPhoneNumberPrompt>
+                <callbackConfirmingPhoneNumberPrompt>
+                    <id>-27</id>
+                    <name>QC2PressOneIfCorrect</name>
+                </callbackConfirmingPhoneNumberPrompt>
+                <callbackEnteringPhoneNumberPrompt>
+                    <id>-28</id>
+                    <name>QC3PleaseEnterYourPhoneNumber</name>
+                </callbackEnteringPhoneNumberPrompt>
+                <callbackRecordingCallerNamePrompt>
+                    <id>-36</id>
+                    <name>QC5PleaseClearlySayYourName</name>
+                </callbackRecordingCallerNamePrompt>
+                <callbackConfirmationPrompt>
+                    <id>-29</id>
+                    <name>QC4YouWillBeCalled</name>
+                </callbackConfirmationPrompt>
+                <callbackQueueTimeoutSec>18000</callbackQueueTimeoutSec>
+                <callbackEnterDigitsMaxTimeSec>5</callbackEnterDigitsMaxTimeSec>
+                <callbackAllowInternational>false</callbackAllowInternational>
+                <isTcpaConsentEnabled>false</isTcpaConsentEnabled>
+                <tcpaConsentText>H4sIAAAAAAAAADWOwQ3DMAwDV+EARYboL58uUPSh2EwjwJYCy878TVDkS/IOnJHcgtbRHY2JehBJ
+SgmszSvezxFqjMBLKj+Qc7gRnYX75kbYqAsb9uaHZmbI4gcfUEtlZLXv1VTv6iblL55mDMts0cXy
+aTuV9wcNmHfIFWS9IPiKfbS0SXD6AQLT2xmtAAAA</tcpaConsentText>
+                <ignoreSkillsOrder>false</ignoreSkillsOrder>
+                <recordCallerNameOnQueueCallback>false</recordCallerNameOnQueueCallback>
+            </data>
+        </skillTransfer>
+    </modules>
+    <modulesOnHangup>
+        <startOnHangup>
+            <singleDescendant>401C92A83D6D4C07B2A2647FCC7B6EDD</singleDescendant>
+            <moduleName>StartOnHangup1</moduleName>
+            <locationX>20</locationX>
+            <locationY>10</locationY>
+            <moduleId>58EFC1F21DFD42FC9702921CE30B66E1</moduleId>
+        </startOnHangup>
+        <hangup>
+            <ascendants>58EFC1F21DFD42FC9702921CE30B66E1</ascendants>
+            <moduleName>Hangup1</moduleName>
+            <locationX>120</locationX>
+            <locationY>10</locationY>
+            <moduleId>401C92A83D6D4C07B2A2647FCC7B6EDD</moduleId>
+            <data>
+                <dispo>
+                    <id>-17</id>
+                    <name>Caller Disconnected</name>
+                </dispo>
+                <returnToCallingModule>true</returnToCallingModule>
+                <errCode>
+                    <isVarSelected>false</isVarSelected>
+                    <integerValue>
+                        <value>0</value>
+                    </integerValue>
+                </errCode>
+                <errDescription>
+                    <isVarSelected>false</isVarSelected>
+                    <stringValue>
+                        <value></value>
+                        <id>0</id>
+                    </stringValue>
+                </errDescription>
+                <overwriteDisposition>false</overwriteDisposition>
+            </data>
+        </hangup>
+    </modulesOnHangup>
+    <userVariables/>
+    <multiLanguagesPrompts>
+        <entry>
+            <key>20ED2543631F4604A5C7F295202C6E75</key>
+            <value>
+                <promptId>20ED2543631F4604A5C7F295202C6E75</promptId>
+                <name>ConfirmPromptWithoutVSR</name>
+                <description>Default prompt for user input confirmation with disabled voice recognition</description>
+                <type>AUDIO</type>
+                <prompts>
+                    <entry key="en-US">
+                        <ttsPrompt>
+                            <xml>H4sIAAAAAAAAANVT0UrDMBR931eEvK9xPslIOypMGAwVtyk+lbS9bsE0GUla17837bA23YYg+GDJ
+Q3PO5ZyTexM6OxQCVaANVzLEk+AKI5CZyrnchnizvhvfYGQskzkTSkKIazB4Fo2o2QN7nwsoQNpo
+hNxHmbWap6UFcwRaUDC5jR3xDbWwZAVEznra8JS0W7+iU3tmooRbZgBVzV+IQY43K0x6JsR3oWQY
+hXILRT+WYXVsvPinxoYMmIFIh1s42LNaP2v62pfIVOV19KpKNxoLGvKpO2KLnWYhF8NQMmwCOd8F
+WjHNWSrgV/0Zgl9i982Ik2T1skiWi/X8KV4mCSUe20t2McJ/nFyAHjUYg/AEI/6G7I4b5FamtIbM
+BujB7kB/cHfD98e6a/xX8+2KHOm94E/oteYzCQQAAA==</xml>
+                            <promptTTSEnumed>false</promptTTSEnumed>
+                        </ttsPrompt>
+                    </entry>
+                </prompts>
+                <defaultLanguage>en-US</defaultLanguage>
+                <isPersistent>true</isPersistent>
+            </value>
+        </entry>
+        <entry>
+            <key>C37E549872034A4DA67042DDFC1B34C1</key>
+            <value>
+                <promptId>C37E549872034A4DA67042DDFC1B34C1</promptId>
+                <name>ConfirmPrompt</name>
+                <description>Default prompt for user input confirmation</description>
+                <type>AUDIO</type>
+                <prompts>
+                    <entry key="en-US">
+                        <ttsPrompt>
+                            <xml>H4sIAAAAAAAAANVTUWvCMBB+91ccebeZexqSVhw4EMTB1A2fSrQ3DWsTyaXO/vulHXNttQwGe1jI
+Q/J9ue++3CVidMpSOKIlZXTIBsENA9Rbkyi9C9lq+dC/Y0BO6kSmRmPICiQ2inqCDijfJilmqF3U
+Az+EdM6qTe6QPoEKTKXejT3xDVWwlhlGPvWw5AWvts0TZ7VnmeZ4LwnhWK5Chrq/WjBeS8KbWQRv
+WxHKYVa3RbIYU8P+ZWLiLaYlcsYdntxVrZ81m9pd5MYkRbQ2uW+NQ4vJ0F+xwi698E4zgreLwK9X
+QRylVXKT4q/q0wa/xOZli+N48TKNZ9Pl5Gk8i2PBG2zNWaeF/9i5ABayALb2XweMhYNFImADBuoV
+3F4R+Lk11uLWBfDo9mjflX/uVAbNTT3mlv1V48+HPNn42h9LoLssIgQAAA==</xml>
+                            <promptTTSEnumed>false</promptTTSEnumed>
+                        </ttsPrompt>
+                    </entry>
+                </prompts>
+                <defaultLanguage>en-US</defaultLanguage>
+                <isPersistent>true</isPersistent>
+            </value>
+        </entry>
+        <entry>
+            <key>E77C77F172FD4C758214F4D9F20203DF</key>
+            <value>
+                <promptId>E77C77F172FD4C758214F4D9F20203DF</promptId>
+                <name>NoInputPrompt</name>
+                <description>Default prompt for NoInput event</description>
+                <type>AUDIO</type>
+                <prompts>
+                    <entry key="en-US">
+                        <ttsPrompt>
+                            <xml>H4sIAAAAAAAAAIWRQYvCMBCF7/6KkHsdvS1LWnFhBc+7eh/toMV0Ip2p2H9vrVBNu7I5Je8b3ntM
+3OJaenOhSorAqZ1PZ9YQ70Ne8CG1m99V8mGNKHKOPjCltiGxi2zi5Ex4+vZUEms2Me1xqFoVu1pJ
+HkIneuTDsgVPqZMZS8ra6M87d9A944nebYu+pi8UMpf7LbXEyebHwksIxCkOhlVcoVS+1hJslhLV
+HwcLDMjApNeVrvqn1/+esfc7uAt5k63NHpmDmiNhZZpQTx10YFwI3jZyMNwEjFfRD7Uw+uYbQw31
+uC4CAAA=</xml>
+                            <promptTTSEnumed>false</promptTTSEnumed>
+                        </ttsPrompt>
+                    </entry>
+                </prompts>
+                <defaultLanguage>en-US</defaultLanguage>
+                <isPersistent>true</isPersistent>
+            </value>
+        </entry>
+        <entry>
+            <key>E83471226BB946D5BC0D7E0FAC7838E1</key>
+            <value>
+                <promptId>E83471226BB946D5BC0D7E0FAC7838E1</promptId>
+                <name>NoMatchPrompt</name>
+                <description>Default prompt for NoMatch event</description>
+                <type>AUDIO</type>
+                <prompts>
+                    <entry key="en-US">
+                        <ttsPrompt>
+                            <xml>H4sIAAAAAAAAAIWRQYvCMBCF7/6KkLvO7k0krSis4Fnd+2gHCZtOpTMV++83VqimXdmcku+F9x4z
+bnkrg7lSLb7izH7OPqwhPlWF53NmD/vNdG6NKHKBoWLKbEtil/nEyYXw5ytQSaz5xMTjULX2x0ZJ
+HqCDAfm8isITdZixpDxGL+66g+6Z/ujdvjE0tEYhc73fMks8PewsvIRAmuJgWMV5pfK1lmC7kqT+
+OFhgoAxMeq500z+9/vdMvd+Jx6po821cS13TSY3nS6MzBx0e14G3fRwM5wDjQfSfopgs+RfRtLpi
+LAIAAA==</xml>
+                            <promptTTSEnumed>false</promptTTSEnumed>
+                        </ttsPrompt>
+                    </entry>
+                </prompts>
+                <defaultLanguage>en-US</defaultLanguage>
+                <isPersistent>true</isPersistent>
+            </value>
+        </entry>
+    </multiLanguagesPrompts>
+    <multiLanguagesVIVRPrompts/>
+    <multiLanguagesTextPrompts/>
+    <multiLanguagesMenuChoices/>
+    <multiLanguagesEwtAnnouncement/>
+    <languages/>
+    <functions/>
+    <defaultLanguage>en-US</defaultLanguage>
+    <defaultMethod>GET</defaultMethod>
+    <defaultFetchTimeout>5</defaultFetchTimeout>
+    <showLabelNames>true</showLabelNames>
+    <defaultVivrTimeout>5</defaultVivrTimeout>
+    <unicodeEncoding>false</unicodeEncoding>
+    <useShortcut>false</useShortcut>
+    <resetErrorCode>true</resetErrorCode>
+    <showAllChannelPrompts>false</showAllChannelPrompts>
+    <extContactFieldsInput>true</extContactFieldsInput>
+    <extContactFieldsOutput>true</extContactFieldsOutput>
+    <timeoutInMilliseconds>3600000</timeoutInMilliseconds>
+    <version>1100008</version>
+</ivrScript>

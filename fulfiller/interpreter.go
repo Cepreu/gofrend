@@ -189,6 +189,14 @@ func (interpreter *Interpreter) addResponseText(VoicePromptIDs ivr.ModulePrompts
 	intentMessageText.Text = append(intentMessageText.Text, promptStrings...)
 }
 
+// func (interpreter *Interpreter) processSkillTransfer(module *ivr.SkillTransferModule) (ivr.Module, error) {
+// 	config, err := cloud.GetConfig()
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	err = createCallback(config["DOMAIN_NAME"], config["CAMPAIGN_NAME"])
+// }
+
 func (interpreter *Interpreter) processQuery(module *ivr.QueryModule) (ivr.Module, error) {
 	interpreter.addResponseText(module.VoicePromptIDs)
 	body, err := utils.CmdUnzip(module.RequestInfo.Base64)

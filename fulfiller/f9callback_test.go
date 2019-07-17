@@ -133,10 +133,9 @@ func TestCallback(t *testing.T) {
 	domainName := "Product Management DW"
 	campaignName := "sergei_inbound"
 	cbPhoneNumber := "6502437004"
-	params := map[string]string{"sergei.qwerty": "Hello world!"}
+	params := map[string]string{"sergei.qwerty": "Hello friend!"}
 	err := createCallback(domainName, campaignName, cbPhoneNumber, params)
 	if err != nil {
 		t.Fatal(err)
 	}
-
 }

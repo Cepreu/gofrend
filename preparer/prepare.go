@@ -17,6 +17,15 @@ import (
 
 // PrepareFile creates necessary DialogFlow intents and uploads XML to gcp storage
 func PrepareFile(filename string) error {
+	config, err := getConfig(configFileName)
+	if err != nil {
+		return err
+	}
+	err = cloud.UpdateConfig(config)
+	if err != nil {
+		return err
+	}
+
 	data, err := ioutil.ReadFile(filename)
 	if err != nil {
 		return err
