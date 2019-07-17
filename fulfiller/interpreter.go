@@ -180,7 +180,7 @@ func (interpreter *Interpreter) addResponseText(VoicePromptIDs ivr.ModulePrompts
 		if !found {
 			return ""
 		}
-		return variable.valueAsString()
+		return variable.Value
 	}
 	for i := range promptStrings {
 		promptStrings[i] = expression.ReplaceAllStringFunc(promptStrings[i], f)
@@ -205,8 +205,8 @@ func (interpreter *Interpreter) processQuery(module *ivr.QueryModule) (ivr.Modul
 	}
 	request, err := http.NewRequest(module.Method, module.URL, bytes.NewReader([]byte(body)))
 	for _, h := range module.Headers {
-		val := interpreter.Script.Variables[h.Value]
-		request.Header.Add(h.Key, val.Value.StringValue)
+		variable := interpreter.Script.Variables[h.Value]
+		request.Header.Add(h.Key, variable.Value)
 	}
 	client := &http.Client{}
 	response, err := client.Do(request)
@@ -276,18 +276,18 @@ func (interpreter *Interpreter) processIfElse(module *ivr.IfElseModule) (ivr.Mod
 }
 
 func populateCondition(session *Session, condition *ivr.Condition, script *ivr.IVRScript) error {
-	storageVar, ok := session.getParameter(string(condition.LeftOperand))
+	variable, ok := session.getParameter(string(condition.LeftOperand))
 	if !ok {
 		return fmt.Errorf("Error finding session variable with name: %s", condition.LeftOperand)
 	}
-	script.Variables[condition.LeftOperand].Value.StringValue = storageVar.value()
+	script.Variables[condition.LeftOperand].Value = variable.Value
 
 	if script.Variables[condition.RightOperand].VarType != ivr.VarConstant {
-		storageVar, ok := session.getParameter(string(condition.RightOperand))
+		variable, ok := session.getParameter(string(condition.RightOperand))
 		if !ok {
 			return fmt.Errorf("Error finding session variable with name: %s", condition.RightOperand)
 		}
-		script.Variables[condition.RightOperand].Value.StringValue = storageVar.value()
+		script.Variables[condition.RightOperand].Value = variable.Value
 	}
 	return nil
 }
@@ -303,25 +303,25 @@ func conditionPasses(condition *ivr.Condition, script *ivr.IVRScript) (bool, err
 	case "MORE_THAN":
 		switch leftVal.ValType {
 		case ivr.ValInteger, ivr.ValTime:
-			left, err1 := strconv.Atoi(leftVal.Value.StringValue)
-			right, err2 := strconv.Atoi(rightVal.Value.StringValue)
+			left, err1 := strconv.Atoi(leftVal.Value)
+			right, err2 := strconv.Atoi(rightVal.Value)
 			if err1 == nil && err2 == nil {
 				return left > right, nil
 			}
 		case ivr.ValNumeric:
-			left, err1 := strconv.ParseFloat(leftVal.Value.StringValue, 64)
-			right, err2 := strconv.ParseFloat(rightVal.Value.StringValue, 64)
+			left, err1 := strconv.ParseFloat(leftVal.Value, 64)
+			right, err2 := strconv.ParseFloat(rightVal.Value, 64)
 			if err1 == nil && err2 == nil {
 				return left > right, nil
 			}
 		case ivr.ValCurrency, ivr.ValCurrencyPound, ivr.ValCurrencyEuro:
-			left, err1 := strconv.ParseFloat(leftVal.Value.StringValue[2:], 64)
-			right, err2 := strconv.ParseFloat(rightVal.Value.StringValue[2:], 64)
+			left, err1 := strconv.ParseFloat(leftVal.Value[2:], 64)
+			right, err2 := strconv.ParseFloat(rightVal.Value[2:], 64)
 			if err1 == nil && err2 == nil {
 				return left > right, nil
 			}
 		default:
-			return leftVal.Value.StringValue >= rightVal.Value.StringValue, nil
+			return leftVal.Value >= rightVal.Value, nil
 		}
 	}
 	return false, fmt.Errorf("Incorrect comparison operands: %v >= %v", leftVal, rightVal)

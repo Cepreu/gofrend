@@ -9,7 +9,8 @@ import (
 
 type parametrized struct {
 	variableName string
-	value        *ivr.Value
+	vType        ivr.ValType
+	value        string
 }
 
 func (p *parametrized) isVarSelected() bool { return p.variableName != "" }
@@ -99,30 +100,37 @@ func parse(p *parametrized, decoder *xml.Decoder) (err error) {
 				inIsVarSelected = false
 			} else if v.Name.Local == "integerValue" {
 				p.value, err = ivr.NewIntegerValue(integerVal)
+				p.vType = ivr.ValInteger
 				integerVal = 0
 				inIValue = false
 			} else if v.Name.Local == "currencyValue" {
 				p.value, err = ivr.NewUSCurrencyValue(numericVal)
+				p.vType = ivr.ValCurrency
 				numericVal = 0
 				inCValue = false
 			} else if v.Name.Local == "numericValue" {
 				p.value, err = ivr.NewNumericValue(numericVal)
+				p.vType = ivr.ValNumeric
 				numericVal = 0
 				inNValue = false
 			} else if v.Name.Local == "stringValue" {
 				p.value, err = ivr.NewStringValue(stringVal)
+				p.vType = ivr.ValString
 				stringVal = ""
 				inSValue = false
 			} else if v.Name.Local == "dateValue" {
 				p.value, err = ivr.NewDateValue(year, month, day)
+				p.vType = ivr.ValDate
 				year, month, day = 0, 0, 0
 				inDValue = false
 			} else if v.Name.Local == "timeValue" {
 				p.value, err = ivr.NewTimeValue(integerVal)
+				p.vType = ivr.ValTime
 				integerVal = 0
 				inTValue = false
 			} else if v.Name.Local == "id" {
 				p.value, err = ivr.NewIDValue(integerVal)
+				p.vType = ivr.ValID
 				integerVal = 0
 				inID = false
 			} else if v.Name.Local == "value" {
@@ -194,5 +202,5 @@ func toID(s *ivr.IVRScript, pv *parametrized) ivr.VariableID {
 	if isVarSelected(pv) {
 		return ivr.VariableID(pv.variableName)
 	}
-	return addConstantVar(s, pv.value.VType, pv.value)
+	return addConstantVar(s, pv.vType, pv.value)
 }

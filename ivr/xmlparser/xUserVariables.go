@@ -14,7 +14,7 @@ func parseVars(s *ivr.IVRScript, decoder *xml.Decoder) (err error) {
 		immersion                                        = 1
 		vs                                               = s.Variables
 		userVar                                          *ivr.Variable
-		val                                              *ivr.Value
+		val                                              string
 		inEntry                                          = false
 		inName, inDescription, inAttributes, inNullValue = false, false, false, false
 		name, description                                string
@@ -139,7 +139,7 @@ func parseVars(s *ivr.IVRScript, decoder *xml.Decoder) (err error) {
 			if v.Name.Local == "entry" {
 				inEntry = false
 				if nullVal {
-					val = nil
+					val = ""
 				}
 				userVar = ivr.NewVariable(name, description, vtype, val)
 				vs[ivr.VariableID(name)] = userVar
@@ -153,7 +153,7 @@ func parseVars(s *ivr.IVRScript, decoder *xml.Decoder) (err error) {
 				name, description = "", ""
 				attrs = 0
 				nullVal = false
-				val = nil
+				val = ""
 				vtype = ivr.ValUndefined
 
 			} else if v.Name.Local == "name" && inEntry {
@@ -229,11 +229,11 @@ func parseVars(s *ivr.IVRScript, decoder *xml.Decoder) (err error) {
 	return err
 }
 
-func addConstantVar(s *ivr.IVRScript, t ivr.ValType, v *ivr.Value) ivr.VariableID {
+func addConstantVar(s *ivr.IVRScript, t ivr.ValType, v string) ivr.VariableID {
 	for oldID, oldV := range s.Variables {
 		if oldV.VarType == ivr.VarConstant &&
 			oldV.ValType == t &&
-			oldV.Value.StringValue == v.StringValue {
+			oldV.Value == v {
 			return oldID
 		}
 	}

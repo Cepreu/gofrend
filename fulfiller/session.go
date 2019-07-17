@@ -23,7 +23,7 @@ type Session struct {
 
 // SessionData contains info to be stored in cloud between sessions.
 type SessionData struct {
-	Variables []*StorageVariable
+	Variables []*ivr.Variable
 }
 
 func (session *Session) save() error {
@@ -84,31 +84,32 @@ func (session *Session) setParameter(name string, value *structpb.Value) error {
 		utils.PrettyLog(session.Data)
 		return fmt.Errorf("Could not find session variable with name: %s", name)
 	}
-	variable.StringValue = value.GetStringValue()
+	switch variable.ValType {
+	case ivr.ValString:
+		variable.Value = value.GetStringValue()
+	case ivr.ValInteger:
+		variable.Value = string(int(value.GetNumberValue()))
+	case ivr.ValNumeric:
+		variable.Value = fmt.Sprintf("%f", value.GetNumberValue())
+	}
 	return nil
 }
 
-func (session *Session) getParameter(name string) (*StorageVariable, bool) {
-	var ret *StorageVariable
+func (session *Session) getParameter(name string) (*ivr.Variable, bool) {
+	var ret *ivr.Variable
 	found := false
-	for _, storageVar := range session.Data.Variables {
-		if storageVar.Name == name {
+	for _, variable := range session.Data.Variables {
+		if string(variable.ID) == name {
 			found = true
-			ret = storageVar
+			ret = variable
 		}
 	}
 	return ret, found
 }
 
 func (session *Session) initializeVariables(variables ivr.Variables) {
-	var storageVar *StorageVariable
-	for name, variable := range variables {
-		storageVar = &StorageVariable{
-			Name:        string(name),
-			Type:        variable.ValType.String(),
-			StringValue: variable.Value.StringValue,
-		}
-		session.Data.Variables = append(session.Data.Variables, storageVar)
+	for _, variable := range variables {
+		session.Data.Variables = append(session.Data.Variables, variable)
 	}
 }
 
@@ -118,13 +119,13 @@ func (session *Session) initializeDefaultVariables() {
 			ID:      "__BUFFER__",
 			ValType: ivr.ValString,
 			VarType: ivr.VarUserVariable,
-			Value:   &ivr.Value{StringValue: ""},
+			Value:   "",
 		},
 		"__ExtContactFields__": &ivr.Variable{
 			ID:      "__ExtContactFields__",
 			ValType: ivr.ValKVList,
 			VarType: ivr.VarUserVariable,
-			Value:   &ivr.Value{StringValue: "{}"},
+			Value:   "{}",
 		},
 	}
 	session.initializeVariables(defaults)
