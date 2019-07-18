@@ -1,3 +1,3 @@
 module github.com/Cepreu/gofrend/webhooks
 
-require github.com/Cepreu/gofrend v0.0.0-20190717233017-c0edd2e9c71d
+require github.com/Cepreu/gofrend v0.0.0-20190717234035-774d53f9cf1c
