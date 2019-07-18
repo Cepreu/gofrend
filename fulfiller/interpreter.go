@@ -297,6 +297,7 @@ func conditionPasses(condition *ivr.Condition, script *ivr.IVRScript) (bool, err
 	switch condition.ComparisonType {
 	case "MORE_THAN":
 		log.Print(leftVal.ValType)
+		log.Print(rightVal.ValType)
 		switch leftVal.ValType {
 		case ivr.ValInteger, ivr.ValTime:
 			left, err1 := strconv.Atoi(leftVal.Value)
@@ -305,6 +306,7 @@ func conditionPasses(condition *ivr.Condition, script *ivr.IVRScript) (bool, err
 				log.Printf("Left: %d, Right: %d.", left, right)
 				return left > right, nil
 			}
+			log.Printf("Err1: %v, err2: %v.", err1, err2)
 		case ivr.ValNumeric:
 			left, err1 := strconv.ParseFloat(leftVal.Value, 64)
 			right, err2 := strconv.ParseFloat(rightVal.Value, 64)
@@ -321,7 +323,7 @@ func conditionPasses(condition *ivr.Condition, script *ivr.IVRScript) (bool, err
 			return leftVal.Value > rightVal.Value, nil
 		}
 	}
-	return false, fmt.Errorf("Incorrect comparison operands: %v > %v", leftVal, rightVal)
+	return false, fmt.Errorf("Incorrect comparison operands: %s > %s", leftVal.Value, rightVal.Value)
 }
 
 func (interpreter *Interpreter) processPlay(module *ivr.PlayModule) (ivr.Module, error) {

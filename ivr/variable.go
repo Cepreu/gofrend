@@ -24,14 +24,15 @@ const (
 
 func (t ValType) String() string {
 	var typeStr = [...]string{
+		"Undefined",
 		"String",
 		"Integer",
 		"ID",
 		"ErrorCode",
 		"Numeric",
-		"Currency (dollar)",
 		"Date",
 		"Time",
+		"Currency (dollar)",
 		"Currency (pound)",
 		"Currency (euro)",
 		"List of key-value pairs",
