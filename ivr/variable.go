@@ -3,6 +3,7 @@ package ivr
 import (
 	"fmt"
 	"regexp"
+	"strconv"
 )
 
 type ValType int
@@ -24,14 +25,15 @@ const (
 
 func (t ValType) String() string {
 	var typeStr = [...]string{
+		"Undefined",
 		"String",
 		"Integer",
 		"ID",
 		"ErrorCode",
 		"Numeric",
-		"Currency (dollar)",
 		"Date",
 		"Time",
+		"Currency (dollar)",
 		"Currency (pound)",
 		"Currency (euro)",
 		"List of key-value pairs",
@@ -66,11 +68,11 @@ type Variable struct {
 }
 
 func NewIntegerValue(intValue int) (string, error) {
-	return string(intValue), nil
+	return strconv.Itoa(intValue), nil
 }
 
 func NewIDValue(intValue int) (string, error) {
-	return string(intValue), nil
+	return strconv.Itoa(intValue), nil
 }
 
 func NewStringValue(strValue string) (string, error) {

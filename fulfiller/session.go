@@ -84,15 +84,16 @@ func (session *Session) setParameter(name string, value *structpb.Value) error {
 		utils.PrettyLog(session.Data)
 		return fmt.Errorf("Could not find session variable with name: %s", name)
 	}
+	var err error
 	switch variable.ValType {
 	case ivr.ValString:
 		variable.Value = value.GetStringValue()
 	case ivr.ValInteger:
-		variable.Value = string(int(value.GetNumberValue()))
+		variable.Value, err = ivr.NewIntegerValue(int(value.GetNumberValue()))
 	case ivr.ValNumeric:
-		variable.Value = fmt.Sprintf("%f", value.GetNumberValue())
+		variable.Value, err = ivr.NewNumericValue(value.GetNumberValue())
 	}
-	return nil
+	return err
 }
 
 func (session *Session) getParameter(name string) (*ivr.Variable, bool) {
