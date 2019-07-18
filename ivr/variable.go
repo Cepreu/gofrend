@@ -3,6 +3,7 @@ package ivr
 import (
 	"fmt"
 	"regexp"
+	"strconv"
 )
 
 type ValType int
@@ -67,11 +68,11 @@ type Variable struct {
 }
 
 func NewIntegerValue(intValue int) (string, error) {
-	return string(intValue), nil
+	return strconv.Itoa(intValue), nil
 }
 
 func NewIDValue(intValue int) (string, error) {
-	return string(intValue), nil
+	return strconv.Itoa(intValue), nil
 }
 
 func NewStringValue(strValue string) (string, error) {

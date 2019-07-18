@@ -323,7 +323,7 @@ func conditionPasses(condition *ivr.Condition, script *ivr.IVRScript) (bool, err
 			return leftVal.Value > rightVal.Value, nil
 		}
 	}
-	return false, fmt.Errorf("incorrect comparison operands with types %v and %v and values %s and %s", leftVal.ValType, rightVal.ValType, leftVal.Value, rightVal.Value)
+	return false, fmt.Errorf("incorrect comparison operands with types %v and %v and values '%s' and '%s'", leftVal.ValType, rightVal.ValType, leftVal.Value, rightVal.Value)
 }
 
 func (interpreter *Interpreter) processPlay(module *ivr.PlayModule) (ivr.Module, error) {
