@@ -9,6 +9,7 @@ import (
 	"regexp"
 	"strconv"
 
+	"github.com/Cepreu/gofrend/cloud"
 	"github.com/Cepreu/gofrend/ivr"
 	"github.com/Cepreu/gofrend/utils"
 	dialogflowpb "google.golang.org/genproto/googleapis/cloud/dialogflow/v2"
@@ -190,13 +191,27 @@ func (interpreter *Interpreter) addResponseText(VoicePromptIDs ivr.ModulePrompts
 	intentMessageText.Text = append(intentMessageText.Text, promptStrings...)
 }
 
-// func (interpreter *Interpreter) processSkillTransfer(module *ivr.SkillTransferModule) (ivr.Module, error) {
-// 	config, err := cloud.GetConfig()
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	err = createCallback(config["DOMAIN_NAME"], config["CAMPAIGN_NAME"])
-// }
+func (interpreter *Interpreter) processSkillTransferInitial(module *ivr.SkillTransferModule) (ivr.Module, error) {
+	err := interpreter.loadSession()
+	if err != nil {
+		return nil, err
+	}
+	callbackNumber := interpreter.QueryResult.Parameters.Fields["callback-number"].GetStringValue()
+	config, err := cloud.GetConfig()
+	if err != nil {
+		return nil, err
+	}
+	err = createCallback(config["DOMAIN_NAME"], config["CAMPAIGN_NAME"], callbackNumber, map[string]string{})
+	if err != nil {
+		return err
+	}
+	return getModuleByID(interpreter.Script, module.GetDescendant())
+}
+
+func (interpreter *Interpreter) processSkillTransfer(module *ivr.SkillTransferModule) (ivr.Module, error) {
+	interpreter.populateWebhookContext(module.GetID())
+	return nil, interpreter.Session.save()
+}
 
 func (interpreter *Interpreter) processQuery(module *ivr.QueryModule) (ivr.Module, error) {
 	interpreter.addResponseText(module.VoicePromptIDs)
