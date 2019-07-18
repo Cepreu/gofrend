@@ -273,6 +273,8 @@ func (interpreter *Interpreter) processIfElse(module *ivr.IfElseModule) (ivr.Mod
 				conditionsPass = false
 			}
 		}
+	default:
+		panic(fmt.Errorf("customCondition not supported: %s", module.BranchIf.Cond.CustomCondition))
 	}
 	if conditionsPass {
 		return getModuleByID(interpreter.Script, module.BranchIf.Descendant)

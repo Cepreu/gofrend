@@ -33,7 +33,7 @@ func parseBranches(script *ivr.IVRScript, decoder *xml.Decoder) (b []*ivr.Output
 			} else if v.Name.Local == "conditions" {
 				if pCond, err := parseCondition(script, decoder); pCond != nil && err == nil {
 					pBranch.Cond = &ivr.ComplexCondition{
-						CustomCondition: "1",
+						CustomCondition: "ALL",
 						Conditions:      []*ivr.Condition{pCond},
 					}
 				}
