@@ -63,26 +63,7 @@ func (m *module) GetDescendant() ModuleID {
 	return m.Descendant
 }
 
-const (
-	cIncomingCall  string = "incomingCall"
-	cStartOnHangup string = "startOnHangup"
-	cHangup        string = "hangup"
-	cGetDigits     string = "getDigits"
-	cPlay          string = "play"
-	cInput         string = "input"
-	cVoiceInput    string = "recording"
-	cMenu          string = "menu"
-	cQuery         string = "query"
-	cSetVariables  string = "setVariable"
-	cIfElse        string = "ifElse"
-	cCase          string = "case"
-	cForeignScript string = "foreignScript"
-
-	cPrompt      string = "prompt"
-	cConfirmData string = "ConfirmData"
-	cMenuItems   string = "items"
-)
-
+//CaseModule - Represents Case module
 type CaseModule struct {
 	module
 	Branches []*OutputBranch
@@ -107,6 +88,7 @@ func (*ForeignScriptModule) transformToAI() string {
 	return ""
 }
 
+//GetDigitsModule - Represents Get Digits module
 type GetDigitsModule struct {
 	module
 	VoicePromptIDs     ModulePrompts
@@ -132,6 +114,7 @@ type HangupModule struct {
 	OverwriteDisp bool
 }
 
+//IfElseModule - Represents IfElse module
 type IfElseModule struct {
 	module
 	BranchIf   OutputBranch
@@ -142,6 +125,7 @@ func (*IfElseModule) transformToAI() string {
 	return ""
 }
 
+//IncomingCallModule - represents Incoming Call module
 type IncomingCallModule struct {
 	module
 }
@@ -168,6 +152,7 @@ type xGrammPropList struct {
 	PropEnabled bool     `xml:"enabled"`
 }
 
+//InputModule - represents Input module
 type InputModule struct {
 	module
 	VoicePromptIDs ModulePrompts
@@ -206,6 +191,7 @@ type MenuModule struct {
 // ActionType - Menu module item's action
 type ActionType string
 
+//PlayModule - represents Play module
 type PlayModule struct {
 	module
 	VoicePromptIDs ModulePrompts
@@ -219,6 +205,7 @@ type PlayModule struct {
 }
 
 type (
+	//QueryModule - represents Query module
 	QueryModule struct {
 		module
 		VoicePromptIDs ModulePrompts
@@ -241,11 +228,12 @@ type (
 		ResponseInfos    []*ResponseInfo
 	}
 
+	//KeyValue - represents Key(string)/Value(VariableID) pair
 	KeyValue struct {
 		Key   string
 		Value VariableID
 	}
-
+	//ResponseInfo - Query module's response
 	ResponseInfo struct {
 		HTTPCodeFrom  int
 		HTTPCodeTo    int
@@ -261,11 +249,13 @@ type (
 		}
 		TargetVariables []string
 	}
+	//RequestInfo - represents request info for Query module
 	RequestInfo struct {
 		Template     string
 		Base64       string
 		Replacements []*Replacement
 	}
+	//Replacement - response parsing info for Query module
 	Replacement struct {
 		Position     int
 		VariableName string
@@ -273,16 +263,19 @@ type (
 )
 
 type (
+	//SetVariableModule - represents Set Variable module
 	SetVariableModule struct {
 		module
 		Exprs []*Expression
 	}
+	//Expression - an assignment expression included into SetVariable module
 	Expression struct {
 		Lval string
 		Rval FuncInvocation
 	}
 )
 
+//VoiceInputModule - representa Voice Input module
 type VoiceInputModule struct {
 	module
 	VoicePromptIDs ModulePrompts
@@ -308,5 +301,13 @@ type VoiceInputModule struct {
 		IsVarSelected          bool
 		StringValue            string
 		VariableName           string
+	}
+}
+
+//SkillTransferModule - represents Skill Transfer module
+type SkillTransferModule struct {
+	module
+	Data struct {
+		InnerXML string `xml:",innerxml"`
 	}
 }

@@ -25,6 +25,7 @@ const (
 	cIfElse        string = "ifElse"
 	cCase          string = "case"
 	cForeignScript string = "foreignScript"
+	cSkillTransfer string = "skillTransfer"
 
 	cPrompt      string = "prompt"
 	cConfirmData string = "ConfirmData"
@@ -75,6 +76,8 @@ F:
 				m = newCaseModule(s, decoder)
 			case cForeignScript:
 				m = newForeignScriptModule(decoder, s)
+			case cSkillTransfer:
+				m = newSkillTransferModule(decoder, s)
 			default:
 				fmt.Printf("Warning: unsupported module '%s'\n", v.Name.Local)
 				//				m = newUnknownModule(decoder, &v)
