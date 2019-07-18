@@ -248,8 +248,8 @@ func (interpreter *Interpreter) processQuery(module *ivr.QueryModule) (ivr.Modul
 }
 
 func (interpreter *Interpreter) processIfElse(module *ivr.IfElseModule) (ivr.Module, error) {
-	var conditionsPass bool
 	conditions := module.BranchIf.Cond.Conditions
+	conditionsPass := true
 	for _, condition := range conditions { // Eventually needs to examine CustomCondition field and implement condition logic - currently assumes ALL
 		err := populateCondition(interpreter.Session, condition, interpreter.Script)
 		if err != nil {
