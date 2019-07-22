@@ -195,6 +195,11 @@ func (interpreter *Interpreter) addResponseText(VoicePromptIDs ivr.ModulePrompts
 	intentMessageText.Text = append(intentMessageText.Text, promptStrings...)
 }
 
+func (interpreter *Interpreter) addSingleResponseText(text string) {
+	intentMessageText := interpreter.WebhookResponse.FulfillmentMessages[0].GetText()
+	intentMessageText.Text = append(intentMessageText.Text, text)
+}
+
 func (interpreter *Interpreter) processSkillTransferInitial(module *ivr.SkillTransferModule) (ivr.Module, error) {
 	err := interpreter.loadSession()
 	if err != nil {
@@ -209,12 +214,12 @@ func (interpreter *Interpreter) processSkillTransferInitial(module *ivr.SkillTra
 	if err != nil {
 		return nil, err
 	}
-	intentMessageText := interpreter.WebhookResponse.FulfillmentMessages[0].GetText()
-	intentMessageText.Text = append(intentMessageText.Text, fmt.Sprintf("Connecting an agent to %s...", callbackNumber))
+	interpreter.addSingleResponseText(fmt.Sprintf("Connecting an agent to %s...", callbackNumber))
 	return getModuleByID(interpreter.Script, module.GetDescendant())
 }
 
 func (interpreter *Interpreter) processSkillTransfer(module *ivr.SkillTransferModule) (ivr.Module, error) {
+	interpreter.addSingleResponseText("Please enter your phone number.")
 	interpreter.populateWebhookContext(module.GetID())
 	return nil, interpreter.Session.save()
 }
