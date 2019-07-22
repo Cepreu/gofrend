@@ -3,6 +3,7 @@ package ivr
 type (
 	IVRScript struct {
 		Domain          string
+		Name            string
 		Properties      string
 		Modules         map[ModuleID]Module
 		ModulesOnHangup map[ModuleID]Module

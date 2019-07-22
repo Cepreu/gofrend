@@ -27,12 +27,8 @@ func newSkillTransferModule(decoder *xml.Decoder, script *ivr.IVRScript) normali
 		switch v := t.(type) {
 		case xml.StartElement:
 			if v.Name.Local == "data" {
-				// var data struct {
-				// 	InnerXML string `xml:",innerxml"`
-				// }
 				if err := decoder.DecodeElement(&pSTM.Data, &v); err != nil {
-					//					pSTM.Data.InnerXML = data.InnerXML
-					fmt.Printf("decoder.Token() failed in SkillTransfer with '%s'", err)
+					fmt.Printf("decoder.DecodeElement() failed in SkillTransfer with '%s'", err)
 				}
 
 			} else {
