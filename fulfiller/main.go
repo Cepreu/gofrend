@@ -22,10 +22,11 @@ func HandleWebhook(w http.ResponseWriter, r *http.Request) {
 	}
 
 	hash := getScriptHash(wr)
-	script, err := cloud.DownloadScript(hash)
+	storageScript, err := cloud.DownloadScript(hash)
 	if err != nil {
 		log.Panic(err)
 	}
+	script := storageScript.GetScript()
 
 	response, err := Interpret(wr, script, hash)
 	if err != nil {
