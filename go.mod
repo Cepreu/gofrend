@@ -1,7 +1,7 @@
 module github.com/Cepreu/gofrend
 
 require (
-	cloud.google.com/go v0.41.0
+	cloud.google.com/go v0.43.0
 	github.com/golang/protobuf v1.3.2
 	github.com/kr/pretty v0.1.0 // indirect
 	github.com/satori/go.uuid v1.2.1-0.20181028125025-b2ce2384e17b

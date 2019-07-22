@@ -80,6 +80,8 @@ func createDisplayName(module ivr.Module, scriptHash string, branchName string) 
 		return utils.MakeInputDisplayName(scriptHash, module.GetID())
 	case *ivr.MenuModule:
 		return utils.MakeMenuDisplayName(scriptHash, module.GetID(), branchName)
+	case *ivr.SkillTransferModule:
+		return utils.MakeInputDisplayName(scriptHash, module.GetID())
 	default:
 		panic("Not implemented")
 	}
@@ -106,7 +108,7 @@ func createTrainingPhrases(module ivr.Module, script *ivr.IVRScript, branchName 
 				Name: utils.GenUUIDv4(),
 				Type: dialogflowpb.Intent_TrainingPhrase_Type(1),
 				Parts: []*dialogflowpb.Intent_TrainingPhrase_Part{
-					&dialogflowpb.Intent_TrainingPhrase_Part{
+					{
 						Text:        "1",
 						EntityType:  "@sys.number",
 						Alias:       parameterName,
@@ -118,10 +120,10 @@ func createTrainingPhrases(module ivr.Module, script *ivr.IVRScript, branchName 
 				Name: utils.GenUUIDv4(),
 				Type: dialogflowpb.Intent_TrainingPhrase_Type(1),
 				Parts: []*dialogflowpb.Intent_TrainingPhrase_Part{
-					&dialogflowpb.Intent_TrainingPhrase_Part{
+					{
 						Text: "My number is ",
 					},
-					&dialogflowpb.Intent_TrainingPhrase_Part{
+					{
 						Text:        "2",
 						EntityType:  "@sys.number",
 						Alias:       parameterName,
@@ -139,7 +141,7 @@ func createTrainingPhrases(module ivr.Module, script *ivr.IVRScript, branchName 
 					Name: utils.GenUUIDv4(),
 					Type: dialogflowpb.Intent_TrainingPhrase_Type(1),
 					Parts: []*dialogflowpb.Intent_TrainingPhrase_Part{
-						&dialogflowpb.Intent_TrainingPhrase_Part{
+						{
 							Text: getMenuItemText(item, script.Prompts),
 						},
 					},
@@ -148,6 +150,51 @@ func createTrainingPhrases(module ivr.Module, script *ivr.IVRScript, branchName 
 			}
 		}
 		return phrases
+	case *ivr.SkillTransferModule:
+		return []*dialogflowpb.Intent_TrainingPhrase{
+			{
+				Name: utils.GenUUIDv4(),
+				Type: dialogflowpb.Intent_TrainingPhrase_Type(1),
+				Parts: []*dialogflowpb.Intent_TrainingPhrase_Part{
+					{
+						Text:        "7818641522",
+						EntityType:  "@sys.phone-number",
+						Alias:       "callback-number",
+						UserDefined: true,
+					},
+				},
+			},
+			{
+				Name: utils.GenUUIDv4(),
+				Type: dialogflowpb.Intent_TrainingPhrase_Type(1),
+				Parts: []*dialogflowpb.Intent_TrainingPhrase_Part{
+					{
+						Text: "My number is ",
+					},
+					{
+						Text:        "781-864-1234",
+						EntityType:  "@sys.phone-number",
+						Alias:       "callback-number",
+						UserDefined: true,
+					},
+				},
+			},
+			{
+				Name: utils.GenUUIDv4(),
+				Type: dialogflowpb.Intent_TrainingPhrase_Type(1),
+				Parts: []*dialogflowpb.Intent_TrainingPhrase_Part{
+					{
+						Text: "My phone number is ",
+					},
+					{
+						Text:        "3392232900",
+						EntityType:  "@sys.phone-number",
+						Alias:       "callback-number",
+						UserDefined: true,
+					},
+				},
+			},
+		}
 	default:
 		panic("Not implemented")
 	}
@@ -176,6 +223,16 @@ func createParameters(module ivr.Module) []*dialogflowpb.Intent_Parameter {
 		}
 	case *ivr.MenuModule:
 		return []*dialogflowpb.Intent_Parameter{}
+	case *ivr.SkillTransferModule:
+		return []*dialogflowpb.Intent_Parameter{
+			{
+				Name:                  utils.GenUUIDv4(),
+				DisplayName:           "callback-number",
+				Value:                 "$callback-number",
+				EntityTypeDisplayName: "@sys.phone-number",
+				Mandatory:             true,
+			},
+		}
 	default:
 		panic("Not implemented")
 	}
@@ -188,6 +245,8 @@ func createEvents(module ivr.Module) []string {
 	case *ivr.InputModule:
 		return []string{}
 	case *ivr.MenuModule:
+		return []string{}
+	case *ivr.SkillTransferModule:
 		return []string{}
 	default:
 		panic("Not implemented")
@@ -202,6 +261,8 @@ func createInputContextNames(module ivr.Module, displayName string) []string {
 		return []string{utils.MakeInputContextName(displayName)}
 	case *ivr.MenuModule:
 		return []string{utils.MakeMenuContextName(displayName)}
+	case *ivr.SkillTransferModule:
+		return []string{utils.MakeInputContextName(displayName)}
 	default:
 		panic("Not implemented")
 	}
@@ -215,6 +276,8 @@ func requiresIntent(module ivr.Module) bool {
 		}
 		return true
 	case *ivr.InputModule:
+		return true
+	case *ivr.SkillTransferModule:
 		return true
 	default:
 		return false

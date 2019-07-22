@@ -11,3 +11,9 @@ const GcpStorageBucketName string = "f9-dialogflow-converter.appspot.com"
 
 // GcpConfigFileName - name of configurator file
 const GcpConfigFileName string = "config.json"
+
+// GcpConfigDomainNameKeyString ---
+const GcpConfigDomainNameKeyString string = "DOMAIN_NAME"
+
+// GcpConfigCampaignNameKeyString ---
+const GcpConfigCampaignNameKeyString string = "CAMPAIGN_NAME"

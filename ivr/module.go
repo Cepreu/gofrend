@@ -308,6 +308,6 @@ type VoiceInputModule struct {
 type SkillTransferModule struct {
 	module
 	Data struct {
-		InnerXML string `xml:",innerxml"`
+		InnerXML string `xml:",innerxml" datastore:",noindex"`
 	}
 }

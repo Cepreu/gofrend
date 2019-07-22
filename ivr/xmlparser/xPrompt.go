@@ -187,7 +187,7 @@ F:
 				}
 				pid := getPromptID(prefix, "F")
 				pids = append(pids, pid)
-				sp[pid] = fp
+				sp[pid] = &fp
 			} else if v.Name.Local == "ttsPrompt" {
 				inTTS = true
 			} else if v.Name.Local == "pausePrompt" {
@@ -199,7 +199,7 @@ F:
 				}
 				pid := getPromptID(prefix, "P")
 				pids = append(pids, pid)
-				sp[pid] = pp
+				sp[pid] = &pp
 			} else if v.Name.Local == "multiLanguagesPromptItem" {
 				var pp XMultiLanguagesPromptItem
 				err = decoder.DecodeElement(&pp, &v)

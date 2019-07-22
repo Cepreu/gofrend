@@ -9,6 +9,7 @@ import (
 	"regexp"
 	"strconv"
 
+	"github.com/Cepreu/gofrend/cloud"
 	"github.com/Cepreu/gofrend/ivr"
 	"github.com/Cepreu/gofrend/utils"
 	dialogflowpb "google.golang.org/genproto/googleapis/cloud/dialogflow/v2"
@@ -72,6 +73,8 @@ func (interpreter *Interpreter) processInitial(module ivr.Module, displayName st
 		return interpreter.processInputInitial(v)
 	case *ivr.MenuModule:
 		return interpreter.processMenuInitial(v, displayName)
+	case *ivr.SkillTransferModule:
+		return interpreter.processSkillTransferInitial(v)
 	default:
 		panic("Not implemented")
 	}
@@ -90,6 +93,8 @@ func (interpreter *Interpreter) process(module ivr.Module) (ivr.Module, error) {
 		return interpreter.processMenu(v)
 	case *ivr.QueryModule:
 		return interpreter.processQuery(v)
+	case *ivr.SkillTransferModule:
+		return interpreter.processSkillTransfer(v)
 	case *ivr.HangupModule:
 		return interpreter.processHangup(v)
 	default:
@@ -190,13 +195,34 @@ func (interpreter *Interpreter) addResponseText(VoicePromptIDs ivr.ModulePrompts
 	intentMessageText.Text = append(intentMessageText.Text, promptStrings...)
 }
 
-// func (interpreter *Interpreter) processSkillTransfer(module *ivr.SkillTransferModule) (ivr.Module, error) {
-// 	config, err := cloud.GetConfig()
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	err = createCallback(config["DOMAIN_NAME"], config["CAMPAIGN_NAME"])
-// }
+func (interpreter *Interpreter) addSingleResponseText(text string) {
+	intentMessageText := interpreter.WebhookResponse.FulfillmentMessages[0].GetText()
+	intentMessageText.Text = append(intentMessageText.Text, text)
+}
+
+func (interpreter *Interpreter) processSkillTransferInitial(module *ivr.SkillTransferModule) (ivr.Module, error) {
+	err := interpreter.loadSession()
+	if err != nil {
+		return nil, err
+	}
+	callbackNumber := interpreter.QueryResult.Parameters.Fields["callback-number"].GetStringValue()
+	config, err := cloud.GetConfig()
+	if err != nil {
+		return nil, err
+	}
+	err = createCallback(config["DOMAIN_NAME"], config["CAMPAIGN_NAME"], callbackNumber, map[string]string{})
+	if err != nil {
+		return nil, err
+	}
+	interpreter.addSingleResponseText(fmt.Sprintf("Connecting an agent to %s...", callbackNumber))
+	return getModuleByID(interpreter.Script, module.GetDescendant())
+}
+
+func (interpreter *Interpreter) processSkillTransfer(module *ivr.SkillTransferModule) (ivr.Module, error) {
+	interpreter.addSingleResponseText("Please enter your phone number.")
+	interpreter.populateWebhookContext(module.GetID())
+	return nil, interpreter.Session.save()
+}
 
 func (interpreter *Interpreter) processQuery(module *ivr.QueryModule) (ivr.Module, error) {
 	interpreter.addResponseText(module.VoicePromptIDs)

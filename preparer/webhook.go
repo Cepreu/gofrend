@@ -1,12 +1,13 @@
 package preparer
 
 import (
+	"html"
 	"io/ioutil"
 	"log"
 	"net/http"
 )
 
-// HandleWebhook prepares
+// HandleWebhook ---
 func HandleWebhook(w http.ResponseWriter, r *http.Request) {
 	data, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -16,9 +17,10 @@ func HandleWebhook(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Panicf("Error reading request body: %v", err)
 	}
-	log.Print(string(data))
+	unescapedData := []byte(html.UnescapeString(string(data)))
+	log.Print(string(unescapedData))
 
-	err = Prepare(data)
+	err = Prepare(unescapedData)
 	if err != nil {
 		log.Panic(err)
 	}
