@@ -1,6 +1,10 @@
 package ivr
 
-import "log"
+import (
+	"encoding/json"
+	"fmt"
+	"log"
+)
 
 type StorageScript struct {
 	Domain             string
@@ -119,9 +123,9 @@ const (
 
 type StoragePrompt struct {
 	Type         StoragePromptType
-	TtsPrompt    TtsPrompt
-	XFilePrompt  XFilePrompt
-	XPausePrompt XPausePrompt
+	TtsPrompt    *TtsPrompt
+	XFilePrompt  *XFilePrompt
+	XPausePrompt *XPausePrompt
 }
 
 func (prompt *StoragePrompt) GetPrompt() prompt {
@@ -139,20 +143,32 @@ func (prompt *StoragePrompt) GetPrompt() prompt {
 
 func MakeStoragePrompt(p prompt) *StoragePrompt {
 	ret := &StoragePrompt{}
+	fmt.Printf("%T\n", p)
 	switch v := p.(type) {
-	case TtsPrompt:
+	case *TtsPrompt:
 		ret.Type = cTtsPrompt
 		ret.TtsPrompt = v
-	case XFilePrompt:
+	case *XFilePrompt:
+		fmt.Println(2)
 		ret.Type = cXFilePrompt
 		ret.XFilePrompt = v
-	case XPausePrompt:
+	case *XPausePrompt:
+		fmt.Println(3)
 		ret.Type = cXPausePrompt
 		ret.XPausePrompt = v
 	default:
+		fmt.Println(4)
 		return nil
 	}
 	return ret
+}
+
+func PrettyPrint(v interface{}) (err error) {
+	b, err := json.MarshalIndent(v, "", "  ")
+	if err == nil {
+		fmt.Println(string(b))
+	}
+	return
 }
 
 func MakeStorageScript(script *IVRScript) *StorageScript {
@@ -174,6 +190,7 @@ func MakeStorageScript(script *IVRScript) *StorageScript {
 		storagePromptKeys = append(storagePromptKeys, id)
 		storagePromptVals = append(storagePromptVals, MakeStoragePrompt(p))
 	}
+	PrettyPrint(storagePromptVals)
 	variableKeys := make([]VariableID, 0)
 	variableVals := make([]*Variable, 0)
 	for id, variable := range script.Variables {

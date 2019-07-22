@@ -24,15 +24,15 @@ type AttemptPrompts struct {
 }
 
 // TransformToAI - Transforms to a form suitable for Dialogflow
-func (mp ModulePrompts) TransformToAI(sp ScriptPrompts) (res []string) {
-	for _, ap := range mp {
+func (mp *ModulePrompts) TransformToAI(sp ScriptPrompts) (res []string) {
+	for _, ap := range *mp {
 		res = append(res, ap.TransformToAI(sp))
 	}
 	return
 }
 
 // TransformToAI - Transforms to a form suitable for Dialogflow
-func (ap AttemptPrompts) TransformToAI(sp ScriptPrompts) (txt string) {
+func (ap *AttemptPrompts) TransformToAI(sp ScriptPrompts) (txt string) {
 	for _, id := range ap.LangPrArr[0].PrArr {
 		txt = txt + sp[id].TransformToAI()
 	}
@@ -51,7 +51,7 @@ type TtsPrompt struct {
 }
 
 // TransformToAI is a recursive function that calls itself for every child
-func (t TtsPrompt) TransformToAI() string {
+func (t *TtsPrompt) TransformToAI() string {
 	n, _ := parseTtsPrompt(strings.NewReader(t.TTSPromptXML))
 	return n.transformToAI()
 }
@@ -103,7 +103,7 @@ type XFilePrompt struct {
 	IsRecordedMessage  bool   `xml:"promptData>isRecordedMessage"`
 }
 
-func (t XFilePrompt) TransformToAI() string {
+func (t *XFilePrompt) TransformToAI() string {
 	if t.IsRecordedMessage {
 		return fmt.Sprintf("%s", t.PromptName)
 	}
@@ -114,7 +114,7 @@ type XPausePrompt struct {
 	Timeout int32 `xml:"timeout"`
 }
 
-func (t XPausePrompt) TransformToAI() string { return fmt.Sprintf("%d", t.Timeout) }
+func (t *XPausePrompt) TransformToAI() string { return fmt.Sprintf("%d", t.Timeout) }
 
 type XVivrPrompts struct {
 	VivrPrompts                  []XVivrPrompt  `xml:"vivrPrompt"`
