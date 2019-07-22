@@ -1,18 +1,15 @@
 package preparer
 
 import (
+	"html"
 	"io/ioutil"
 	"log"
 	"net/http"
-	"strconv"
 )
 
 // HandleWebhook ---
 func HandleWebhook(w http.ResponseWriter, r *http.Request) {
 	data, err := ioutil.ReadAll(r.Body)
-	w.Write([]byte(strconv.Itoa(len(data))))
-	w.Write([]byte("\n"))
-	w.Write(data)
 	if err != nil {
 		log.Panicf("Error reading request body: %v", err)
 	}
@@ -20,9 +17,10 @@ func HandleWebhook(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Panicf("Error reading request body: %v", err)
 	}
-	log.Print(string(data))
+	unescapedData := []byte(html.UnescapeString(string(data)))
+	log.Print(unescapedData)
 
-	err = Prepare(data)
+	err = Prepare(unescapedData)
 	if err != nil {
 		log.Panic(err)
 	}
