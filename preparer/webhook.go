@@ -18,7 +18,7 @@ func HandleWebhook(w http.ResponseWriter, r *http.Request) {
 		log.Panicf("Error reading request body: %v", err)
 	}
 	unescapedData := []byte(html.UnescapeString(string(data)))
-	log.Print(unescapedData)
+	log.Print(string(unescapedData))
 
 	err = Prepare(unescapedData)
 	if err != nil {
