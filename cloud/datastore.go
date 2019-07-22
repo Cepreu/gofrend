@@ -8,14 +8,14 @@ import (
 	"google.golang.org/api/option"
 )
 
-func DownloadScript(scriptHash string) (*ivr.IVRScript, error) {
+func DownloadScript(scriptHash string) (*ivr.StorageScript, error) {
 	ctx := context.Background()
 	client, err := datastore.NewClient(ctx, GcpProjectID, option.WithCredentialsFile(GcpCredentialsFileName))
 	if err != nil {
 		return nil, err
 	}
 	key := datastore.NameKey("IvrScript", scriptHash, nil)
-	script := new(ivr.IVRScript)
+	script := new(ivr.StorageScript)
 	err = client.Get(ctx, key, script)
 	if err != nil {
 		return nil, err
@@ -23,7 +23,7 @@ func DownloadScript(scriptHash string) (*ivr.IVRScript, error) {
 	return script, client.Close()
 }
 
-func UploadScript(script *ivr.IVRScript, scriptHash string) error {
+func UploadScript(script *ivr.StorageScript, scriptHash string) error {
 	ctx := context.Background()
 	client, err := datastore.NewClient(ctx, GcpProjectID, option.WithCredentialsFile(GcpCredentialsFileName))
 	if err != nil {

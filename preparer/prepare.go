@@ -24,7 +24,7 @@ func Prepare(data []byte) error {
 
 	scriptHash := utils.HashToString(data)
 
-	err = cloud.UploadScript(script, scriptHash)
+	err = cloud.UploadScript(ivr.MakeStorageScript(script), scriptHash)
 	if err != nil {
 		return err
 	}
