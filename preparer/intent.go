@@ -223,7 +223,7 @@ func createParameters(module ivr.Module) []*dialogflowpb.Intent_Parameter {
 		}
 	case *ivr.MenuModule:
 		return []*dialogflowpb.Intent_Parameter{}
-	case *ivr.MenuModule:
+	case *ivr.SkillTransferModule:
 		return []*dialogflowpb.Intent_Parameter{
 			{
 				Name:                  utils.GenUUIDv4(),

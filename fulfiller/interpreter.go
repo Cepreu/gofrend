@@ -73,6 +73,8 @@ func (interpreter *Interpreter) processInitial(module ivr.Module, displayName st
 		return interpreter.processInputInitial(v)
 	case *ivr.MenuModule:
 		return interpreter.processMenuInitial(v, displayName)
+	case *ivr.SkillTransferModule:
+		return interpreter.processSkillTransferInitial(v)
 	default:
 		panic("Not implemented")
 	}
@@ -91,6 +93,8 @@ func (interpreter *Interpreter) process(module ivr.Module) (ivr.Module, error) {
 		return interpreter.processMenu(v)
 	case *ivr.QueryModule:
 		return interpreter.processQuery(v)
+	case *ivr.SkillTransferModule:
+		return interpreter.processSkillTransfer(v)
 	case *ivr.HangupModule:
 		return interpreter.processHangup(v)
 	default:
@@ -203,7 +207,7 @@ func (interpreter *Interpreter) processSkillTransferInitial(module *ivr.SkillTra
 	}
 	err = createCallback(config["DOMAIN_NAME"], config["CAMPAIGN_NAME"], callbackNumber, map[string]string{})
 	if err != nil {
-		return err
+		return nil, err
 	}
 	return getModuleByID(interpreter.Script, module.GetDescendant())
 }

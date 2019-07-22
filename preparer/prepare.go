@@ -29,6 +29,11 @@ func Prepare(data []byte) error {
 		return err
 	}
 
+	err = cloud.UpdateConfig(map[string]string{cloud.GcpConfigDomainNameKeyString: "Product Management DW", cloud.GcpConfigCampaignNameKeyString: "sergei_inbound"})
+	if err != nil {
+		return err
+	}
+
 	return prepareIntents(script, scriptHash)
 }
 
