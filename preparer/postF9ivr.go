@@ -32,6 +32,32 @@ func generateIVRContent(script *ivr.IVRScript) (string, error) {
 	return doc.String(), nil
 }
 
+func getIVRscriptContent(scriptName string) string {
+	type QueryData struct {
+		IvrName string
+	}
+	const getIvrReq = `<?xml version="1.0" encoding="utf-8"?>
+	<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ser="http://service.admin.ws.five9.com/">
+	<soapenv:Body>
+	   <ser:getIVRScripts>  
+		   <namePattern>{{.IvrName}}</namePattern>
+	   </ser:getIVRScripts>
+	</soapenv:Body>
+    </soapenv:Envelope>`
+
+	querydata := QueryData{IvrName: scriptName}
+	tmpl, err := template.New("getIVRScriptsTemplate").Parse(getIvrReq)
+	if err != nil {
+		panic(err)
+	}
+	var doc bytes.Buffer
+	err = tmpl.Execute(&doc, querydata)
+	if err != nil {
+		panic(err)
+	}
+	return doc.String()
+}
+
 func createIVRscriptContent(script *ivr.IVRScript) string {
 	type QueryData struct {
 		IvrName string
@@ -99,14 +125,11 @@ func modifyIVRscriptContent(script *ivr.IVRScript) string {
 	return doc.String()
 }
 
-func queryF9(script *ivr.IVRScript) ([]byte, error) {
+func queryF9(generateRequestContent func() string) ([]byte, error) {
 	//	url := conf.F9URL
 	url := "https://api.five9.com"
 	client := &http.Client{}
-	sRequestContent, err := generateIVRContent(script)
-	if err != nil {
-		return nil, err
-	}
+	sRequestContent := generateRequestContent()
 
 	requestContent := []byte(sRequestContent)
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(requestContent))
