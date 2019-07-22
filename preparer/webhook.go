@@ -6,9 +6,10 @@ import (
 	"net/http"
 )
 
-// HandleWebhook prepares
+// HandleWebhook ---
 func HandleWebhook(w http.ResponseWriter, r *http.Request) {
 	data, err := ioutil.ReadAll(r.Body)
+	w.Write(data)
 	if err != nil {
 		log.Panicf("Error reading request body: %v", err)
 	}
