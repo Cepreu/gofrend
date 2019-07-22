@@ -262,7 +262,7 @@ func createInputContextNames(module ivr.Module, displayName string) []string {
 	case *ivr.MenuModule:
 		return []string{utils.MakeMenuContextName(displayName)}
 	case *ivr.SkillTransferModule:
-		return []string{utils.MakeMenuContextName(displayName)}
+		return []string{utils.MakeInputContextName(displayName)}
 	default:
 		panic("Not implemented")
 	}

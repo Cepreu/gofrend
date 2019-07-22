@@ -3,7 +3,6 @@ package ivr
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 )
 
 type StorageScript struct {
@@ -143,7 +142,6 @@ func (prompt *StoragePrompt) GetPrompt() prompt {
 
 func MakeStoragePrompt(p prompt) *StoragePrompt {
 	ret := &StoragePrompt{}
-	fmt.Printf("%T\n", p)
 	switch v := p.(type) {
 	case *TtsPrompt:
 		ret.Type = cTtsPrompt
@@ -190,7 +188,6 @@ func MakeStorageScript(script *IVRScript) *StorageScript {
 		storagePromptKeys = append(storagePromptKeys, id)
 		storagePromptVals = append(storagePromptVals, MakeStoragePrompt(p))
 	}
-	PrettyPrint(storagePromptVals)
 	variableKeys := make([]VariableID, 0)
 	variableVals := make([]*Variable, 0)
 	for id, variable := range script.Variables {
@@ -219,22 +216,18 @@ func MakeStorageScript(script *IVRScript) *StorageScript {
 
 func (storageScript *StorageScript) GetScript() *IVRScript {
 	modules := make(map[ModuleID]Module)
-	log.Printf("ModuleKeys len: %d, ModuleVals len: %d", len(storageScript.ModuleKeys), len(storageScript.ModuleVals))
 	for i := range storageScript.ModuleKeys {
 		modules[storageScript.ModuleKeys[i]] = storageScript.ModuleVals[i].GetModule()
 	}
 	modulesOnHangup := make(map[ModuleID]Module)
-	log.Printf("ModuleOnHangupKeys len: %d, ModuleOnHangupVals len: %d", len(storageScript.ModuleOnHangupKeys), len(storageScript.ModuleOnHangupVals))
 	for i := range storageScript.ModuleOnHangupKeys {
 		modulesOnHangup[storageScript.ModuleOnHangupKeys[i]] = storageScript.ModuleOnHangupVals[i].GetModule()
 	}
 	scriptPrompts := make(map[PromptID]prompt)
-	log.Printf("PromptKeys len: %d, PromptVals len: %d", len(storageScript.PromptKeys), len(storageScript.PromptVals))
 	for i := range storageScript.PromptKeys {
 		scriptPrompts[storageScript.PromptKeys[i]] = storageScript.PromptVals[i].GetPrompt()
 	}
 	variables := make(map[VariableID]*Variable)
-	log.Printf("VariableKeys len: %d, VariableVals len: %d", len(storageScript.VariableKeys), len(storageScript.VariableVals))
 	for i := range storageScript.VariableKeys {
 		variables[storageScript.VariableKeys[i]] = storageScript.VariableVals[i]
 	}

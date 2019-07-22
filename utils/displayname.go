@@ -16,7 +16,7 @@ func DisplayNameToScriptHash(displayName string) string {
 
 // InputDisplayNameToModuleID parses intent display name for input module and returns module ID
 func InputDisplayNameToModuleID(displayName string) ivr.ModuleID {
-	dashIndex := strings.Index(displayName, "-")
+	dashIndex := strings.LastIndex(displayName, "-")
 	return ivr.ModuleID(displayName[dashIndex+1:])
 }
 
