@@ -173,7 +173,7 @@ func createTrainingPhrases(module ivr.Module, script *ivr.IVRScript, branchName 
 					},
 					{
 						Text:        "781-864-1234",
-						EntityType:  "@sys.number",
+						EntityType:  "@sys.phone-number",
 						Alias:       "callback-number",
 						UserDefined: true,
 					},
@@ -188,7 +188,7 @@ func createTrainingPhrases(module ivr.Module, script *ivr.IVRScript, branchName 
 					},
 					{
 						Text:        "3392232900",
-						EntityType:  "@sys.number",
+						EntityType:  "@sys.phone-number",
 						Alias:       "callback-number",
 						UserDefined: true,
 					},

@@ -210,7 +210,7 @@ func (interpreter *Interpreter) processSkillTransferInitial(module *ivr.SkillTra
 		return nil, err
 	}
 	intentMessageText := interpreter.WebhookResponse.FulfillmentMessages[0].GetText()
-	intentMessageText.Text = append(intentMessageText.Text, fmt.Sprintf("Calling %s...", callbackNumber))
+	intentMessageText.Text = append(intentMessageText.Text, fmt.Sprintf("Connecting an agent to %s...", callbackNumber))
 	return getModuleByID(interpreter.Script, module.GetDescendant())
 }
 
