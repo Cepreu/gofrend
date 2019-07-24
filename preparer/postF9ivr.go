@@ -60,7 +60,7 @@ func getIVRscriptContent(scriptName string) string {
 	return doc.String()
 }
 
-func createIVRscriptContent(script *ivr.IVRScript) string {
+func createIVRscriptContent(generatedScriptName string) string {
 	type QueryData struct {
 		IvrName string
 	}
@@ -73,7 +73,7 @@ func createIVRscriptContent(script *ivr.IVRScript) string {
 </soapenv:Body>
 </soapenv:Envelope>`
 
-	querydata := QueryData{IvrName: script.Name + "_generated"}
+	querydata := QueryData{IvrName: generatedScriptName}
 	tmpl, err := template.New("createIVRScriptTemplate").Parse(createIvrReq)
 	if err != nil {
 		panic(err)
@@ -86,7 +86,7 @@ func createIVRscriptContent(script *ivr.IVRScript) string {
 	return doc.String()
 }
 
-func modifyIVRscriptContent(script *ivr.IVRScript) string {
+func modifyIVRscriptContent(generatedScriptName string, script *ivr.IVRScript) string {
 	type IvrScriptDef struct {
 		Name          string
 		Description   string
@@ -97,7 +97,7 @@ func modifyIVRscriptContent(script *ivr.IVRScript) string {
 		panic(err)
 	}
 	querydata := IvrScriptDef{
-		Name:          script.Name + "_generated",
+		Name:          generatedScriptName,
 		Description:   "Auto-generated from " + script.Name,
 		XMLDefinition: html.EscapeString(ivrBody),
 	}
@@ -127,7 +127,7 @@ func modifyIVRscriptContent(script *ivr.IVRScript) string {
 	return doc.String()
 }
 
-func setDefaultIVRScheduleContent(campaign, script string, params []struct {
+func setDefaultIVRScheduleContent(campaign, generatedScriptName string, params []struct {
 	Name  string
 	Value string
 }) string {
@@ -143,7 +143,7 @@ func setDefaultIVRScheduleContent(campaign, script string, params []struct {
 	}
 	querydata := QueryData{
 		CampaignName:        campaign,
-		ScriptName:          script,
+		ScriptName:          generatedScriptName,
 		IsVisualModeEnabled: true,
 		IsChatEnabled:       false,
 		Params:              params,
@@ -179,6 +179,46 @@ func setDefaultIVRScheduleContent(campaign, script string, params []struct {
 	return doc.String()
 }
 
+func getIvrFromF9(user, pwd, ivrname string) (string, error) {
+	type envelope struct {
+		Name          string `xml:"Body>getIVRScriptsResponse>return>name"`
+		XMLDefinition string `xml:"Body>getIVRScriptsResponse>return>xmlDefinition"`
+		Description   string `xml:"Body>getIVRScriptsResponse>return>description"`
+	}
+	content, err := queryF9(user, pwd, func() string { return getIVRscriptContent(ivrname) })
+	if err != nil {
+		return "", err
+	}
+
+	var scriptDef envelope
+	if err := xml.Unmarshal(content, &scriptDef); err != nil {
+		return "", err
+	}
+	return scriptDef.XMLDefinition, nil
+}
+
+func configureF9(user, pwd, campaign string, ivr *ivr.IVRScript) (err error) {
+	generatedScriptName := ivr.Name + "_generated"
+	resp, err := queryF9(user, pwd, func() string { return createIVRscriptContent(generatedScriptName) })
+	if err != nil {
+		if fault, err1 := getf9errorDescr(resp); err1 != nil ||
+			fault.FaultString != fmt.Sprintf("IvrScript with name \"%s\" already exists", generatedScriptName) {
+			return err
+		}
+	}
+	_, err = queryF9(user, pwd, func() string { return modifyIVRscriptContent(generatedScriptName, ivr) })
+	if err == nil {
+		params := []struct {
+			Name  string
+			Value string
+		}{}
+		_, err = queryF9(user, pwd, func() string { return setDefaultIVRScheduleContent(campaign, generatedScriptName, params) })
+
+	}
+
+	return err
+}
+
 func queryF9(user, pwd string, generateRequestContent func() string) ([]byte, error) {
 	//	url := conf.F9URL
 	url := "https://api.five9.com/wsadmin/v11/AdminWebService"
@@ -203,40 +243,22 @@ func queryF9(user, pwd string, generateRequestContent func() string) ([]byte, er
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode != 200 {
-		return nil, errors.New("Error Respose " + resp.Status)
+		contents, _ := ioutil.ReadAll(resp.Body)
+		return contents, errors.New("Error Respose " + resp.Status)
 	}
 	contents, err := ioutil.ReadAll(resp.Body)
 	return contents, err
 }
 
-type ivrScriptDef struct {
-	Description   string `xml:"env:Envelope>env:Body>ns2:getIVRScriptsResponse>return>description"`
-	XMLDefinition string `xml:"env:Envelope>env:Body>ns2:getIVRScriptsResponse>return>xmlDefinition"`
-	Name          string `xml:"env:Envelope>env:Body>ns2:getIVRScriptsResponse>return>name"`
+type f9fault struct {
+	FaultCode   string `xml:"Body>Fault>faultcode"`
+	FaultString string `xml:"Body>Fault>faultstring"`
 }
 
-func getIvrFromF9(user, pwd, ivrname string) (string, error) {
-	content, err := queryF9(user, pwd, func() string { return getIVRscriptContent(ivrname) })
-	if err != nil {
-		return "", err
+func getf9errorDescr(faultContent []byte) (*f9fault, error) {
+	var fault f9fault
+	if err := xml.Unmarshal(faultContent, &fault); err != nil {
+		return nil, err
 	}
-
-	var scriptDef ivrScriptDef
-	if err := xml.Unmarshal(content, &scriptDef); err != nil {
-		return "", err
-	}
-	return scriptDef.XMLDefinition, nil
-	//	return string(content), nil
-}
-
-func configureF9(user, pwd, campaign string, ivr *ivr.IVRScript) (err error) {
-	_, err = queryF9(user, pwd, func() string { return createIVRscriptContent(ivr) })
-	if err == nil {
-		_, err = queryF9(user, pwd, func() string { return modifyIVRscriptContent(ivr) })
-		if err == nil {
-			_, err = queryF9(user, pwd, func() string { return modifyIVRscriptContent(ivr) })
-
-		}
-	}
-	return err
+	return &fault, nil
 }
