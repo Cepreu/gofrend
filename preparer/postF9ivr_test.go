@@ -1,6 +1,7 @@
 package preparer
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/Cepreu/gofrend/ivr"
@@ -15,7 +16,7 @@ func TestGetIVRContent(t *testing.T) {
 
 func TestCreateIVRContent(t *testing.T) {
 	s := createIVRscriptContent(&script)
-	t.Errorf("TestCreateIVRScriptContent: \n%s ", s)
+	fmt.Printf("TestCreateIVRScriptContent: \n%s ", s)
 }
 
 func TestModifyIVRscriptContent(t *testing.T) {

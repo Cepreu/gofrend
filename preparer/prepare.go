@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+	"html"
 	"io/ioutil"
 
 	dialogflow "cloud.google.com/go/dialogflow/apiv2"
@@ -16,7 +17,7 @@ import (
 )
 
 // Prepare creates necessary Dialogflow intents and uploads XML to gcp storage
-func Prepare(data []byte) error {
+func Prepare(data []byte, scriptName, campaignName, userName, password string) error {
 	script, err := xmlparser.NewIVRScript(bytes.NewReader(data))
 	if err != nil {
 		return err
@@ -43,7 +44,7 @@ func PrepareFile(filename string) error {
 	if err != nil {
 		return err
 	}
-	return Prepare(data)
+	return Prepare([]byte(html.UnescapeString(string(data))))
 }
 
 func prepareIntents(script *ivr.IVRScript, scriptHash string) error {
