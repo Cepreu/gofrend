@@ -210,12 +210,16 @@ func (interpreter *Interpreter) processSkillTransferInitial(module *ivr.SkillTra
 	if err != nil {
 		return nil, err
 	}
-	err = createCallback(config["DOMAIN_NAME"], config["CAMPAIGN_NAME"], callbackNumber, map[string]string{})
+	err = createCallback(config[cDomainNameConfigKey], config[cCampaignNameConfigKey], callbackNumber, makeModuleParams(module))
 	if err != nil {
 		return nil, err
 	}
 	interpreter.addSingleResponseText(fmt.Sprintf("Connecting an agent to %s...", callbackNumber))
-	return getModuleByID(interpreter.Script, module.GetDescendant())
+	return nil, interpreter.Session.delete()
+}
+
+func makeModuleParams(module ivr.Module) map[string]string {
+	return map[string]string{cModuleIDParamKey: string(module.GetID())}
 }
 
 func (interpreter *Interpreter) processSkillTransfer(module *ivr.SkillTransferModule) (ivr.Module, error) {
@@ -358,6 +362,14 @@ func (interpreter *Interpreter) processPlay(module *ivr.PlayModule) (ivr.Module,
 }
 
 func (interpreter *Interpreter) processHangup(module *ivr.HangupModule) (ivr.Module, error) {
+	config, err := cloud.GetConfig()
+	if err != nil {
+		return nil, err
+	}
+	err = createTermination(config[cDomainNameConfigKey], config[cCampaignNameConfigKey], makeModuleParams(module))
+	if err != nil {
+		return nil, err
+	}
 	return nil, interpreter.Session.delete()
 }
 
