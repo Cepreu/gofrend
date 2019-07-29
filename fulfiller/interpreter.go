@@ -210,7 +210,7 @@ func (interpreter *Interpreter) processSkillTransferInitial(module *ivr.SkillTra
 	if err != nil {
 		return nil, err
 	}
-	err = createCallback(config[cDomainNameConfigKey], config[cCampaignNameConfigKey], callbackNumber, makeModuleParams(module))
+	err = createCallback(config[cDomainNameConfigKey], config[cCampaignNameConfigKey], callbackNumber, interpreter.makeModuleParams(module))
 	if err != nil {
 		return nil, err
 	}
@@ -218,8 +218,12 @@ func (interpreter *Interpreter) processSkillTransferInitial(module *ivr.SkillTra
 	return nil, interpreter.Session.delete()
 }
 
-func makeModuleParams(module ivr.Module) map[string]string {
-	return map[string]string{cModuleIDParamKey: string(module.GetID())}
+func (interpreter *Interpreter) makeModuleParams(module ivr.Module) map[string]string {
+	params := map[string]string{cModuleIDParamKey: string(module.GetID())}
+	for _, variable := range interpreter.Session.Data.Variables {
+		params[string(variable.ID)] = variable.Value
+	}
+	return params
 }
 
 func (interpreter *Interpreter) processSkillTransfer(module *ivr.SkillTransferModule) (ivr.Module, error) {
@@ -366,7 +370,7 @@ func (interpreter *Interpreter) processHangup(module *ivr.HangupModule) (ivr.Mod
 	if err != nil {
 		return nil, err
 	}
-	err = createTermination(config[cDomainNameConfigKey], config[cCampaignNameConfigKey], makeModuleParams(module))
+	err = createTermination(config[cDomainNameConfigKey], config[cCampaignNameConfigKey], interpreter.makeModuleParams(module))
 	if err != nil {
 		return nil, err
 	}
