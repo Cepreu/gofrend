@@ -1,0 +1,41 @@
+swagger: '2.0'
+info:
+  title: F9 Dialogflow Agent Preparer API
+  description: API for preparing Five9 Dialogflow chatbot agents
+  version: 1.0.0
+host: f9-dialogflow-converter-endpoint-vi2zkckh3a-uc.a.run.app
+schemes:
+  - https
+paths:
+  /handle-preparer-webhook:
+    post:
+      summary: Update a Dialogflow agent to use the same control flow as a given IVR script
+      operationId: handle-preparer-webhook
+      x-google-backend:
+        address: https://us-central1-f9-dialogflow-converter.cloudfunctions.net/handle-preparer-webhook
+      parameters:
+        - in: body
+          name: scriptName
+          required: true
+          schema:
+            type: string
+        - in: body
+          name: campaignName
+          required: true
+          schema:
+            type: string
+        - in: body
+          name: username
+          required: true
+          schema:
+            type: string
+        - in: body
+          name: temporaryPassword
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A successful response
+          schema:
+            type: string

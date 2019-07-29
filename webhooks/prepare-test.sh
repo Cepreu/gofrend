@@ -1,3 +1,4 @@
 #!/bin/bash
 curl "https://us-central1-f9-dialogflow-converter.cloudfunctions.net/handle-preparer-webhook" \
-    --data-binary "@test_files/comparison_test.five9ivr"
+    -H "Content-Type: application/json" \
+    -d '{"SCRIPT_NAME":"sk_text", "CAMPAIGN_NAME":"sergei_inbound", "USERNAME":"sam2@007.com", "TEMPORARY_PASSWORD":"pwd1234567"}'
