@@ -132,8 +132,8 @@ func TestDomainAndCampaignIDs(t *testing.T) {
 func TestCallback(t *testing.T) {
 	domainName := "Product Management DW"
 	campaignName := "sergei_inbound"
-	cbPhoneNumber := "6502437004"
-	params := map[string]string{"sergei.qwerty": "Hello friend!"}
+	cbPhoneNumber := "7818641521"
+	params := map[string]string{"MODULE_ID": "73594C84757A47B9AD1ED2CD1FCFD5A8"}
 	err := createCallback(domainName, campaignName, cbPhoneNumber, params)
 	if err != nil {
 		t.Fatal(err)
