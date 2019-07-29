@@ -282,6 +282,10 @@ func getIvrFromF9(auth, ivrname string) (string, error) {
 	return scriptDef.XMLDefinition, nil
 }
 
+func createAuthString(username, password string) string {
+	return base64.StdEncoding.EncodeToString([]byte(username + ":" + password))
+}
+
 func changeUserPwdF9(oldauth string) (newauth string, err error) {
 	newpwd := utils.GenUUIDv4()
 

@@ -16,7 +16,8 @@ import (
 )
 
 func Prepare(scriptName, campaignName, username, temporaryPassword string) error {
-	xmlDefinition, err := getIvrFromF9(username, temporaryPassword, scriptName)
+	auth := createAuthString(username, temporaryPassword)
+	xmlDefinition, err := getIvrFromF9(auth, scriptName)
 	if err != nil {
 		return err
 	}
@@ -35,7 +36,7 @@ func Prepare(scriptName, campaignName, username, temporaryPassword string) error
 		return err
 	}
 
-	return configureF9(username, temporaryPassword, campaignName, script)
+	return configureF9(auth, campaignName, script)
 }
 
 func PrepareScript(script *ivr.IVRScript, scriptHash string) error {
