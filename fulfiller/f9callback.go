@@ -12,6 +12,12 @@ import (
 	"time"
 )
 
+const (
+	cModuleIDParamKey      string = "MODULE_ID"
+	cDomainNameConfigKey   string = "DOMAIN_NAME"
+	cCampaignNameConfigKey string = "CAMPAIGN_NAME"
+)
+
 type campaignStateResp struct {
 	Count int             `json:"count"`
 	Items []campaignState `json:"items"`
@@ -261,6 +267,10 @@ func (c *client) finalize(domainID, sessionID string) (redirectURL string, err e
 		}
 	}
 	return "", err
+}
+
+func createTermination(domainName, campaignName string, params map[string]string) error {
+	return createCallback(domainName, campaignName, "", params)
 }
 
 func createCallback(domainName, campaignName, phone string, params map[string]string) (err error) {

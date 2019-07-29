@@ -1,10 +1,10 @@
 package preparer
 
 import (
-	"bytes"
 	"context"
 	"fmt"
-	"io/ioutil"
+	"html"
+	"strings"
 
 	dialogflow "cloud.google.com/go/dialogflow/apiv2"
 	"github.com/Cepreu/gofrend/cloud"
@@ -15,16 +15,31 @@ import (
 	dialogflowpb "google.golang.org/genproto/googleapis/cloud/dialogflow/v2"
 )
 
-// Prepare creates necessary Dialogflow intents and uploads XML to gcp storage
-func Prepare(data []byte) error {
-	script, err := xmlparser.NewIVRScript(bytes.NewReader(data))
+func Prepare(scriptName, campaignName, username, temporaryPassword string) error {
+	xmlDefinition, err := getIvrFromF9(username, temporaryPassword, scriptName)
+	if err != nil {
+		return err
+	}
+	xmlDefinition = html.UnescapeString(xmlDefinition)
+
+	script, err := xmlparser.NewIVRScript(strings.NewReader(xmlDefinition))
+	if err != nil {
+		return err
+	}
+	script.Name = scriptName
+
+	scriptHash := utils.HashToString([]byte(xmlDefinition))
+
+	err = PrepareScript(script, scriptHash)
 	if err != nil {
 		return err
 	}
 
-	scriptHash := utils.HashToString(data)
+	return configureF9(username, temporaryPassword, campaignName, script)
+}
 
-	err = cloud.UploadScript(ivr.MakeStorageScript(script), scriptHash)
+func PrepareScript(script *ivr.IVRScript, scriptHash string) error {
+	err := cloud.UploadScript(ivr.MakeStorageScript(script), scriptHash)
 	if err != nil {
 		return err
 	}
@@ -35,15 +50,6 @@ func Prepare(data []byte) error {
 	}
 
 	return prepareIntents(script, scriptHash)
-}
-
-// PrepareFile creates necessary DialogFlow intents and uploads XML to gcp storage
-func PrepareFile(filename string) error {
-	data, err := ioutil.ReadFile(filename)
-	if err != nil {
-		return err
-	}
-	return Prepare(data)
 }
 
 func prepareIntents(script *ivr.IVRScript, scriptHash string) error {

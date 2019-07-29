@@ -1,26 +1,24 @@
 package preparer
 
 import (
-	"html"
-	"io/ioutil"
 	"log"
 	"net/http"
 )
 
+const (
+	cScriptName        string = "SCRIPT_NAME"
+	cCampaignName      string = "CAMPAIGN_NAME"
+	cUsername          string = "USERNAME"
+	cTemporaryPassword string = "TEMPORARY_PASSWORD"
+	cPassword          string = "PASSWORD"
+)
+
 // HandleWebhook ---
 func HandleWebhook(w http.ResponseWriter, r *http.Request) {
-	data, err := ioutil.ReadAll(r.Body)
-	if err != nil {
-		log.Panicf("Error reading request body: %v", err)
-	}
-	err = r.Body.Close()
-	if err != nil {
-		log.Panicf("Error reading request body: %v", err)
-	}
-	unescapedData := []byte(html.UnescapeString(string(data)))
-	log.Print(string(unescapedData))
+	r.ParseForm()
+	f := r.Form
+	err := Prepare(f[cScriptName][0], f[cCampaignName][0], f[cUsername][0], f[cTemporaryPassword][0])
 
-	err = Prepare(unescapedData)
 	if err != nil {
 		log.Panic(err)
 	}
