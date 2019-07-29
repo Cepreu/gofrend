@@ -4,19 +4,20 @@
     <properties/>
     <modules>
         <incomingCall>
-            <singleDescendant>4FC1ABC66C6542B6B1F8493C0A048676</singleDescendant>
+            <singleDescendant>2C025B79A3E24A5489FBD05FAB4396B4</singleDescendant>
             <moduleName>IncomingCall1</moduleName>
-            <locationX>74</locationX>
-            <locationY>108</locationY>
+            <locationX>69</locationX>
+            <locationY>{{ .CaseY }}</locationY>
             <moduleId>621B2027EAFB4B5DA931C21C4E767330</moduleId>
             <data/>
         </incomingCall>
+{{ range .HangUps }}
         <hangup>
-            <ascendants>4FC1ABC66C6542B6B1F8493C0A048676</ascendants>
-            <moduleName>Hangup31</moduleName>
-            <locationX>326</locationX>
-            <locationY>108</locationY>
-            <moduleId>E400A936AE3149958743D7FA4AD0FE5E</moduleId>
+            <ascendants>2C025B79A3E24A5489FBD05FAB4396B4</ascendants>
+            <moduleName>{{ .M.Name }}</moduleName>
+            <locationX>{{ .X }}</locationX>
+            <locationY>{{ .Y }}</locationY>
+            <moduleId>{{ .M.ID }}</moduleId>
             <data>
                 <dispo>
                     <id>0</id>
@@ -39,122 +40,85 @@
                 <overwriteDisposition>true</overwriteDisposition>
             </data>
         </hangup>
+{{ end }}
+{{ range .SkillTransfers }}
         <skillTransfer>
-            <ascendants>621B2027EAFB4B5DA931C21C4E767330</ascendants>
-            <singleDescendant>E400A936AE3149958743D7FA4AD0FE5E</singleDescendant>
+            <ascendants>2C025B79A3E24A5489FBD05FAB4396B4</ascendants>
+            <singleDescendant>{{ .M.Descendant }}</singleDescendant>
             <moduleName>SkillTransfer2</moduleName>
-            <locationX>219</locationX>
-            <locationY>108</locationY>
-            <moduleId>4FC1ABC66C6542B6B1F8493C0A048676</moduleId>
+             <locationX>{{ .X }}</locationX>
+            <locationY>{{ .Y }}</locationY>
+            <moduleId>{{ .M.ID }}</moduleId>
             <data>
-                <dispo>
-                    <id>-5</id>
-                    <name>Abandon</name>
-                </dispo>
-                <maxQueueTime>600</maxQueueTime>
-                <queueIfOnCall>true</queueIfOnCall>
-                <onCallQueueTime>600</onCallQueueTime>
-                <queueIfOnBreakOrLoggedOut>false</queueIfOnBreakOrLoggedOut>
-                <onBreakOrLoggedOutQueueTime>600</onBreakOrLoggedOutQueueTime>
-                <onQueueTimeoutExpiration>false</onQueueTimeoutExpiration>
-                <pauseBeforeTransfer>0</pauseBeforeTransfer>
-                <maxRingTime>15</maxRingTime>
-                <placeOnBreakIfNoAnswer>true</placeOnBreakIfNoAnswer>
-                <vmTransferOnQueueTimeout>false</vmTransferOnQueueTimeout>
-                <vmTransferOnDigit>false</vmTransferOnDigit>
-                <vmBoxType>SKILL</vmBoxType>
-                <clearDigitBuffer>true</clearDigitBuffer>
-                <enableMusicOnHold>true</enableMusicOnHold>
-                <announcements>
-                    <enabled>false</enabled>
-                    <loopped>false</loopped>
-                    <timeout>1</timeout>
-                    <prompt/>
-                    <annType>EWT</annType>
-                </announcements>
-                <announcements>
-                    <enabled>false</enabled>
-                    <loopped>false</loopped>
-                    <timeout>1</timeout>
-                    <prompt/>
-                    <annType>EWT</annType>
-                </announcements>
-                <announcements>
-                    <enabled>false</enabled>
-                    <loopped>false</loopped>
-                    <timeout>1</timeout>
-                    <prompt/>
-                    <annType>EWT</annType>
-                </announcements>
-                <announcements>
-                    <enabled>false</enabled>
-                    <loopped>false</loopped>
-                    <timeout>1</timeout>
-                    <prompt/>
-                    <annType>EWT</annType>
-                </announcements>
-                <announcements>
-                    <enabled>false</enabled>
-                    <loopped>false</loopped>
-                    <timeout>1</timeout>
-                    <prompt/>
-                    <annType>EWT</annType>
-                </announcements>
-                <priorityChangeType>INCREASE</priorityChangeType>
-                <priorityChangeValue>
-                    <isVarSelected>false</isVarSelected>
-                    <integerValue>
-                        <value>10</value>
-                    </integerValue>
-                </priorityChangeValue>
-                <listOfSkillsEx>
-                    <extrnalObj>
-                        <id>266219</id>
-                        <name>agent10_skill</name>
-                    </extrnalObj>
-                    <varSelected>false</varSelected>
-                </listOfSkillsEx>
-                <taskType>0</taskType>
-                <transferAlgorithm>
-                    <algorithmType>LongestReadyTime</algorithmType>
-                    <statAlgorithmTimeWindow>E15minutes</statAlgorithmTimeWindow>
-                </transferAlgorithm>
-                <recordedFilesAction>KEEP_AS_RECORDINGD</recordedFilesAction>
-                <callbackNumberFromCav>
-                    <id>63</id>
-                    <name>number</name>
-                </callbackNumberFromCav>
-                <callbackPhoneNumberPrompt>
-                    <id>-26</id>
-                    <name>QC1YourPhoneNumberIs</name>
-                </callbackPhoneNumberPrompt>
-                <callbackConfirmingPhoneNumberPrompt>
-                    <id>-27</id>
-                    <name>QC2PressOneIfCorrect</name>
-                </callbackConfirmingPhoneNumberPrompt>
-                <callbackEnteringPhoneNumberPrompt>
-                    <id>-28</id>
-                    <name>QC3PleaseEnterYourPhoneNumber</name>
-                </callbackEnteringPhoneNumberPrompt>
-                <callbackRecordingCallerNamePrompt>
-                    <id>-36</id>
-                    <name>QC5PleaseClearlySayYourName</name>
-                </callbackRecordingCallerNamePrompt>
-                <callbackConfirmationPrompt>
-                    <id>-29</id>
-                    <name>QC4YouWillBeCalled</name>
-                </callbackConfirmationPrompt>
-                <callbackQueueTimeoutSec>18000</callbackQueueTimeoutSec>
-                <callbackEnterDigitsMaxTimeSec>5</callbackEnterDigitsMaxTimeSec>
-                <callbackAllowInternational>false</callbackAllowInternational>
-                <isTcpaConsentEnabled>false</isTcpaConsentEnabled>
-                <tcpaConsentText>H4sIAAAAAAAAADWOwQ3DMAwDV+EARYboL58uUPSh2EwjwJYCy878TVDkS/IOnJHcgtbRHY2JehBJ
-SgmszSvezxFqjMBLKj+Qc7gRnYX75kbYqAsb9uaHZmbI4gcfUEtlZLXv1VTv6iblL55mDMts0cXy
-aTuV9wcNmHfIFWS9IPiKfbS0SXD6AQLT2xmtAAAA</tcpaConsentText>
-                <ignoreSkillsOrder>false</ignoreSkillsOrder>
-                <recordCallerNameOnQueueCallback>false</recordCallerNameOnQueueCallback>
+                {{ .M.Data.InnerXML }}
             </data>
         </skillTransfer>
+{{ end }}
+        <case>
+            <ascendants>621B2027EAFB4B5DA931C21C4E767330</ascendants>
+            <moduleName>Case2</moduleName>
+            <locationX>{{ .CaseX }}</locationX>
+            <locationY>{{ .CaseY }}</locationY>
+            <moduleId>2C025B79A3E24A5489FBD05FAB4396B4</moduleId>
+            <data>
+                <branches>
+{{ range .SkillTransfers }}
+                    <entry>
+                        <key>{{ .B }}</key>
+                        <value>
+                            <name>{{ .B }}</name>
+                            <desc>{{ .M.ID }}</desc>
+                            <conditions>
+                                <comparisonType>EQUALS</comparisonType>
+                                <rightOperand>
+                                    <isVarSelected>false</isVarSelected>
+                                    <stringValue>
+                                        <value>{{ .M.ID }}</value>
+                                        <id>0</id>
+                                    </stringValue>
+                                </rightOperand>
+                                <leftOperand>
+                                    <isVarSelected>true</isVarSelected>
+                                    <variableName>MODULE_ID</variableName>
+                                </leftOperand>
+                            </conditions>
+                        </value>
+                    </entry>
+{{ end }}
+{{ range .HangUps }}
+                    <entry>
+                        <key>{{ .B }}</key>
+                        <value>
+                            <name>{{ .B }}</name>
+                            <desc>{{ .M.ID }}</desc>
+                            <conditions>
+                                <comparisonType>EQUALS</comparisonType>
+                                <rightOperand>
+                                    <isVarSelected>false</isVarSelected>
+                                    <stringValue>
+                                        <value>{{ .M.ID }}</value>
+                                        <id>0</id>
+                                    </stringValue>
+                                </rightOperand>
+                                <leftOperand>
+                                    <isVarSelected>true</isVarSelected>
+                                    <variableName>MODULE_ID</variableName>
+                                </leftOperand>
+                            </conditions>
+                        </value>
+                    </entry>
+{{ end }}
+                     <entry>
+                        <key>No Match</key>
+                        <value>
+                            <name>No Match</name>
+                            <desc>{{ .DefHangupID }}</desc>
+                            <conditions/>
+                        </value>
+                    </entry>
+                </branches>
+            </data>
+        </case>
     </modules>
     <modulesOnHangup>
         <startOnHangup>
@@ -194,104 +158,21 @@ aTuV9wcNmHfIFWS9IPiKfbS0SXD6AQLT2xmtAAAA</tcpaConsentText>
         </hangup>
     </modulesOnHangup>
     <userVariables>
-
+        <entry>
+            <key>MODULE_ID</key>
+            <value>
+                <name>MODULE_ID</name>
+                <description></description>
+                <stringValue>
+                    <value></value>
+                    <id>0</id>
+                </stringValue>
+                <attributes>64</attributes>
+                <isNullValue>true</isNullValue>
+            </value>
+        </entry>
     </userVariables>
-    <multiLanguagesPrompts>
-        <entry>
-            <key>93F16A7FDB504DF2B9ABEA49B6C93639</key>
-            <value>
-                <promptId>93F16A7FDB504DF2B9ABEA49B6C93639</promptId>
-                <name>ConfirmPromptWithoutVSR</name>
-                <description>Default prompt for user input confirmation with disabled voice recognition</description>
-                <type>AUDIO</type>
-                <prompts>
-                    <entry key="en-US">
-                        <ttsPrompt>
-                            <xml>H4sIAAAAAAAAANVT0UrDMBR931eEvK9xPslIOypMGAwVtyk+lbS9bsE0GUla17837bA23YYg+GDJ
-Q3PO5ZyTexM6OxQCVaANVzLEk+AKI5CZyrnchnizvhvfYGQskzkTSkKIazB4Fo2o2QN7nwsoQNpo
-hNxHmbWap6UFcwRaUDC5jR3xDbWwZAVEznra8JS0W7+iU3tmooRbZgBVzV+IQY43K0x6JsR3oWQY
-hXILRT+WYXVsvPinxoYMmIFIh1s42LNaP2v62pfIVOV19KpKNxoLGvKpO2KLnWYhF8NQMmwCOd8F
-WjHNWSrgV/0Zgl9i982Ik2T1skiWi/X8KV4mCSUe20t2McJ/nFyAHjUYg/AEI/6G7I4b5FamtIbM
-BujB7kB/cHfD98e6a/xX8+2KHOm94E/oteYzCQQAAA==</xml>
-                            <promptTTSEnumed>false</promptTTSEnumed>
-                        </ttsPrompt>
-                    </entry>
-                </prompts>
-                <defaultLanguage>en-US</defaultLanguage>
-                <isPersistent>true</isPersistent>
-            </value>
-        </entry>
-        <entry>
-            <key>A7E28313AAAE4FB7B5234F0DBC536FBE</key>
-            <value>
-                <promptId>A7E28313AAAE4FB7B5234F0DBC536FBE</promptId>
-                <name>ConfirmPrompt</name>
-                <description>Default prompt for user input confirmation</description>
-                <type>AUDIO</type>
-                <prompts>
-                    <entry key="en-US">
-                        <ttsPrompt>
-                            <xml>H4sIAAAAAAAAANVTUWvCMBB+91ccebeZexqSVhw4EMTB1A2fSrQ3DWsTyaXO/vulHXNttQwGe1jI
-Q/J9ue++3CVidMpSOKIlZXTIBsENA9Rbkyi9C9lq+dC/Y0BO6kSmRmPICiQ2inqCDijfJilmqF3U
-Az+EdM6qTe6QPoEKTKXejT3xDVWwlhlGPvWw5AWvts0TZ7VnmeZ4LwnhWK5Chrq/WjBeS8KbWQRv
-WxHKYVa3RbIYU8P+ZWLiLaYlcsYdntxVrZ81m9pd5MYkRbQ2uW+NQ4vJ0F+xwi698E4zgreLwK9X
-QRylVXKT4q/q0wa/xOZli+N48TKNZ9Pl5Gk8i2PBG2zNWaeF/9i5ABayALb2XweMhYNFImADBuoV
-3F4R+Lk11uLWBfDo9mjflX/uVAbNTT3mlv1V48+HPNn42h9LoLssIgQAAA==</xml>
-                            <promptTTSEnumed>false</promptTTSEnumed>
-                        </ttsPrompt>
-                    </entry>
-                </prompts>
-                <defaultLanguage>en-US</defaultLanguage>
-                <isPersistent>true</isPersistent>
-            </value>
-        </entry>
-        <entry>
-            <key>AA7992E0A4BC4FFCB05966A9642A7178</key>
-            <value>
-                <promptId>AA7992E0A4BC4FFCB05966A9642A7178</promptId>
-                <name>NoInputPrompt</name>
-                <description>Default prompt for NoInput event</description>
-                <type>AUDIO</type>
-                <prompts>
-                    <entry key="en-US">
-                        <ttsPrompt>
-                            <xml>H4sIAAAAAAAAAIWRQYvCMBCF7/6KkHsdvS1LWnFhBc+7eh/toMV0Ip2p2H9vrVBNu7I5Je8b3ntM
-3OJaenOhSorAqZ1PZ9YQ70Ne8CG1m99V8mGNKHKOPjCltiGxi2zi5Ex4+vZUEms2Me1xqFoVu1pJ
-HkIneuTDsgVPqZMZS8ra6M87d9A944nebYu+pi8UMpf7LbXEyebHwksIxCkOhlVcoVS+1hJslhLV
-HwcLDMjApNeVrvqn1/+esfc7uAt5k63NHpmDmiNhZZpQTx10YFwI3jZyMNwEjFfRD7Uw+uYbQw31
-uC4CAAA=</xml>
-                            <promptTTSEnumed>false</promptTTSEnumed>
-                        </ttsPrompt>
-                    </entry>
-                </prompts>
-                <defaultLanguage>en-US</defaultLanguage>
-                <isPersistent>true</isPersistent>
-            </value>
-        </entry>
-        <entry>
-            <key>F51CE83371274DE2AF08F361EC2F909F</key>
-            <value>
-                <promptId>F51CE83371274DE2AF08F361EC2F909F</promptId>
-                <name>NoMatchPrompt</name>
-                <description>Default prompt for NoMatch event</description>
-                <type>AUDIO</type>
-                <prompts>
-                    <entry key="en-US">
-                        <ttsPrompt>
-                            <xml>H4sIAAAAAAAAAIWRQYvCMBCF7/6KkLvO7k0krSis4Fnd+2gHCZtOpTMV++83VqimXdmcku+F9x4z
-bnkrg7lSLb7izH7OPqwhPlWF53NmD/vNdG6NKHKBoWLKbEtil/nEyYXw5ytQSaz5xMTjULX2x0ZJ
-HqCDAfm8isITdZixpDxGL+66g+6Z/ujdvjE0tEYhc73fMks8PewsvIRAmuJgWMV5pfK1lmC7kqT+
-OFhgoAxMeq500z+9/vdMvd+Jx6po821cS13TSY3nS6MzBx0e14G3fRwM5wDjQfSfopgs+RfRtLpi
-LAIAAA==</xml>
-                            <promptTTSEnumed>false</promptTTSEnumed>
-                        </ttsPrompt>
-                    </entry>
-                </prompts>
-                <defaultLanguage>en-US</defaultLanguage>
-                <isPersistent>true</isPersistent>
-            </value>
-        </entry>
-    </multiLanguagesPrompts>
+    <multiLanguagesPrompts/>
     <multiLanguagesVIVRPrompts/>
     <multiLanguagesTextPrompts/>
     <multiLanguagesMenuChoices/>

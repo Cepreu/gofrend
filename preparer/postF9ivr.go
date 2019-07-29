@@ -9,19 +9,73 @@ import (
 	"html"
 	"io/ioutil"
 	"net/http"
+	"strings"
 	"text/template"
+
+	"github.com/Cepreu/gofrend/utils"
 
 	"github.com/Cepreu/gofrend/ivr"
 )
 
 func generateIVRContent(script *ivr.IVRScript) (string, error) {
 	type QueryData struct {
-		DomainID string
+		DomainID       string
+		CaseX          int
+		CaseY          int
+		SkillTransfers []struct {
+			M *ivr.SkillTransferModule
+			B string
+			X int
+			Y int
+		}
+		HangUps []struct {
+			M *ivr.HangupModule
+			B string
+			X int
+			Y int
+		}
+		DefHangupID ivr.ModuleID
 	}
+	querydata := QueryData{DomainID: script.Domain, CaseX: 200}
 
+	for _, module := range script.Modules {
+		if st, ok := module.(*ivr.SkillTransferModule); ok {
+			bn := fmt.Sprintf("ST%d", len(querydata.SkillTransfers))
+			querydata.SkillTransfers = append(querydata.SkillTransfers, struct {
+				M *ivr.SkillTransferModule
+				B string
+				X int
+				Y int
+			}{M: st, B: bn})
+		} else if st, ok := module.(*ivr.HangupModule); ok {
+			bn := fmt.Sprintf("HU%d", len(querydata.HangUps))
+			querydata.HangUps = append(querydata.HangUps, struct {
+				M *ivr.HangupModule
+				B string
+				X int
+				Y int
+			}{M: st, B: bn})
+		}
+	}
+	x := querydata.CaseX
+	y := 80
+	for i := range querydata.SkillTransfers {
+		x += 100
+		y += 20
+		querydata.SkillTransfers[i].X = x
+		querydata.SkillTransfers[i].Y = y
+	}
+	for i := range querydata.HangUps {
+		x += 100
+		y += 20
+		querydata.HangUps[i].X = x
+		querydata.HangUps[i].Y = y
+	}
+	querydata.CaseY = y/2 + 60
+
+	querydata.DefHangupID = querydata.HangUps[len(querydata.HangUps)-1].M.ID
 	var tmplFile = "postF9ivr.tmpl"
 
-	querydata := QueryData{DomainID: script.Domain}
 	tmpl, err := template.ParseFiles(tmplFile)
 	if err != nil {
 		return "", err
@@ -49,6 +103,37 @@ func getIVRscriptContent(scriptName string) string {
 
 	querydata := QueryData{IvrName: scriptName}
 	tmpl, err := template.New("getIVRScriptsTemplate").Parse(getIvrReq)
+	if err != nil {
+		panic(err)
+	}
+	var doc bytes.Buffer
+	err = tmpl.Execute(&doc, querydata)
+	if err != nil {
+		panic(err)
+	}
+	return doc.String()
+}
+
+func changeUserPwdContent(userName, newPwd string) string {
+	type QueryData struct {
+		UserName string
+		NewPwd   string
+	}
+	const modifyUserReq = `<?xml version="1.0" encoding="utf-8"?>
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ser="http://service.admin.ws.five9.com/">
+<soapenv:Body>
+	<ser:modifyUser>
+		<userGeneralInfo>
+			<userName>{{.UserName}}</userName>
+			<EMail>df@five9.com</EMail>
+			<password>{{.NewPwd}}</password>
+		</userGeneralInfo>
+	</ser:modifyUser>
+</soapenv:Body>
+</soapenv:Envelope>`
+
+	querydata := QueryData{UserName: userName, NewPwd: newPwd}
+	tmpl, err := template.New("modifyUserTemplate").Parse(modifyUserReq)
 	if err != nil {
 		panic(err)
 	}
@@ -179,13 +264,13 @@ func setDefaultIVRScheduleContent(campaign, generatedScriptName string, params [
 	return doc.String()
 }
 
-func getIvrFromF9(user, pwd, ivrname string) (string, error) {
+func getIvrFromF9(auth, ivrname string) (string, error) {
 	type envelope struct {
 		Name          string `xml:"Body>getIVRScriptsResponse>return>name"`
 		XMLDefinition string `xml:"Body>getIVRScriptsResponse>return>xmlDefinition"`
 		Description   string `xml:"Body>getIVRScriptsResponse>return>description"`
 	}
-	content, err := queryF9(user, pwd, func() string { return getIVRscriptContent(ivrname) })
+	content, err := queryF9(auth, func() string { return getIVRscriptContent(ivrname) })
 	if err != nil {
 		return "", err
 	}
@@ -197,29 +282,42 @@ func getIvrFromF9(user, pwd, ivrname string) (string, error) {
 	return scriptDef.XMLDefinition, nil
 }
 
-func configureF9(user, pwd, campaign string, ivr *ivr.IVRScript) (err error) {
+func changeUserPwdF9(oldauth string) (newauth string, err error) {
+	newpwd := utils.GenUUIDv4()
+
+	b, _ := base64.StdEncoding.DecodeString(oldauth)
+	u := strings.Split(string(b), ":")
+
+	_, err = queryF9(oldauth, func() string { return changeUserPwdContent(u[0], newpwd) })
+	if err != nil {
+		return "", err
+	}
+	newauth = base64.StdEncoding.EncodeToString([]byte(u[0] + ":" + newpwd))
+	return
+}
+
+func configureF9(auth, campaign string, ivr *ivr.IVRScript) (err error) {
 	generatedScriptName := ivr.Name + "_generated"
-	resp, err := queryF9(user, pwd, func() string { return createIVRscriptContent(generatedScriptName) })
+	resp, err := queryF9(auth, func() string { return createIVRscriptContent(generatedScriptName) })
 	if err != nil {
 		if fault, err1 := getf9errorDescr(resp); err1 != nil ||
 			fault.FaultString != fmt.Sprintf("IvrScript with name \"%s\" already exists", generatedScriptName) {
 			return err
 		}
 	}
-	_, err = queryF9(user, pwd, func() string { return modifyIVRscriptContent(generatedScriptName, ivr) })
+	_, err = queryF9(auth, func() string { return modifyIVRscriptContent(generatedScriptName, ivr) })
 	if err == nil {
 		params := []struct {
 			Name  string
 			Value string
 		}{}
-		_, err = queryF9(user, pwd, func() string { return setDefaultIVRScheduleContent(campaign, generatedScriptName, params) })
+		_, err = queryF9(auth, func() string { return setDefaultIVRScheduleContent(campaign, generatedScriptName, params) })
 
 	}
-
 	return err
 }
 
-func queryF9(user, pwd string, generateRequestContent func() string) ([]byte, error) {
+func queryF9(auth string, generateRequestContent func() string) ([]byte, error) {
 	//	url := conf.F9URL
 	url := "https://api.five9.com/wsadmin/v11/AdminWebService"
 	client := &http.Client{}
@@ -231,11 +329,9 @@ func queryF9(user, pwd string, generateRequestContent func() string) ([]byte, er
 		return nil, err
 	}
 
-	data := []byte(user + ":" + pwd)
-	str := base64.StdEncoding.EncodeToString(data)
 	req.Header.Add("Content-Type", "text/xml; charset=utf-8")
 	req.Header.Add("Accept", "text/xml")
-	req.Header.Add("Authorization", "Basic "+str)
+	req.Header.Add("Authorization", "Basic "+auth)
 	resp, err := client.Do(req)
 	if err != nil {
 		fmt.Println(req)
