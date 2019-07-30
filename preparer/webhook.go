@@ -17,10 +17,13 @@ const (
 
 // HandleWebhook ---
 func HandleWebhook(w http.ResponseWriter, r *http.Request) {
-	r.ParseForm()
+	err := r.ParseForm()
+	if err != nil {
+		log.Panicf("Error parsing form: %v", err)
+	}
 	f := r.Form
 	utils.PrettyLog(f)
-	err := Prepare(f[cScriptName][0], f[cCampaignName][0], f[cUsername][0], f[cTemporaryPassword][0])
+	err = Prepare(f[cScriptName][0], f[cCampaignName][0], f[cUsername][0], f[cTemporaryPassword][0])
 
 	if err != nil {
 		log.Panic(err)
