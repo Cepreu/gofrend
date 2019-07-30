@@ -1,6 +1,10 @@
 package preparer
 
 import (
+	"fmt"
+	"io/ioutil"
+	"net/http"
+	"net/url"
 	"testing"
 )
 
@@ -11,12 +15,17 @@ func TestPrepareFile(t *testing.T) {
 	checkNil(err, t)
 }
 
-// func TestPrepareCloud(t *testing.T) {
-// 	url := "https://us-central1-f9-dialogflow-converter.cloudfunctions.net/handle-preparer-webhook"
-// 	form := url.Values{
-// 		cScriptName: {"sk_text"},
-// 		cCampaignName: {"sergei_inbound"},
-// 		cUsername: {"sam2@007.com"}
-// 	}
-// 	resp, err := http.PostForm()
-// }
+func TestPrepareCloud(t *testing.T) {
+	URL := "https://us-central1-f9-dialogflow-converter.cloudfunctions.net/handle-preparer-webhook"
+	form := url.Values{
+		cScriptName:        {"sk_text"},
+		cCampaignName:      {"sergei_inbound"},
+		cUsername:          {"sam2@007.com"},
+		cTemporaryPassword: {"pwd1234567"},
+	}
+	resp, err := http.PostForm(URL, form)
+	checkNil(err, t)
+	data, err := ioutil.ReadAll(resp.Body)
+	checkNil(err, t)
+	fmt.Print(string(data))
+}

@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
+<ivrScript>
+    <domainId>{{ .DomainID }}</domainId>
+    <properties/>
+    <modules>
+        <incomingCall>
+            <singleDescendant>2C025B79A3E24A5489FBD05FAB4396B4</singleDescendant>
+            <moduleName>IncomingCall1</moduleName>
+            <locationX>69</locationX>
+            <locationY>{{ .CaseY }}</locationY>
+            <moduleId>621B2027EAFB4B5DA931C21C4E767330</moduleId>
+            <data/>
+        </incomingCall>
+{{ range .HangUps }}
+        <hangup>
+            <ascendants>2C025B79A3E24A5489FBD05FAB4396B4</ascendants>
+            <moduleName>{{ .M.Name }}</moduleName>
+            <locationX>{{ .X }}</locationX>
+            <locationY>{{ .Y }}</locationY>
+            <moduleId>{{ .M.ID }}</moduleId>
+            <data>
+                <dispo>
+                    <id>0</id>
+                    <name>No Disposition</name>
+                </dispo>
+                <returnToCallingModule>true</returnToCallingModule>
+                <errCode>
+                    <isVarSelected>false</isVarSelected>
+                    <integerValue>
+                        <value>0</value>
+                    </integerValue>
+                </errCode>
+                <errDescription>
+                    <isVarSelected>false</isVarSelected>
+                    <stringValue>
+                        <value></value>
+                        <id>0</id>
+                    </stringValue>
+                </errDescription>
+                <overwriteDisposition>true</overwriteDisposition>
+            </data>
+        </hangup>
+{{ end }}
+{{ range .SkillTransfers }}
+        <skillTransfer>
+            <ascendants>2C025B79A3E24A5489FBD05FAB4396B4</ascendants>
+            <singleDescendant>{{ .M.Descendant }}</singleDescendant>
+            <moduleName>SkillTransfer2</moduleName>
+             <locationX>{{ .X }}</locationX>
+            <locationY>{{ .Y }}</locationY>
+            <moduleId>{{ .M.ID }}</moduleId>
+            <data>
+                {{ .M.Data.InnerXML }}
+            </data>
+        </skillTransfer>
+{{ end }}
+        <case>
+            <ascendants>621B2027EAFB4B5DA931C21C4E767330</ascendants>
+            <moduleName>Case2</moduleName>
+            <locationX>{{ .CaseX }}</locationX>
+            <locationY>{{ .CaseY }}</locationY>
+            <moduleId>2C025B79A3E24A5489FBD05FAB4396B4</moduleId>
+            <data>
+                <branches>
+{{ range .SkillTransfers }}
+                    <entry>
+                        <key>{{ .B }}</key>
+                        <value>
+                            <name>{{ .B }}</name>
+                            <desc>{{ .M.ID }}</desc>
+                            <conditions>
+                                <comparisonType>EQUALS</comparisonType>
+                                <rightOperand>
+                                    <isVarSelected>false</isVarSelected>
+                                    <stringValue>
+                                        <value>{{ .M.ID }}</value>
+                                        <id>0</id>
+                                    </stringValue>
+                                </rightOperand>
+                                <leftOperand>
+                                    <isVarSelected>true</isVarSelected>
+                                    <variableName>MODULE_ID</variableName>
+                                </leftOperand>
+                            </conditions>
+                        </value>
+                    </entry>
+{{ end }}
+{{ range .HangUps }}
+                    <entry>
+                        <key>{{ .B }}</key>
+                        <value>
+                            <name>{{ .B }}</name>
+                            <desc>{{ .M.ID }}</desc>
+                            <conditions>
+                                <comparisonType>EQUALS</comparisonType>
+                                <rightOperand>
+                                    <isVarSelected>false</isVarSelected>
+                                    <stringValue>
+                                        <value>{{ .M.ID }}</value>
+                                        <id>0</id>
+                                    </stringValue>
+                                </rightOperand>
+                                <leftOperand>
+                                    <isVarSelected>true</isVarSelected>
+                                    <variableName>MODULE_ID</variableName>
+                                </leftOperand>
+                            </conditions>
+                        </value>
+                    </entry>
+{{ end }}
+                     <entry>
+                        <key>No Match</key>
+                        <value>
+                            <name>No Match</name>
+                            <desc>{{ .DefHangupID }}</desc>
+                            <conditions/>
+                        </value>
+                    </entry>
+                </branches>
+            </data>
+        </case>
+    </modules>
+    <modulesOnHangup>
+        <startOnHangup>
+            <singleDescendant>622DC0EABF3F4B47BF68F4D5DD773939</singleDescendant>
+            <moduleName>StartOnHangup1</moduleName>
+            <locationX>20</locationX>
+            <locationY>10</locationY>
+            <moduleId>D2CDB7C0BA4C4A14A69B0D42DEFB7ED8</moduleId>
+        </startOnHangup>
+        <hangup>
+            <ascendants>D2CDB7C0BA4C4A14A69B0D42DEFB7ED8</ascendants>
+            <moduleName>Hangup1</moduleName>
+            <locationX>120</locationX>
+            <locationY>10</locationY>
+            <moduleId>622DC0EABF3F4B47BF68F4D5DD773939</moduleId>
+            <data>
+                <dispo>
+                    <id>-17</id>
+                    <name>Caller Disconnected</name>
+                </dispo>
+                <returnToCallingModule>true</returnToCallingModule>
+                <errCode>
+                    <isVarSelected>false</isVarSelected>
+                    <integerValue>
+                        <value>0</value>
+                    </integerValue>
+                </errCode>
+                <errDescription>
+                    <isVarSelected>false</isVarSelected>
+                    <stringValue>
+                        <value></value>
+                        <id>0</id>
+                    </stringValue>
+                </errDescription>
+                <overwriteDisposition>false</overwriteDisposition>
+            </data>
+        </hangup>
+    </modulesOnHangup>
+    <userVariables>
+        <entry>
+            <key>MODULE_ID</key>
+            <value>
+                <name>MODULE_ID</name>
+                <description></description>
+                <stringValue>
+                    <value></value>
+                    <id>0</id>
+                </stringValue>
+                <attributes>64</attributes>
+                <isNullValue>true</isNullValue>
+            </value>
+        </entry>
+    </userVariables>
+    <multiLanguagesPrompts/>
+    <multiLanguagesVIVRPrompts/>
+    <multiLanguagesTextPrompts/>
+    <multiLanguagesMenuChoices/>
+    <multiLanguagesEwtAnnouncement/>
+    <languages/>
+    <functions/>
+    <defaultLanguage>en-US</defaultLanguage>
+    <defaultMethod>GET</defaultMethod>
+    <defaultFetchTimeout>5</defaultFetchTimeout>
+    <showLabelNames>true</showLabelNames>
+    <defaultVivrTimeout>5</defaultVivrTimeout>
+    <unicodeEncoding>false</unicodeEncoding>
+    <useShortcut>false</useShortcut>
+    <resetErrorCode>true</resetErrorCode>
+    <showAllChannelPrompts>false</showAllChannelPrompts>
+    <extContactFieldsInput>true</extContactFieldsInput>
+    <extContactFieldsOutput>true</extContactFieldsOutput>
+    <timeoutInMilliseconds>3600000</timeoutInMilliseconds>
+    <version>1100008</version>
+</ivrScript>
