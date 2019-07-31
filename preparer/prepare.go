@@ -72,9 +72,6 @@ func prepareIntents(script *ivr.IVRScript, scriptHash string) error {
 		}
 
 		softDeleteIntent(ctx, client, request)
-		if err != nil {
-			return err
-		}
 
 		_, err = client.CreateIntent(ctx, request)
 		if err != nil {
