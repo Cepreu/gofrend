@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/Cepreu/gofrend/cloud"
 	"github.com/Cepreu/gofrend/utils"
 )
 
@@ -17,7 +18,17 @@ const (
 
 // HandleWebhook ---
 func HandleWebhook(w http.ResponseWriter, r *http.Request) {
-	err := r.ParseForm()
+	token := r.Header.Get(cloud.GcpConfigAccessTokenKeyString)
+	config, err := cloud.GetConfig()
+	if err != nil {
+		log.Panicf("Error getting config from cloud: %v", err)
+	}
+	if config[cloud.GcpConfigAccessTokenKeyString] != token {
+		log.Printf("Permission denied: incorrect access token")
+		w.Write([]byte("Permission denied: incorrect access token"))
+		return
+	}
+	err = r.ParseForm()
 	if err != nil {
 		log.Panicf("Error parsing form: %v", err)
 	}

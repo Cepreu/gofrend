@@ -21,8 +21,8 @@ func VerifyPassword(password string, salt string, hash [32]byte) bool {
 	return HashPassword(password, salt) == hash
 }
 
-// GenerateSalt generates a random salt to be used for hashing
-func GenerateSalt() string {
+// GenerateAccessToken generates a random string of length 32
+func GenerateAccessToken() string {
 	return randomString(32)
 }
 

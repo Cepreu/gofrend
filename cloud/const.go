@@ -17,3 +17,6 @@ const GcpConfigDomainNameKeyString string = "DOMAIN_NAME"
 
 // GcpConfigCampaignNameKeyString ---
 const GcpConfigCampaignNameKeyString string = "CAMPAIGN_NAME"
+
+// GcpConfigAccessTokenKeyString ---
+const GcpConfigAccessTokenKeyString string = "ACCESS_TOKEN"
