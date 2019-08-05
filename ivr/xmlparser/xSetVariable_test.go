@@ -7,8 +7,196 @@ import (
 	"testing"
 
 	"github.com/Cepreu/gofrend/ivr"
+	"github.com/Cepreu/gofrend/utils"
 	"golang.org/x/net/html/charset"
 )
+
+func TestPizzaVariables(t *testing.T) {
+	var xmlData = `<setVariable>
+            <ascendants>0D646BA00EA84E279ECE93C532DFC200</ascendants>
+            <singleDescendant>E86971EB3DBA4993B376DC71F2F66BE9</singleDescendant>
+            <moduleName>add</moduleName>
+            <locationX>522</locationX>
+            <locationY>362</locationY>
+            <moduleId>DC04339BF98A49BD9046AEA568C78A7A</moduleId>
+            <data>
+                <expressions>
+                    <variableName>__BUFFER__</variableName>
+                    <isFunction>true</isFunction>
+                    <function>
+                        <returnType>STRING</returnType>
+                        <name>PUT</name>
+                        <arguments>KVLIST</arguments>
+                        <arguments>STRING</arguments>
+                        <arguments>STRING</arguments>
+                    </function>
+                    <functionArgs>
+                        <isVarSelected>true</isVarSelected>
+                        <variableName>toppings</variableName>
+                    </functionArgs>
+                    <functionArgs>
+                        <isVarSelected>true</isVarSelected>
+                        <stringValue>
+                            <value></value>
+                            <id>0</id>
+                        </stringValue>
+                        <variableName>__BUFFER__</variableName>
+                    </functionArgs>
+                    <functionArgs>
+                        <isVarSelected>false</isVarSelected>
+                        <stringValue>
+                            <value>1</value>
+                            <id>0</id>
+                        </stringValue>
+                    </functionArgs>
+                </expressions>
+                <expressions>
+                    <variableName>NumOfToppings</variableName>
+                    <isFunction>true</isFunction>
+                    <function>
+                        <returnType>INTEGER</returnType>
+                        <name>SIZE</name>
+                        <arguments>KVLIST</arguments>
+                    </function>
+                    <functionArgs>
+                        <isVarSelected>true</isVarSelected>
+                        <variableName>toppings</variableName>
+                    </functionArgs>
+                </expressions>
+            </data>
+        </setVariable>
+	`
+	decoder := xml.NewDecoder(strings.NewReader(xmlData))
+	decoder.CharsetReader = charset.NewReaderLabel
+	_, _ = decoder.Token()
+
+	s := &ivr.IVRScript{
+		Variables: make(ivr.Variables),
+	}
+	res := newSetVariablesModule(decoder, s)
+	if res == nil {
+		t.Fatal("nSetVariables module wasn't parsed...")
+	}
+	var mhu = (res.(xmlSetVariablesModule)).m
+	utils.PrettyPrint(mhu)
+}
+
+func TestPizzaVariables2(t *testing.T) {
+	var xmlData = `<setVariable>
+	<ascendants>AC1FBAC578A744FE9B610EA20C1328A9</ascendants>
+	<ascendants>3616BB19FDD0498FB671BC3ECCDD1EA0</ascendants>
+	<ascendants>DC04339BF98A49BD9046AEA568C78A7A</ascendants>
+	<singleDescendant>AC1FBAC578A744FE9B610EA20C1328A9</singleDescendant>
+	<moduleName>SetVariable33</moduleName>
+	<locationX>617</locationX>
+	<locationY>319</locationY>
+	<moduleId>E86971EB3DBA4993B376DC71F2F66BE9</moduleId>
+	<data>
+		<expressions>
+			<variableName>__BUFFER__</variableName>
+			<isFunction>true</isFunction>
+			<function>
+				<returnType>STRING</returnType>
+				<name>GET_KEY</name>
+				<arguments>KVLIST</arguments>
+				<arguments>INTEGER</arguments>
+			</function>
+			<functionArgs>
+				<isVarSelected>true</isVarSelected>
+				<variableName>toppings</variableName>
+			</functionArgs>
+			<functionArgs>
+				<isVarSelected>true</isVarSelected>
+				<variableName>i</variableName>
+			</functionArgs>
+		</expressions>
+		<expressions>
+			<variableName>topping_list</variableName>
+			<isFunction>true</isFunction>
+			<function>
+				<returnType>STRING</returnType>
+				<name>CONCAT</name>
+				<arguments>STRING</arguments>
+				<arguments>STRING</arguments>
+			</function>
+			<functionArgs>
+				<isVarSelected>true</isVarSelected>
+				<stringValue>
+					<value></value>
+					<id>0</id>
+				</stringValue>
+				<variableName>topping_list</variableName>
+			</functionArgs>
+			<functionArgs>
+				<isVarSelected>true</isVarSelected>
+				<stringValue>
+					<value></value>
+					<id>0</id>
+				</stringValue>
+				<variableName>__BUFFER__</variableName>
+			</functionArgs>
+		</expressions>
+		<expressions>
+			<variableName>topping_list</variableName>
+			<isFunction>true</isFunction>
+			<function>
+				<returnType>STRING</returnType>
+				<name>CONCAT</name>
+				<arguments>STRING</arguments>
+				<arguments>STRING</arguments>
+			</function>
+			<functionArgs>
+				<isVarSelected>true</isVarSelected>
+				<stringValue>
+					<value></value>
+					<id>0</id>
+				</stringValue>
+				<variableName>topping_list</variableName>
+			</functionArgs>
+			<functionArgs>
+				<isVarSelected>false</isVarSelected>
+				<stringValue>
+					<value>","</value>
+					<id>0</id>
+				</stringValue>
+			</functionArgs>
+		</expressions>
+		<expressions>
+			<variableName>i</variableName>
+			<isFunction>true</isFunction>
+			<function>
+				<returnType>INTEGER</returnType>
+				<name>SUM</name>
+				<arguments>INTEGER</arguments>
+				<arguments>INTEGER</arguments>
+			</function>
+			<functionArgs>
+				<isVarSelected>true</isVarSelected>
+				<variableName>i</variableName>
+			</functionArgs>
+			<functionArgs>
+				<isVarSelected>false</isVarSelected>
+				<integerValue>
+					<value>1</value>
+				</integerValue>
+			</functionArgs>
+		</expressions>
+	</data>
+</setVariable>`
+	decoder := xml.NewDecoder(strings.NewReader(xmlData))
+	decoder.CharsetReader = charset.NewReaderLabel
+	_, _ = decoder.Token()
+
+	s := &ivr.IVRScript{
+		Variables: make(ivr.Variables),
+	}
+	res := newSetVariablesModule(decoder, s)
+	if res == nil {
+		t.Fatal("nSetVariables module wasn't parsed...")
+	}
+	var mhu = (res.(xmlSetVariablesModule)).m
+	utils.PrettyPrint(mhu)
+}
 
 func TestSetVariables(t *testing.T) {
 	var xmlData = `<setVariable>
@@ -136,6 +324,7 @@ func TestSetVariables(t *testing.T) {
 		t.Fatal("nSetVariables module wasn't parsed...")
 	}
 	var mhu = (res.(xmlSetVariablesModule)).m
+	utils.PrettyPrint(mhu)
 	costr, _ := addStringConstant(s, "CONST STRING")
 	mln, _ := addNumericConstant(s, 1000000)
 	nov, _ := addDateConstant(s, 2019, 1, 11)

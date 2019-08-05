@@ -4,49 +4,21 @@ import (
 	"testing"
 )
 
-func TestValues(t *testing.T) {
-	var (
-		pVal     []*Value
-		err      []error
-		expected []*Value
-	)
-	p, e := NewStringValue("hello, test!")
-	pVal = append(pVal, p)
-	err = append(err, e)
-	expected = append(expected, &Value{ValString, "hello, test!"})
+func checkNil(err error, t *testing.T) {
+	if err != nil {
+		t.Fatal(err)
+	}
+}
 
-	p, e = NewDateValue(2017, 2, 28)
-	pVal = append(pVal, p)
-	err = append(err, e)
-	expected = append(expected, &Value{ValDate, "2017-02-28"})
-
-	p, e = NewDateValue(17, 2, 28)
-	pVal = append(pVal, p)
-	err = append(err, e)
-	expected = append(expected, nil)
-
-	p, e = NewTimeValue(256)
-	pVal = append(pVal, p)
-	err = append(err, e)
-	expected = append(expected, &Value{ValTime, "04:16"})
-
-	p, e = NewEUCurrencyValue(1000.45)
-	pVal = append(pVal, p)
-	err = append(err, e)
-	expected = append(expected, &Value{ValCurrencyEuro, "EU$1000.45"})
-
-	p, e = NewKeyValue("{\"testkey\":\"testvalue\"}")
-	pVal = append(pVal, p)
-	err = append(err, e)
-	expected = append(expected, &Value{ValKVList, `{"testkey":"testvalue"}`})
-
-	for i, ex := range expected {
-		if err[i] != nil {
-			if ex != nil {
-				t.Errorf("\nVariables: %d was not created: \"%s\", expected %s", i, err[i], expected[i])
-			}
-		} else if pVal[i].StringValue != ex.StringValue {
-			t.Errorf("\nVariables[%d]: %v was expected, in reality: %v", i, expected[i], pVal[i])
-		}
+func TestKeyValue(t *testing.T) {
+	kvliststring, err := NewKeyValue("{}")
+	checkNil(err, t)
+	kvlist := StringToKVList(kvliststring)
+	kvlist.Put("A", "a")
+	kvlist.Put("B", "b")
+	store := kvlist.ToString()
+	kvlist = StringToKVList(store)
+	if kvlist.Get("B") != "b" {
+		panic("KVList storage broken")
 	}
 }
