@@ -15,7 +15,8 @@ var (
 )
 
 var script = ivr.IVRScript{Domain: "qwerty", Name: "rememberme",
-	Modules: make(map[ivr.ModuleID]ivr.Module),
+	Modules:   make(map[ivr.ModuleID]ivr.Module),
+	Variables: make(map[ivr.VariableID]*ivr.Variable),
 }
 
 func TestGetIvrFromF9(t *testing.T) {
@@ -54,6 +55,20 @@ func TestChangePwdF9(t *testing.T) {
 }
 
 func TestGenerateIVRContent(t *testing.T) {
+
+	val, _ := ivr.NewTimeValue(60)
+	script.Variables["var_time"] = ivr.NewVariable("var_time", "time var", ivr.ValTime, val)
+	val, _ = ivr.NewDateValue(2019, 6, 7)
+	script.Variables["var_date"] = ivr.NewVariable("var_date", "date var", ivr.ValDate, val)
+	val, _ = ivr.NewIntegerValue(120)
+	script.Variables["var_int"] = ivr.NewVariable("var_int", "integer var", ivr.ValInteger, val)
+	val, _ = ivr.NewNumericValue(3.14)
+	script.Variables["var_num"] = ivr.NewVariable("var_num", "numeric var", ivr.ValNumeric, val)
+	val, _ = ivr.NewUSCurrencyValue(100.50)
+	script.Variables["var_currency"] = ivr.NewVariable("var_currency", "currency evro", ivr.ValCurrency, val)
+	val, _ = ivr.NewKeyValue(`{"a":"sdfg","q":"werty"}`)
+	script.Variables["var_kvlist"] = ivr.NewVariable("var_kvlist", "KV list", ivr.ValKVList, val)
+
 	var hu1 = ivr.HangupModule{ErrCode: "duration", OverwriteDisp: true}
 	hu1.SetGeneralInfo("Hangup1", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA1",
 		[]ivr.ModuleID{"ED132095BE1E4F47B51DA0BB842C3EEF", "F1E142D8CF27471D8940713A637A1C1D"},
@@ -80,5 +95,7 @@ func TestGenerateIVRContent(t *testing.T) {
 
 	res, err := generateIVRContent(&script)
 	fmt.Println(res)
-	t.Errorf("TestGenerateIVRContent: Error: %v", err)
+	if err != nil {
+		t.Errorf("TestGenerateIVRContent: Error: %v", err)
+	}
 }

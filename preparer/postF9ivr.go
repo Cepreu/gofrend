@@ -35,6 +35,12 @@ func generateIVRContent(script *ivr.IVRScript) (string, error) {
 			Y int
 		}
 		DefHangupID ivr.ModuleID
+		UserVars    []struct {
+			VName string
+			VVal  string
+			VNull bool
+			VAttr int
+		}
 	}
 	querydata := QueryData{DomainID: script.Domain, CaseX: 200}
 
@@ -75,6 +81,36 @@ func generateIVRContent(script *ivr.IVRScript) (string, error) {
 
 	querydata.DefHangupID = querydata.HangUps[len(querydata.HangUps)-1].M.ID
 	var tmplFile = "postF9ivr.tmpl"
+
+	for _, v := range script.Variables {
+		if v.VarType == ivr.VarUserVariable {
+			var vval string
+			switch v.ValType {
+			case ivr.ValInteger:
+				vval = fmt.Sprintf("<integerValue><value>%s</value></integerValue>", v.Value)
+			case ivr.ValNumeric:
+				vval = fmt.Sprintf("<numericValue><value>%s</value></numericValue>", v.Value)
+			case ivr.ValDate:
+				vval = fmt.Sprintf("<dateValue><year>%s</year><month>%s</month><day>%s</day></dateValue>",
+					v.Value[:4], v.Value[5:7], v.Value[8:])
+			case ivr.ValTime:
+				vval = fmt.Sprintf("<timeValue><minutes>%s</minutes></timeValue>", v.Value)
+			case ivr.ValKVList:
+				vval = fmt.Sprintf("<kvListValue><value>%s</value></kvListValue>",
+					base64.StdEncoding.EncodeToString([]byte(v.Value)))
+			case ivr.ValString:
+				vval = fmt.Sprintf("<stringValue><value>%s</value><id>0</id></stringValue>", v.Value)
+			default:
+				vval = fmt.Sprintf("<stringValue><value>%s</value><id>0</id></stringValue>", v.Value)
+			}
+			querydata.UserVars = append(querydata.UserVars, struct {
+				VName string
+				VVal  string
+				VNull bool
+				VAttr int
+			}{string(v.ID), vval, v.Secured, 64}) //TBD: VNull  sould be not =Secured but = (Value==nil)
+		}
+	}
 
 	tmpl, err := template.ParseFiles(tmplFile)
 	if err != nil {

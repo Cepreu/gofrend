@@ -171,6 +171,18 @@
                 <isNullValue>true</isNullValue>
             </value>
         </entry>
+{{ range .UserVars }}
+        <entry>
+            <key>{{ .VName }}</key>
+            <value>
+                <name>{{ .VName }}</name>
+                <description></description>
+                {{ .VVal }}
+                <attributes>{{ .VAttr }}</attributes>
+                <isNullValue>{{ .VNull }}</isNullValue>
+            </value>
+        </entry>
+{{ end }}
     </userVariables>
     <multiLanguagesPrompts/>
     <multiLanguagesVIVRPrompts/>
