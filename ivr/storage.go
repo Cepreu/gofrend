@@ -228,7 +228,7 @@ func (storageScript *StorageScript) GetScript() *IVRScript {
 	for i := range storageScript.PromptKeys {
 		scriptPrompts[storageScript.PromptKeys[i]] = storageScript.PromptVals[i].GetPrompt()
 		if i == 40 || i == 42 {
-			log.Print(scriptPrompts[storageScript.PromptKeys[i]].TransformToAI())
+			log.Print(storageScript.PromptKeys[i], scriptPrompts[storageScript.PromptKeys[i]].TransformToAI())
 		}
 	}
 	variables := make(map[VariableID]*Variable)
