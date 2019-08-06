@@ -454,7 +454,7 @@ func (interpreter *Interpreter) processSetVariable(module *ivr.SetVariableModule
 			panic("Unsupported function ID: " + expr.Rval.FuncDef)
 		}
 	}
-	return nil, nil
+	return getModuleByID(interpreter.Script, module.GetDescendant())
 }
 
 func (interpreter *Interpreter) processHangup(module *ivr.HangupModule) (ivr.Module, error) {
