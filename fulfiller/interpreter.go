@@ -181,6 +181,7 @@ func (interpreter *Interpreter) populateWebhookContext(moduleID ivr.ModuleID) {
 
 func (interpreter *Interpreter) addResponseText(VoicePromptIDs ivr.ModulePrompts) {
 	promptStrings := VoicePromptIDs.TransformToAI(interpreter.Script.Prompts)
+	log.Print(promptStrings)
 	expression := regexp.MustCompile("@.+@")
 	f := func(s string) string {
 		varName := s[1 : len(s)-1]

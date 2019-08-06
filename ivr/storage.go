@@ -3,7 +3,6 @@ package ivr
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 )
 
 type StorageScript struct {
@@ -227,9 +226,6 @@ func (storageScript *StorageScript) GetScript() *IVRScript {
 	scriptPrompts := make(map[PromptID]prompt)
 	for i := range storageScript.PromptKeys {
 		scriptPrompts[storageScript.PromptKeys[i]] = storageScript.PromptVals[i].GetPrompt()
-		if i == 40 || i == 42 {
-			log.Print(storageScript.PromptKeys[i], scriptPrompts[storageScript.PromptKeys[i]].TransformToAI())
-		}
 	}
 	variables := make(map[VariableID]*Variable)
 	for i := range storageScript.VariableKeys {
