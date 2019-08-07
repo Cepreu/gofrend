@@ -65,7 +65,7 @@ func TestGenerateIVRContent(t *testing.T) {
 	val, _ = ivr.NewNumericValue(3.14)
 	script.Variables["var_num"] = ivr.NewVariable("var_num", "numeric var", ivr.ValNumeric, val)
 	val, _ = ivr.NewUSCurrencyValue(100.50)
-	script.Variables["var_currency"] = ivr.NewVariable("var_currency", "currency evro", ivr.ValCurrency, val)
+	script.Variables["var_currency"] = ivr.NewVariable("var_currency", "currency evro", ivr.ValCurrencyEuro, val)
 	val, _ = ivr.NewKeyValue(`{"a":"sdfg","q":"werty"}`)
 	script.Variables["var_kvlist"] = ivr.NewVariable("var_kvlist", "KV list", ivr.ValKVList, val)
 

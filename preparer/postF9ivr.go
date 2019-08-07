@@ -100,6 +100,12 @@ func generateIVRContent(script *ivr.IVRScript) (string, error) {
 					base64.StdEncoding.EncodeToString([]byte(v.Value)))
 			case ivr.ValString:
 				vval = fmt.Sprintf("<stringValue><value>%s</value><id>0</id></stringValue>", v.Value)
+			case ivr.ValCurrency:
+				vval = fmt.Sprintf("<currencyValue><value>%s</value></currencyValue>", v.Value[3:])
+			case ivr.ValCurrencyEuro:
+				vval = fmt.Sprintf("<currencyEuroValue><value>%s</value></currencyEuroValue>", v.Value[3:])
+			case ivr.ValCurrencyPound:
+				vval = fmt.Sprintf("<currencyPoundValue><value>%s</value></currencyPoundValue>", v.Value[3:])
 			default:
 				vval = fmt.Sprintf("<stringValue><value>%s</value><id>0</id></stringValue>", v.Value)
 			}
