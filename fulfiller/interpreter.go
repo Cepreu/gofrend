@@ -186,10 +186,13 @@ func (interpreter *Interpreter) addResponseText(VoicePromptIDs ivr.ModulePrompts
 	f := func(s string) string {
 		varName := s[1 : len(s)-1]
 		variable := interpreter.Session.getParameter(varName)
+		log.Print("varName: " + varName + ", value: " + variable.Value)
 		return variable.Value
 	}
 	for i := range promptStrings {
+		log.Print("Before replacement: " + promptStrings[i])
 		promptStrings[i] = expression.ReplaceAllStringFunc(promptStrings[i], f)
+		log.Print("After replacement: " + promptStrings[i])
 	}
 	intentMessageText := interpreter.WebhookResponse.FulfillmentMessages[0].GetText()
 	intentMessageText.Text = append(intentMessageText.Text, promptStrings...)

@@ -66,7 +66,7 @@ func prepareIntents(script *ivr.IVRScript, scriptHash string) error {
 	}
 
 	parent := fmt.Sprintf("projects/%s/agent", cloud.GcpProjectID)
-	softDeleteIntents(ctx, client, parent)
+	deleteOldIntents(ctx, client, parent)
 
 	for _, intent := range intents {
 		request := &dialogflowpb.CreateIntentRequest{
@@ -82,7 +82,7 @@ func prepareIntents(script *ivr.IVRScript, scriptHash string) error {
 	return nil
 }
 
-func softDeleteIntents(ctx context.Context, client *dialogflow.IntentsClient, parent string) {
+func deleteOldIntents(ctx context.Context, client *dialogflow.IntentsClient, parent string) {
 	intents := []*dialogflowpb.Intent{}
 	intentsIterator := client.ListIntents(ctx, &dialogflowpb.ListIntentsRequest{Parent: parent})
 	intent, err := intentsIterator.Next()
