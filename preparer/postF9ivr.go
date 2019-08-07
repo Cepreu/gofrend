@@ -18,6 +18,7 @@ import (
 )
 
 func generateIVRContent(script *ivr.IVRScript) (string, error) {
+	utils.PrettyLog(script)
 	type QueryData struct {
 		DomainID       string
 		CaseX          int
