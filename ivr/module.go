@@ -177,6 +177,7 @@ type MenuModule struct {
 	UseASR  bool
 	UseDTMF bool
 	//	RecordUserInput bool
+	SaveInputVariable VariableID
 
 	Events   []*RecoEvent
 	ConfData *ConfirmData
