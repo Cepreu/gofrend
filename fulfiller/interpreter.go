@@ -254,6 +254,7 @@ func (interpreter *Interpreter) processQuery(module *ivr.QueryModule) (ivr.Modul
 	if err != nil {
 		return nil, err
 	}
+	utils.LogWithoutNewlines(string(contents))
 	for _, responseInfo := range module.ResponseInfos {
 		if response.StatusCode >= responseInfo.HTTPCodeFrom && response.StatusCode <= responseInfo.HTTPCodeTo {
 			switch responseInfo.ParsingMethod {

@@ -10,6 +10,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"regexp"
 	"runtime"
 	"strings"
 	"unicode"
@@ -77,6 +78,12 @@ func CreateAgentDirectory(domainID string, ivrName string) bool {
 	}
 
 	return false
+}
+
+// LogWithoutNewlines - Logs a string after replacing all newline characters
+func LogWithoutNewlines(str string) {
+	expression := regexp.MustCompile("\n")
+	log.Print(expression.ReplaceAllString(str, " \\n "))
 }
 
 // PrettyPrint - prints golang structures
