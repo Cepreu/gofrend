@@ -306,26 +306,10 @@ func (interpreter *Interpreter) processCase(module *ivr.CaseModule) (ivr.Module,
 	return getModuleByID(interpreter.Script, module.Branches[len(module.Branches)-1].Descendant)
 }
 
-func populateCondition(session *Session, condition *ivr.Condition, script *ivr.IVRScript) error {
-	variable := session.getParameter(string(condition.LeftOperand))
-	log.Printf("Left operand ID: %s, Value: %p", condition.LeftOperand, script.Variables[condition.LeftOperand])
-	script.Variables[condition.LeftOperand].Value = variable.Value
-
-	if script.Variables[condition.RightOperand].VarType != ivr.VarConstant {
-		variable := session.getParameter(string(condition.RightOperand))
-		script.Variables[condition.RightOperand].Value = variable.Value
-	}
-	return nil
-}
-
 func (interpreter *Interpreter) conditionsPass(branch *ivr.OutputBranch) (bool, error) {
 	conditionsPass := true
 	for _, condition := range branch.Cond.Conditions { // Eventually needs to examine CustomCondition field and implement condition logic - currently assumes ALL
-		err := populateCondition(interpreter.Session, condition, interpreter.Script)
-		if err != nil {
-			return false, err
-		}
-		passes, err := conditionPasses(condition, interpreter.Script)
+		passes, err := interpreter.conditionPasses(condition)
 		if err != nil {
 			return false, err
 		}
@@ -336,13 +320,9 @@ func (interpreter *Interpreter) conditionsPass(branch *ivr.OutputBranch) (bool, 
 	return conditionsPass, nil
 }
 
-func conditionPasses(condition *ivr.Condition, script *ivr.IVRScript) (bool, error) {
-	var leftVal, rightVal *ivr.Variable
-
-	leftVal = script.Variables[condition.LeftOperand]
-	if condition.RightOperand != "" {
-		rightVal = script.Variables[condition.RightOperand]
-	}
+func (interpreter *Interpreter) conditionPasses(condition *ivr.Condition) (bool, error) {
+	leftVal := interpreter.Session.getParameter(string(condition.LeftOperand))
+	rightVal := interpreter.Session.getParameter(string(condition.RightOperand))
 	log.Print(condition.ComparisonType)
 	switch condition.ComparisonType {
 	case "MORE_THAN", "LESS_THAN":
