@@ -3,7 +3,6 @@ package preparer
 import (
 	"context"
 	"fmt"
-	"html"
 	"strings"
 
 	dialogflow "cloud.google.com/go/dialogflow/apiv2"
@@ -21,7 +20,7 @@ func Prepare(scriptName, campaignName, username, temporaryPassword string) error
 	if err != nil {
 		return err
 	}
-	xmlDefinition = html.UnescapeString(xmlDefinition)
+	//xmlDefinition = html.UnescapeString(xmlDefinition)
 
 	script, err := xmlparser.NewIVRScript(strings.NewReader(xmlDefinition))
 	if err != nil {

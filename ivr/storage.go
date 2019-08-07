@@ -3,6 +3,7 @@ package ivr
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 )
 
 type StorageScript struct {
@@ -107,7 +108,7 @@ func MakeStorageModule(module Module) *StorageModule {
 		ret.Type = cSkillTransferModule
 		ret.SkillTransfer = v
 	default:
-		return nil
+		log.Panicf("Unsupported module type: %T", v)
 	}
 	return ret
 }

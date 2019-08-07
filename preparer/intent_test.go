@@ -40,8 +40,6 @@ func TestIntent(t *testing.T) {
 	client, err := dialogflow.NewIntentsClient(ctx, option.WithCredentialsFile(cloud.GcpCredentialsFileName))
 	checkNil(err, t)
 
-	softDeleteIntent(ctx, client, request)
-
 	_, err = client.CreateIntent(ctx, request)
 	checkNil(err, t)
 }
@@ -67,8 +65,6 @@ func TestComparisonIntent(t *testing.T) {
 			Parent: fmt.Sprintf("projects/%s/agent", cloud.GcpProjectID),
 			Intent: intent,
 		}
-		softDeleteIntent(ctx, client, request)
-		checkNil(err, t)
 		_, err = client.CreateIntent(ctx, request)
 		checkNil(err, t)
 	}

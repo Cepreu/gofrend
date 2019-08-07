@@ -85,6 +85,8 @@ func (interpreter *Interpreter) process(module ivr.Module) (ivr.Module, error) {
 	switch v := module.(type) {
 	case *ivr.IfElseModule:
 		return interpreter.processIfElse(v)
+	case *ivr.CaseModule:
+		return interpreter.processCase(v)
 	case *ivr.PlayModule:
 		return interpreter.processPlay(v)
 	case *ivr.InputModule:
@@ -285,25 +287,27 @@ func (interpreter *Interpreter) processQuery(module *ivr.QueryModule) (ivr.Modul
 }
 
 func (interpreter *Interpreter) processIfElse(module *ivr.IfElseModule) (ivr.Module, error) {
-	conditions := module.BranchIf.Cond.Conditions
-	conditionsPass := true
-	for _, condition := range conditions { // Eventually needs to examine CustomCondition field and implement condition logic - currently assumes ALL
-		err := populateCondition(interpreter.Session, condition, interpreter.Script)
-		if err != nil {
-			return nil, err
-		}
-		passes, err := conditionPasses(condition, interpreter.Script)
-		if err != nil {
-			return nil, err
-		}
-		if !passes {
-			conditionsPass = false
-		}
+	conditionsPass, err := interpreter.conditionsPass(&module.BranchIf)
+	if err != nil {
+		return nil, err
 	}
 	if conditionsPass {
 		return getModuleByID(interpreter.Script, module.BranchIf.Descendant)
 	}
 	return getModuleByID(interpreter.Script, module.BranchElse.Descendant)
+}
+
+func (interpreter *Interpreter) processCase(module *ivr.CaseModule) (ivr.Module, error) {
+	for _, branch := range module.Branches[:len(module.Branches)-1] {
+		conditionsPass, err := interpreter.conditionsPass(branch)
+		if err != nil {
+			return nil, err
+		}
+		if conditionsPass {
+			return getModuleByID(interpreter.Script, branch.Descendant)
+		}
+	}
+	return getModuleByID(interpreter.Script, module.Branches[len(module.Branches)-1].Descendant)
 }
 
 func populateCondition(session *Session, condition *ivr.Condition, script *ivr.IVRScript) error {
@@ -315,6 +319,24 @@ func populateCondition(session *Session, condition *ivr.Condition, script *ivr.I
 		script.Variables[condition.RightOperand].Value = variable.Value
 	}
 	return nil
+}
+
+func (interpreter *Interpreter) conditionsPass(branch *ivr.OutputBranch) (bool, error) {
+	conditionsPass := true
+	for _, condition := range branch.Cond.Conditions { // Eventually needs to examine CustomCondition field and implement condition logic - currently assumes ALL
+		err := populateCondition(interpreter.Session, condition, interpreter.Script)
+		if err != nil {
+			return false, err
+		}
+		passes, err := conditionPasses(condition, interpreter.Script)
+		if err != nil {
+			return false, err
+		}
+		if !passes {
+			conditionsPass = false
+		}
+	}
+	return conditionsPass, nil
 }
 
 func conditionPasses(condition *ivr.Condition, script *ivr.IVRScript) (bool, error) {
