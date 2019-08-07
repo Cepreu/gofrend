@@ -65,13 +65,14 @@ func prepareIntents(script *ivr.IVRScript, scriptHash string) error {
 		return err
 	}
 
+	parent := fmt.Sprintf("projects/%s/agent", cloud.GcpProjectID)
+	deleteOldIntents(ctx, client, parent)
+
 	for _, intent := range intents {
 		request := &dialogflowpb.CreateIntentRequest{
-			Parent: fmt.Sprintf("projects/%s/agent", cloud.GcpProjectID),
+			Parent: parent,
 			Intent: intent,
 		}
-
-		softDeleteIntent(ctx, client, request)
 
 		_, err = client.CreateIntent(ctx, request)
 		if err != nil {
@@ -81,14 +82,26 @@ func prepareIntents(script *ivr.IVRScript, scriptHash string) error {
 	return nil
 }
 
-func softDeleteIntent(ctx context.Context, client *dialogflow.IntentsClient, request *dialogflowpb.CreateIntentRequest) {
-	intentsIterator := client.ListIntents(ctx, &dialogflowpb.ListIntentsRequest{Parent: request.Parent})
+func deleteOldIntents(ctx context.Context, client *dialogflow.IntentsClient, parent string) {
+	intents := []*dialogflowpb.Intent{}
+	intentsIterator := client.ListIntents(ctx, &dialogflowpb.ListIntentsRequest{Parent: parent})
 	intent, err := intentsIterator.Next()
 	for err == nil && intent != nil {
-		if intent.DisplayName == request.Intent.DisplayName {
-			client.DeleteIntent(ctx, &dialogflowpb.DeleteIntentRequest{Name: intent.Name})
-			break
+		if intent.DisplayName != "Default Fallback Intent" {
+			intents = append(intents, intent)
 		}
 		intent, err = intentsIterator.Next()
+	}
+	request := &dialogflowpb.BatchDeleteIntentsRequest{
+		Parent:  parent,
+		Intents: intents,
+	}
+	operation, err := client.BatchDeleteIntents(ctx, request)
+	if err != nil {
+		panic("Error sending delete intents request: " + err.Error())
+	}
+	err = operation.Wait(ctx)
+	if err != nil {
+		panic("Error deleting intents: " + err.Error())
 	}
 }

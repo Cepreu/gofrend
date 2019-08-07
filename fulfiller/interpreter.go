@@ -95,6 +95,8 @@ func (interpreter *Interpreter) process(module ivr.Module) (ivr.Module, error) {
 		return interpreter.processQuery(v)
 	case *ivr.SkillTransferModule:
 		return interpreter.processSkillTransfer(v)
+	case *ivr.SetVariableModule:
+		return interpreter.processSetVariable(v)
 	case *ivr.HangupModule:
 		return interpreter.processHangup(v)
 	default:
@@ -179,17 +181,18 @@ func (interpreter *Interpreter) populateWebhookContext(moduleID ivr.ModuleID) {
 
 func (interpreter *Interpreter) addResponseText(VoicePromptIDs ivr.ModulePrompts) {
 	promptStrings := VoicePromptIDs.TransformToAI(interpreter.Script.Prompts)
-	expression := regexp.MustCompile("@.+@")
+	log.Print(promptStrings)
+	expression := regexp.MustCompile("@.+?@")
 	f := func(s string) string {
 		varName := s[1 : len(s)-1]
-		variable, found := interpreter.Session.getParameter(varName)
-		if !found {
-			return ""
-		}
+		variable := interpreter.Session.getParameter(varName)
+		log.Print("varName: " + varName + ", value: " + variable.Value)
 		return variable.Value
 	}
 	for i := range promptStrings {
+		log.Print("Before replacement: " + promptStrings[i])
 		promptStrings[i] = expression.ReplaceAllStringFunc(promptStrings[i], f)
+		log.Print("After replacement: " + promptStrings[i])
 	}
 	intentMessageText := interpreter.WebhookResponse.FulfillmentMessages[0].GetText()
 	intentMessageText.Text = append(intentMessageText.Text, promptStrings...)
@@ -304,17 +307,11 @@ func (interpreter *Interpreter) processIfElse(module *ivr.IfElseModule) (ivr.Mod
 }
 
 func populateCondition(session *Session, condition *ivr.Condition, script *ivr.IVRScript) error {
-	variable, ok := session.getParameter(string(condition.LeftOperand))
-	if !ok {
-		return fmt.Errorf("Error finding session variable with name: %s", condition.LeftOperand)
-	}
+	variable := session.getParameter(string(condition.LeftOperand))
 	script.Variables[condition.LeftOperand].Value = variable.Value
 
 	if script.Variables[condition.RightOperand].VarType != ivr.VarConstant {
-		variable, ok := session.getParameter(string(condition.RightOperand))
-		if !ok {
-			return fmt.Errorf("Error finding session variable with name: %s", condition.RightOperand)
-		}
+		variable := session.getParameter(string(condition.RightOperand))
 		script.Variables[condition.RightOperand].Value = variable.Value
 	}
 	return nil
@@ -362,6 +359,105 @@ func conditionPasses(condition *ivr.Condition, script *ivr.IVRScript) (bool, err
 
 func (interpreter *Interpreter) processPlay(module *ivr.PlayModule) (ivr.Module, error) {
 	interpreter.addResponseText(module.VoicePromptIDs)
+	return getModuleByID(interpreter.Script, module.GetDescendant())
+}
+
+func (interpreter *Interpreter) processSetVariable(module *ivr.SetVariableModule) (ivr.Module, error) {
+	for _, expr := range module.Exprs {
+		lval := interpreter.Session.getParameter(expr.Lval)
+		switch expr.Rval.FuncDef {
+		case "STRING#PUT#KVLIST#STRING#STRING":
+			kvlistvar := interpreter.Session.getParameter(string(expr.Rval.Params[0]))
+			key := interpreter.Session.getParameter(string(expr.Rval.Params[1]))
+			val := interpreter.Session.getParameter(string(expr.Rval.Params[2]))
+			if lval.ValType != ivr.ValString || kvlistvar.ValType != ivr.ValKVList || key.ValType != ivr.ValString || val.ValType != ivr.ValString {
+				log.Panicf("Type mismatch") // TODO make verbose
+			}
+			kvlist := ivr.StringToKVList(kvlistvar.Value)
+			lval.Value = kvlist.Put(key.Value, val.Value)
+			kvlistvar.Value = kvlist.ToString()
+		case "INTEGER#SIZE#KVLIST":
+			kvlistvar := interpreter.Session.getParameter(string(expr.Rval.Params[0]))
+			if lval.ValType != ivr.ValInteger || kvlistvar.ValType != ivr.ValKVList {
+				log.Panicf("Type mismatch")
+			}
+			kvlist := ivr.StringToKVList(kvlistvar.Value)
+			lval.Value = strconv.Itoa(len(*kvlist))
+		case "STRING#GET_KEY#KVLIST#INTEGER":
+			kvlistvar := interpreter.Session.getParameter(string(expr.Rval.Params[0]))
+			index := interpreter.Session.getParameter(string(expr.Rval.Params[1]))
+			if lval.ValType != ivr.ValString || kvlistvar.ValType != ivr.ValKVList || index.ValType != ivr.ValInteger {
+				log.Panicf("Type mismatch")
+			}
+			kvlist := ivr.StringToKVList(kvlistvar.Value)
+			i, err := strconv.Atoi(index.Value)
+			if err != nil {
+				panic(err)
+			}
+			lval.Value = kvlist.GetKey(i)
+		case "INTEGER#SUM#INTEGER#INTEGER":
+			int1 := interpreter.Session.getParameter(string(expr.Rval.Params[0]))
+			int2 := interpreter.Session.getParameter(string(expr.Rval.Params[1]))
+			if lval.ValType != ivr.ValInteger || int1.ValType != ivr.ValInteger || int2.ValType != ivr.ValInteger {
+				log.Panicf("Type mismatch")
+			}
+			i1, err := strconv.Atoi(int1.Value)
+			if err != nil {
+				panic(err)
+			}
+			i2, err := strconv.Atoi(int2.Value)
+			if err != nil {
+				panic(err)
+			}
+			lval.Value = strconv.Itoa(i1 + i2)
+		case "STRING#REMOVE#KVLIST#STRING":
+			kvlistvar := interpreter.Session.getParameter(string(expr.Rval.Params[0]))
+			key := interpreter.Session.getParameter(string(expr.Rval.Params[1]))
+			if lval.ValType != ivr.ValString || kvlistvar.ValType != ivr.ValKVList || key.ValType != ivr.ValString {
+				log.Panicf("Type mismatch")
+			}
+			kvlist := ivr.StringToKVList(kvlistvar.Value)
+			lval.Value = kvlist.Remove(key.Value)
+			kvlistvar.Value = kvlist.ToString()
+		case "__COPY__":
+			source := interpreter.Session.getParameter(string(expr.Rval.Params[0]))
+			lval.Value = source.Value
+		case "STRING#TOSTRING#INTEGER":
+			integer := interpreter.Session.getParameter(string(expr.Rval.Params[0]))
+			if lval.ValType != ivr.ValString || integer.ValType != ivr.ValInteger {
+				log.Panicf("Type mismatch")
+			}
+			lval.Value = integer.Value
+		case "CURRENCY#SUM#CURRENCY#CURRENCY":
+			currency1 := interpreter.Session.getParameter(string(expr.Rval.Params[0]))
+			currency2 := interpreter.Session.getParameter(string(expr.Rval.Params[1]))
+			if lval.ValType != ivr.ValCurrency || currency1.ValType != ivr.ValCurrency || currency2.ValType != ivr.ValCurrency {
+				log.Panicf("Type mismatch")
+			}
+			amount1, err := strconv.ParseFloat(currency1.Value[3:], 64)
+			if err != nil {
+				panic(err)
+			}
+			amount2, err := strconv.ParseFloat(currency2.Value[3:], 64)
+			if err != nil {
+				panic(err)
+			}
+			total, err := ivr.NewUSCurrencyValue(amount1 + amount2)
+			if err != nil {
+				panic(err)
+			}
+			lval.Value = total
+		case "STRING#CONCAT#STRING#STRING":
+			string1 := interpreter.Session.getParameter(string(expr.Rval.Params[0]))
+			string2 := interpreter.Session.getParameter(string(expr.Rval.Params[1]))
+			if lval.ValType != ivr.ValString || string1.ValType != ivr.ValString || string2.ValType != ivr.ValString {
+				log.Panicf("Type mismatch")
+			}
+			lval.Value = string1.Value + string2.Value
+		default:
+			panic("Unsupported function ID: " + expr.Rval.FuncDef)
+		}
+	}
 	return getModuleByID(interpreter.Script, module.GetDescendant())
 }
 

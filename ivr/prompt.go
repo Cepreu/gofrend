@@ -46,7 +46,7 @@ type LanguagePrompts struct {
 }
 
 type TtsPrompt struct {
-	TTSPromptXML    string
+	TTSPromptXML    string `datastore:",noindex"`
 	PromptTTSEnumed bool
 }
 

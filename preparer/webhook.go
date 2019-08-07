@@ -25,7 +25,7 @@ func HandleWebhook(w http.ResponseWriter, r *http.Request) {
 	}
 	if config[cloud.GcpConfigAccessTokenKeyString] != token {
 		log.Printf("Permission denied: incorrect access token")
-		w.Write([]byte("Permission denied: incorrect access token"))
+		w.Write([]byte("Permission denied: incorrect access token\n"))
 		return
 	}
 	err = r.ParseForm()

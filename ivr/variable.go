@@ -1,8 +1,8 @@
 package ivr
 
 import (
+	"encoding/json"
 	"fmt"
-	"regexp"
 	"strconv"
 )
 
@@ -67,6 +67,62 @@ type Variable struct {
 	Secured     bool
 }
 
+type KeyVal [2]string
+
+type KVList []KeyVal
+
+func (kvlist *KVList) ToString() string {
+	data, err := json.Marshal(kvlist)
+	if err != nil {
+		panic("Error marshalling KVList: " + err.Error())
+	}
+	return string(data)
+}
+
+func StringToKVList(s string) *KVList {
+	kvlist := new(KVList)
+	err := json.Unmarshal([]byte(s), kvlist)
+	if err != nil {
+		panic("Error unmarshalling KVList: " + err.Error())
+	}
+	return kvlist
+}
+
+func (kvlist *KVList) Get(key string) string {
+	for _, keyval := range *kvlist {
+		if keyval[0] == key {
+			return keyval[1]
+		}
+	}
+	return ""
+}
+
+func (kvlist *KVList) GetKey(index int) string {
+	return (*kvlist)[index][0]
+}
+
+func (kvlist *KVList) Put(key, value string) string {
+	for _, keyval := range *kvlist {
+		if keyval[0] == key {
+			temp := keyval[1]
+			keyval[1] = value
+			return temp
+		}
+	}
+	*kvlist = append(*kvlist, [2]string{key, value})
+	return ""
+}
+
+func (kvlist *KVList) Remove(key string) string {
+	for i, keyval := range *kvlist {
+		if keyval[0] == key {
+			*kvlist = append((*kvlist)[:i], (*kvlist)[i+1:]...)
+			return keyval[1]
+		}
+	}
+	return ""
+}
+
 func NewIntegerValue(intValue int) (string, error) {
 	return strconv.Itoa(intValue), nil
 }
@@ -107,11 +163,12 @@ func NewTimeValue(minutes int) (string, error) {
 }
 
 func NewKeyValue(kv string) (string, error) {
-	r, e := regexp.MatchString(`\{.+)\}`, kv)
-	if !r && e == nil {
-		return "nil", fmt.Errorf("Value %s is not of %s type", kv, ValKVList)
-	}
-	return kv, nil
+	// r, e := regexp.MatchString(`\{.+)\}`, kv)
+	// if !r && e == nil {
+	// 	return "nil", fmt.Errorf("Value %s is not of %s type", kv, ValKVList)
+	// }
+	// return kv, nil
+	return "[]", nil
 }
 
 // NewVariable - Returns address of a new user variable, or <nil> if error

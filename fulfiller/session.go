@@ -2,12 +2,11 @@ package fulfiller
 
 import (
 	"context"
-	"fmt"
+	"log"
 
 	"cloud.google.com/go/datastore"
 	"github.com/Cepreu/gofrend/cloud"
 	"github.com/Cepreu/gofrend/ivr"
-	"github.com/Cepreu/gofrend/utils"
 	structpb "github.com/golang/protobuf/ptypes/struct"
 	"google.golang.org/api/option"
 )
@@ -79,11 +78,7 @@ func (session *Session) setParameterString(name string, str string) error {
 }
 
 func (session *Session) setParameter(name string, value *structpb.Value) error {
-	variable, ok := session.getParameter(name)
-	if !ok {
-		utils.PrettyLog(session.Data)
-		return fmt.Errorf("Could not find session variable with name: %s", name)
-	}
+	variable := session.getParameter(name)
 	var err error
 	switch variable.ValType {
 	case ivr.ValString:
@@ -96,7 +91,7 @@ func (session *Session) setParameter(name string, value *structpb.Value) error {
 	return err
 }
 
-func (session *Session) getParameter(name string) (*ivr.Variable, bool) {
+func (session *Session) getParameter(name string) *ivr.Variable {
 	var ret *ivr.Variable
 	found := false
 	for _, variable := range session.Data.Variables {
@@ -105,7 +100,10 @@ func (session *Session) getParameter(name string) (*ivr.Variable, bool) {
 			ret = variable
 		}
 	}
-	return ret, found
+	if !found {
+		log.Panic("Variable not found with name: %s", name)
+	}
+	return ret
 }
 
 func (session *Session) initializeVariables(variables ivr.Variables) {
