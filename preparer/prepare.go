@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"html"
+	"log"
 	"strings"
 
 	dialogflow "cloud.google.com/go/dialogflow/apiv2"
@@ -87,6 +88,7 @@ func softDeleteIntents(ctx context.Context, client *dialogflow.IntentsClient, pa
 	intent, err := intentsIterator.Next()
 	for err == nil && intent != nil {
 		if intent.DisplayName != "Default Fallback Intent" {
+			log.Print("Deleting intent: " + intent.Name)
 			err = client.DeleteIntent(ctx, &dialogflowpb.DeleteIntentRequest{Name: intent.Name})
 			if err != nil {
 				panic("Could not delete intent with name " + intent.Name + ": " + err.Error())
