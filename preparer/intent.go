@@ -91,12 +91,111 @@ func createTrainingPhrases(module ivr.Module, script *ivr.IVRScript, branchName 
 	switch v := module.(type) {
 	case *ivr.IncomingCallModule:
 		return []*dialogflowpb.Intent_TrainingPhrase{
-			&dialogflowpb.Intent_TrainingPhrase{
+			{
 				Name: utils.GenUUIDv4(),
 				Type: dialogflowpb.Intent_TrainingPhrase_Type(1),
 				Parts: []*dialogflowpb.Intent_TrainingPhrase_Part{
 					&dialogflowpb.Intent_TrainingPhrase_Part{
 						Text: "invoke",
+					},
+				},
+			},
+			{
+				Name: utils.GenUUIDv4(),
+				Type: dialogflowpb.Intent_TrainingPhrase_Type(1),
+				Parts: []*dialogflowpb.Intent_TrainingPhrase_Part{
+					&dialogflowpb.Intent_TrainingPhrase_Part{
+						Text: "just going to say hi",
+					},
+				},
+			},
+			{
+				Name: utils.GenUUIDv4(),
+				Type: dialogflowpb.Intent_TrainingPhrase_Type(1),
+				Parts: []*dialogflowpb.Intent_TrainingPhrase_Part{
+					&dialogflowpb.Intent_TrainingPhrase_Part{
+						Text: "heya",
+					},
+				},
+			},
+			{
+				Name: utils.GenUUIDv4(),
+				Type: dialogflowpb.Intent_TrainingPhrase_Type(1),
+				Parts: []*dialogflowpb.Intent_TrainingPhrase_Part{
+					&dialogflowpb.Intent_TrainingPhrase_Part{
+						Text: "hello hi",
+					},
+				},
+			},
+			{
+				Name: utils.GenUUIDv4(),
+				Type: dialogflowpb.Intent_TrainingPhrase_Type(1),
+				Parts: []*dialogflowpb.Intent_TrainingPhrase_Part{
+					&dialogflowpb.Intent_TrainingPhrase_Part{
+						Text: "howdy",
+					},
+				},
+			},
+			{
+				Name: utils.GenUUIDv4(),
+				Type: dialogflowpb.Intent_TrainingPhrase_Type(1),
+				Parts: []*dialogflowpb.Intent_TrainingPhrase_Part{
+					&dialogflowpb.Intent_TrainingPhrase_Part{
+						Text: "hey there",
+					},
+				},
+			},
+			{
+				Name: utils.GenUUIDv4(),
+				Type: dialogflowpb.Intent_TrainingPhrase_Type(1),
+				Parts: []*dialogflowpb.Intent_TrainingPhrase_Part{
+					&dialogflowpb.Intent_TrainingPhrase_Part{
+						Text: "hi there",
+					},
+				},
+			},
+			{
+				Name: utils.GenUUIDv4(),
+				Type: dialogflowpb.Intent_TrainingPhrase_Type(1),
+				Parts: []*dialogflowpb.Intent_TrainingPhrase_Part{
+					&dialogflowpb.Intent_TrainingPhrase_Part{
+						Text: "igreetings",
+					},
+				},
+			},
+			{
+				Name: utils.GenUUIDv4(),
+				Type: dialogflowpb.Intent_TrainingPhrase_Type(1),
+				Parts: []*dialogflowpb.Intent_TrainingPhrase_Part{
+					&dialogflowpb.Intent_TrainingPhrase_Part{
+						Text: "hey",
+					},
+				},
+			},
+			{
+				Name: utils.GenUUIDv4(),
+				Type: dialogflowpb.Intent_TrainingPhrase_Type(1),
+				Parts: []*dialogflowpb.Intent_TrainingPhrase_Part{
+					&dialogflowpb.Intent_TrainingPhrase_Part{
+						Text: "long time no see",
+					},
+				},
+			},
+			{
+				Name: utils.GenUUIDv4(),
+				Type: dialogflowpb.Intent_TrainingPhrase_Type(1),
+				Parts: []*dialogflowpb.Intent_TrainingPhrase_Part{
+					&dialogflowpb.Intent_TrainingPhrase_Part{
+						Text: "hello",
+					},
+				},
+			},
+			{
+				Name: utils.GenUUIDv4(),
+				Type: dialogflowpb.Intent_TrainingPhrase_Type(1),
+				Parts: []*dialogflowpb.Intent_TrainingPhrase_Part{
+					&dialogflowpb.Intent_TrainingPhrase_Part{
+						Text: "wassup",
 					},
 				},
 			},
