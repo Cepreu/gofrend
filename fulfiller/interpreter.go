@@ -308,6 +308,7 @@ func (interpreter *Interpreter) processCase(module *ivr.CaseModule) (ivr.Module,
 
 func populateCondition(session *Session, condition *ivr.Condition, script *ivr.IVRScript) error {
 	variable := session.getParameter(string(condition.LeftOperand))
+	log.Printf("Left operand ID: %s, Value: %p", condition.LeftOperand, script.Variables[condition.LeftOperand])
 	script.Variables[condition.LeftOperand].Value = variable.Value
 
 	if script.Variables[condition.RightOperand].VarType != ivr.VarConstant {
