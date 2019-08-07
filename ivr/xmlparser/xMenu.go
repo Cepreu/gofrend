@@ -3,6 +3,7 @@ package xmlparser
 import (
 	"encoding/xml"
 	"fmt"
+	"reflect"
 	"strconv"
 
 	"github.com/Cepreu/gofrend/ivr"
@@ -14,9 +15,10 @@ type xmlMenuModule struct {
 
 func newMenuModule(script *ivr.IVRScript, decoder *xml.Decoder) normalizer {
 	var (
-		pMM      = new(ivr.MenuModule)
-		inModule = true
-		sp       = script.Prompts
+		pMM         = new(ivr.MenuModule)
+		inModule    = true
+		inSaveInput = false
+		sp          = script.Prompts
 	)
 
 	for inModule {
@@ -37,6 +39,13 @@ func newMenuModule(script *ivr.IVRScript, decoder *xml.Decoder) normalizer {
 				innerText, err := decoder.Token()
 				if err == nil {
 					pMM.UseASR = (string(innerText.(xml.CharData)) == "true")
+				}
+			} else if v.Name.Local == "saveInput" {
+				inSaveInput = true
+			} else if v.Name.Local == "name" && inSaveInput {
+				innerText, err := decoder.Token()
+				if err == nil && reflect.TypeOf(innerText).String() == "xml.CharData" {
+					pMM.SaveInputVariable = ivr.VariableID(innerText.(xml.CharData))
 				}
 			} else if v.Name.Local == "useDTMF" {
 				innerText, err := decoder.Token()
@@ -83,7 +92,9 @@ func newMenuModule(script *ivr.IVRScript, decoder *xml.Decoder) normalizer {
 				parseGeneralInfo(pMM, decoder, &v)
 			}
 		case xml.EndElement:
-			if v.Name.Local == cMenu {
+			if v.Name.Local == "saveInput" {
+				inSaveInput = false
+			} else if v.Name.Local == cMenu {
 				inModule = false
 			}
 		}
