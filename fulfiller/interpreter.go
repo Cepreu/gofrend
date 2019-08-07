@@ -359,8 +359,13 @@ func (interpreter *Interpreter) conditionPasses(condition *ivr.Condition) (bool,
 				return left < right, nil
 			}
 		default:
-			return leftVal.Value > rightVal.Value, nil
+			if condition.ComparisonType == "MORE_THAN" {
+				return leftVal.Value > rightVal.Value, nil
+			}
+			return leftVal.Value < rightVal.Value, nil
 		}
+	case "EQUALS":
+		return leftVal.Value == rightVal.Value, nil
 	}
 	return false, fmt.Errorf("incorrect comparison operands with types %v and %v and values '%s' and '%s'", leftVal.ValType, rightVal.ValType, leftVal.Value, rightVal.Value)
 }
