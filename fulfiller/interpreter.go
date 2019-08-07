@@ -183,18 +183,14 @@ func (interpreter *Interpreter) populateWebhookContext(moduleID ivr.ModuleID) {
 
 func (interpreter *Interpreter) addResponseText(VoicePromptIDs ivr.ModulePrompts) {
 	promptStrings := VoicePromptIDs.TransformToAI(interpreter.Script.Prompts)
-	log.Print(promptStrings)
 	expression := regexp.MustCompile("@.+?@")
 	f := func(s string) string {
 		varName := s[1 : len(s)-1]
 		variable := interpreter.Session.getParameter(varName)
-		log.Print("varName: " + varName + ", value: " + variable.Value)
 		return variable.Value
 	}
 	for i := range promptStrings {
-		log.Print("Before replacement: " + promptStrings[i])
 		promptStrings[i] = expression.ReplaceAllStringFunc(promptStrings[i], f)
-		log.Print("After replacement: " + promptStrings[i])
 	}
 	intentMessageText := interpreter.WebhookResponse.FulfillmentMessages[0].GetText()
 	intentMessageText.Text = append(intentMessageText.Text, promptStrings...)
@@ -348,7 +344,7 @@ func conditionPasses(condition *ivr.Condition, script *ivr.IVRScript) (bool, err
 	}
 	log.Print(condition.ComparisonType)
 	switch condition.ComparisonType {
-	case "MORE_THAN":
+	case "MORE_THAN", "LESS_THAN":
 		log.Print(leftVal.ValType)
 		log.Print(rightVal.ValType)
 		switch leftVal.ValType {
@@ -357,20 +353,29 @@ func conditionPasses(condition *ivr.Condition, script *ivr.IVRScript) (bool, err
 			right, err2 := strconv.Atoi(rightVal.Value)
 			if err1 == nil && err2 == nil {
 				log.Printf("Left: %d, Right: %d.", left, right)
-				return left > right, nil
+				if condition.ComparisonType == "MORE_THAN" {
+					return left > right, nil
+				}
+				return left < right, nil
 			}
 			log.Printf("Err1: %v, err2: %v.", err1, err2)
 		case ivr.ValNumeric:
 			left, err1 := strconv.ParseFloat(leftVal.Value, 64)
 			right, err2 := strconv.ParseFloat(rightVal.Value, 64)
 			if err1 == nil && err2 == nil {
-				return left > right, nil
+				if condition.ComparisonType == "MORE_THAN" {
+					return left > right, nil
+				}
+				return left < right, nil
 			}
 		case ivr.ValCurrency, ivr.ValCurrencyPound, ivr.ValCurrencyEuro:
 			left, err1 := strconv.ParseFloat(leftVal.Value[2:], 64)
 			right, err2 := strconv.ParseFloat(rightVal.Value[2:], 64)
 			if err1 == nil && err2 == nil {
-				return left > right, nil
+				if condition.ComparisonType == "MORE_THAN" {
+					return left > right, nil
+				}
+				return left < right, nil
 			}
 		default:
 			return leftVal.Value > rightVal.Value, nil
