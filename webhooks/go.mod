@@ -1,7 +1,7 @@
 module webhook
 
 require (
-	github.com/Cepreu/gofrend v0.0.0-20190807200152-8f8260ee3680
+	github.com/Cepreu/gofrend v0.0.0-20190807214427-38b31d08d79c
 	github.com/hashicorp/golang-lru v0.5.3 // indirect
 	golang.org/x/net v0.0.0-20190724013045-ca1201d0de80 // indirect
 	golang.org/x/sys v0.0.0-20190804053845-51ab0e2deafa // indirect

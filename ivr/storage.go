@@ -30,6 +30,7 @@ type StorageModuleType int
 const (
 	cHangupModule StorageModuleType = iota
 	cIfElseModule
+	cCaseModule
 	cIncomingCallModule
 	cInputModule
 	cMenuModule
@@ -43,6 +44,7 @@ type StorageModule struct {
 	Type          StorageModuleType
 	Hangup        *HangupModule
 	IfElse        *IfElseModule
+	Case          *CaseModule
 	IncomingCall  *IncomingCallModule
 	Input         *InputModule
 	Menu          *MenuModule
@@ -58,6 +60,8 @@ func (module *StorageModule) GetModule() Module {
 		return module.Hangup
 	case cIfElseModule:
 		return module.IfElse
+	case cCaseModule:
+		return module.Case
 	case cIncomingCallModule:
 		return module.IncomingCall
 	case cInputModule:
@@ -86,6 +90,9 @@ func MakeStorageModule(module Module) *StorageModule {
 	case *IfElseModule:
 		ret.Type = cIfElseModule
 		ret.IfElse = v
+	case *CaseModule:
+		ret.Type = cCaseModule
+		ret.Case = v
 	case *IncomingCallModule:
 		ret.Type = cIncomingCallModule
 		ret.IncomingCall = v
