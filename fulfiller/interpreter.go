@@ -263,6 +263,7 @@ func (interpreter *Interpreter) processQuery(module *ivr.QueryModule) (ivr.Modul
 					return nil, err
 				}
 				matches := expression.FindStringSubmatch(string(contents))
+				utils.PrettyLog(matches)
 				if matches != nil {
 					for i, match := range matches[1:] {
 						if responseInfo.TargetVariables[i] != "" {
