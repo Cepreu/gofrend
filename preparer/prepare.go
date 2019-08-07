@@ -87,7 +87,10 @@ func softDeleteIntents(ctx context.Context, client *dialogflow.IntentsClient, pa
 	intent, err := intentsIterator.Next()
 	for err == nil && intent != nil {
 		if intent.DisplayName != "Default Fallback Intent" {
-			client.DeleteIntent(ctx, &dialogflowpb.DeleteIntentRequest{Name: intent.Name})
+			err = client.DeleteIntent(ctx, &dialogflowpb.DeleteIntentRequest{Name: intent.Name})
+			if err != nil {
+				panic("Could not delete intent with name " + intent.Name + ": " + err.Error())
+			}
 			break
 		}
 		intent, err = intentsIterator.Next()
