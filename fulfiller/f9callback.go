@@ -5,12 +5,15 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"net/url"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/Cepreu/gofrend/utils"
 )
 
 const (
@@ -209,6 +212,9 @@ func (c *client) newIVRSession(domainID, campaignID string, params map[string]st
 		return "", err
 	}
 	defer resp.Body.Close()
+	utils.PrettyLog(resp.Header)
+	data, err := ioutil.ReadAll(resp.Body)
+	utils.LogWithoutNewlines(string(data))
 	location, err := resp.Location()
 	if err != nil {
 		log.Panicf("Error reading response location: %v", err)

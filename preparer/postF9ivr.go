@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"html"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"strings"
 	"text/template"
@@ -380,8 +381,7 @@ func queryF9(auth string, generateRequestContent func() string) ([]byte, error) 
 	req.Header.Add("Authorization", "Basic "+auth)
 	resp, err := client.Do(req)
 	if err != nil {
-		fmt.Println(req)
-		return nil, err
+		log.Panicf("Error doing request: %v", err)
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode != 200 {
