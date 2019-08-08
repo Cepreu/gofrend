@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -210,7 +211,7 @@ func (c *client) newIVRSession(domainID, campaignID string, params map[string]st
 	defer resp.Body.Close()
 	location, err := resp.Location()
 	if err != nil {
-		return "", err
+		log.Panicf("Error reading response location: %v", err)
 	}
 	parts := strings.Split(location.Path, "/")
 	if len(parts) < 2 {
