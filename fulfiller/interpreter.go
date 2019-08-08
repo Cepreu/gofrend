@@ -84,23 +84,50 @@ func (interpreter *Interpreter) processInitial(module ivr.Module, displayName st
 func (interpreter *Interpreter) process(module ivr.Module) (ivr.Module, error) {
 	switch v := module.(type) {
 	case *ivr.IfElseModule:
-		return interpreter.processIfElse(v)
+		module, err := interpreter.processIfElse(v)
+		if err != nil {
+			log.Panicf("Error parsing IfElse module: %v", err)
+		}
 	case *ivr.CaseModule:
-		return interpreter.processCase(v)
+		module, err := interpreter.processCase(v)
+		if err != nil {
+			log.Panicf("Error parsing Case module: %v", err)
+		}
 	case *ivr.PlayModule:
-		return interpreter.processPlay(v)
+		module, err := interpreter.processPlay(v)
+		if err != nil {
+			log.Panicf("Error parsing Play module: %v", err)
+		}
 	case *ivr.InputModule:
-		return interpreter.processInput(v)
+		module, err := interpreter.processInput(v)
+		if err != nil {
+			log.Panicf("Error parsing Input module: %v", err)
+		}
 	case *ivr.MenuModule:
-		return interpreter.processMenu(v)
+		module, err := interpreter.processMenu(v)
+		if err != nil {
+			log.Panicf("Error parsing Menu module: %v", err)
+		}
 	case *ivr.QueryModule:
-		return interpreter.processQuery(v)
+		module, err := interpreter.processQuery(v)
+		if err != nil {
+			log.Panicf("Error parsing Query module: %v", err)
+		}
 	case *ivr.SkillTransferModule:
-		return interpreter.processSkillTransfer(v)
+		module, err := interpreter.processSkillTransfer(v)
+		if err != nil {
+			log.Panicf("Error parsing SkillTransfer module: %v", err)
+		}
 	case *ivr.SetVariableModule:
-		return interpreter.processSetVariable(v)
+		module, err := interpreter.processSetVariable(v)
+		if err != nil {
+			log.Panicf("Error parsing SetVariable module: %v", err)
+		}
 	case *ivr.HangupModule:
-		return interpreter.processHangup(v)
+		module, err := interpreter.processHangup(v)
+		if err != nil {
+			log.Panicf("Error parsing Hangup module: %v", err)
+		}
 	default:
 		panic("Not implemented")
 	}
