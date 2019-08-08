@@ -86,48 +86,57 @@ func (interpreter *Interpreter) process(module ivr.Module) (ivr.Module, error) {
 	case *ivr.IfElseModule:
 		module, err := interpreter.processIfElse(v)
 		if err != nil {
-			log.Panicf("Error parsing IfElse module: %v", err)
+			log.Panicf("Error processing IfElse module: %v", err)
 		}
+		return module, err
 	case *ivr.CaseModule:
 		module, err := interpreter.processCase(v)
 		if err != nil {
-			log.Panicf("Error parsing Case module: %v", err)
+			log.Panicf("Error processing Case module: %v", err)
 		}
+		return module, err
 	case *ivr.PlayModule:
 		module, err := interpreter.processPlay(v)
 		if err != nil {
-			log.Panicf("Error parsing Play module: %v", err)
+			log.Panicf("Error processing Play module: %v", err)
 		}
+		return module, err
 	case *ivr.InputModule:
 		module, err := interpreter.processInput(v)
 		if err != nil {
-			log.Panicf("Error parsing Input module: %v", err)
+			log.Panicf("Error processing Input module: %v", err)
 		}
+		return module, err
 	case *ivr.MenuModule:
 		module, err := interpreter.processMenu(v)
 		if err != nil {
-			log.Panicf("Error parsing Menu module: %v", err)
+			log.Panicf("Error processing Menu module: %v", err)
 		}
+		return module, err
 	case *ivr.QueryModule:
 		module, err := interpreter.processQuery(v)
 		if err != nil {
-			log.Panicf("Error parsing Query module: %v", err)
+			log.Panicf("Error processing Query module: %v", err)
 		}
+		return module, err
 	case *ivr.SkillTransferModule:
 		module, err := interpreter.processSkillTransfer(v)
 		if err != nil {
-			log.Panicf("Error parsing SkillTransfer module: %v", err)
+			log.Panicf("Error processing SkillTransfer module: %v", err)
 		}
+		return module, err
 	case *ivr.SetVariableModule:
 		module, err := interpreter.processSetVariable(v)
 		if err != nil {
-			log.Panicf("Error parsing SetVariable module: %v", err)
+			log.Panicf("Error processing SetVariable module: %v", err)
 		}
+		return module, err
 	case *ivr.HangupModule:
 		module, err := interpreter.processHangup(v)
 		if err != nil {
-			log.Panicf("Error parsing Hangup module: %v", err)
+			log.Panicf("Error processing Hangup module: %v", err)
 		}
+		return module, err
 	default:
 		panic("Not implemented")
 	}

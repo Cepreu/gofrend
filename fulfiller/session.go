@@ -101,7 +101,7 @@ func (session *Session) getParameter(name string) *ivr.Variable {
 		}
 	}
 	if !found {
-		log.Panic("Variable not found with name: %s", name)
+		log.Panicf("Variable not found with name: %s", name)
 	}
 	return ret
 }
