@@ -247,12 +247,12 @@ func (interpreter *Interpreter) processQuery(module *ivr.QueryModule) (ivr.Modul
 	client := &http.Client{}
 	response, err := client.Do(request)
 	if err != nil {
-		return nil, err
+		log.Panicf("Error doing http request: %v", err)
 	}
 	defer response.Body.Close()
 	contents, err := ioutil.ReadAll(response.Body)
 	if err != nil {
-		return nil, err
+		log.Panicf("Error reading contents of http response: %v", err)
 	}
 	utils.LogWithoutNewlines(string(contents))
 	for _, responseInfo := range module.ResponseInfos {
