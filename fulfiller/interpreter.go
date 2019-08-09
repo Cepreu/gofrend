@@ -295,6 +295,7 @@ func (interpreter *Interpreter) processQuery(module *ivr.QueryModule) (ivr.Modul
 		variable := interpreter.Session.getParameter(replacement.VariableName)
 		body = body[:replacement.Position] + variable.Value + body[replacement.Position:]
 	}
+	utils.LogWithoutNewlines(body)
 	request, err := http.NewRequest(module.Method, module.URL, bytes.NewReader([]byte(body)))
 	for _, h := range module.Headers {
 		variable := interpreter.Script.Variables[h.Value]
