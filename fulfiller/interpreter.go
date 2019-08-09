@@ -291,8 +291,8 @@ func (interpreter *Interpreter) processQuery(module *ivr.QueryModule) (ivr.Modul
 	utils.LogWithoutNewlines(body)
 	log.Printf("Number of replacements: %d", len(module.RequestInfo.Replacements))
 	for _, replacement := range module.RequestInfo.Replacements {
-		log.Printf("Replacement location: %d, VariableName: %s", replacement.Position, replacement.VariableName)
 		variable := interpreter.Session.getParameter(replacement.VariableName)
+		log.Printf("Replacement location: %d, VariableName: %s, Value: %s", replacement.Position, replacement.VariableName, variable.Value)
 		body = body[:replacement.Position] + variable.Value + body[replacement.Position:]
 	}
 	utils.LogWithoutNewlines(body)
