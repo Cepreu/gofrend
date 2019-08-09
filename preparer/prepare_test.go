@@ -11,7 +11,7 @@ import (
 var filename1 = "test_files/comparison_test.five9ivr"
 
 func TestPrepare(t *testing.T) {
-	err := Prepare("comparison_test", "sergei_inbound", "sam2@007.com", "pwd1234567")
+	err := Prepare("LoanScoreRouting", "sergei_inbound", "sam2@007.com", "pwd1234567")
 	checkNil(err, t)
 }
 
