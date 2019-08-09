@@ -301,6 +301,8 @@ func (interpreter *Interpreter) processQuery(module *ivr.QueryModule) (ivr.Modul
 		variable := interpreter.Script.Variables[h.Value]
 		request.Header.Add(h.Key, variable.Value)
 	}
+	log.Print(request.URL.String())
+	utils.PrettyLog(request.Header)
 	client := &http.Client{}
 	response, err := client.Do(request)
 	if err != nil {
