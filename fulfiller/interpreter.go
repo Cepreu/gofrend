@@ -336,6 +336,7 @@ func (interpreter *Interpreter) processQuery(module *ivr.QueryModule) (ivr.Modul
 			}
 
 		}
+		break
 	}
 	return getModuleByID(interpreter.Script, module.GetDescendant())
 }
