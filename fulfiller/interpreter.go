@@ -324,6 +324,7 @@ func (interpreter *Interpreter) processQuery(module *ivr.QueryModule) (ivr.Modul
 				}
 				matches := expression.FindStringSubmatch(string(contents))
 				utils.PrettyLog(matches)
+				utils.PrettyLog(responseInfo)
 				if matches != nil {
 					for i, match := range matches[1:] {
 						if responseInfo.TargetVariables[i] != "" {
