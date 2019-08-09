@@ -68,16 +68,12 @@ func (session *Session) close() error {
 	return session.client.Close()
 }
 
-func (session *Session) setParameterString(name string, str string) error {
-	value := &structpb.Value{
-		Kind: &structpb.Value_StringValue{
-			StringValue: str,
-		},
-	}
-	return session.setParameter(name, value)
+func (session *Session) setParameter(name string, val string) {
+	variable := session.getParameter(name)
+	variable.Value = val
 }
 
-func (session *Session) setParameter(name string, value *structpb.Value) error {
+func (session *Session) setParameterFromPBVal(name string, value *structpb.Value) error {
 	variable := session.getParameter(name)
 	var err error
 	switch variable.ValType {

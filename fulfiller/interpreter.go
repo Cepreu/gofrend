@@ -175,7 +175,7 @@ func (interpreter *Interpreter) processInputInitial(module *ivr.InputModule) (iv
 	}
 	parameters := interpreter.QueryResult.Parameters.Fields
 	for name, value := range parameters {
-		interpreter.Session.setParameter(name, value)
+		interpreter.Session.setParameterFromPBVal(name, value)
 	}
 	return getModuleByID(interpreter.Script, module.GetDescendant())
 }
@@ -190,6 +190,19 @@ func (interpreter *Interpreter) processMenuInitial(module *ivr.MenuModule, displ
 	err := interpreter.loadSession()
 	if err != nil {
 		return nil, err
+	}
+	/*
+	* Todo.
+	* Saving the selected menu option value requires more thought than in current implmementation.
+	* In IVR, menu options and branches are separate constructs. Branches are expressed in this
+	* module's ivr package, whereas menu options simply become training phrases for dialogflow intents.
+	* In order to match the behavior of an IVR script, it will be necessary to match the user input
+	* to the appropriate menu option, and save this in the desired variable.
+	* Right now, a cop-out is taken: we assume the user input from dialogflow will exactly match a menu
+	* option, so we can simply save the user input in our variable.
+	 */
+	if string(module.SaveInputVariable) != "" {
+		interpreter.Session.setParameter(string(module.SaveInputVariable), interpreter.QueryResult.QueryText)
 	}
 	branchName := utils.MenuDisplayNameToBranchName(displayName)
 	var branch *ivr.OutputBranch
@@ -304,10 +317,7 @@ func (interpreter *Interpreter) processQuery(module *ivr.QueryModule) (ivr.Modul
 				if matches != nil {
 					for i, match := range matches[1:] {
 						if responseInfo.TargetVariables[i] != "" {
-							err = interpreter.Session.setParameterString(responseInfo.TargetVariables[i], match)
-							if err != nil {
-								return nil, err
-							}
+							interpreter.Session.setParameter(responseInfo.TargetVariables[i], match)
 						}
 					}
 				}

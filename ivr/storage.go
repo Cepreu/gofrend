@@ -155,15 +155,12 @@ func MakeStoragePrompt(p prompt) *StoragePrompt {
 		ret.Type = cTtsPrompt
 		ret.TtsPrompt = v
 	case *XFilePrompt:
-		fmt.Println(2)
 		ret.Type = cXFilePrompt
 		ret.XFilePrompt = v
 	case *XPausePrompt:
-		fmt.Println(3)
 		ret.Type = cXPausePrompt
 		ret.XPausePrompt = v
 	default:
-		fmt.Println(4)
 		return nil
 	}
 	return ret
