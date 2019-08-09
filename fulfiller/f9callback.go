@@ -206,6 +206,7 @@ func (c *client) newIVRSession(domainID, campaignID string, params map[string]st
 	if err != nil {
 		return "", err
 	}
+	utils.PrettyLog(c)
 	utils.PrettyLog(params)
 	log.Print(req.URL.String())
 	utils.PrettyLog(req.Header)
