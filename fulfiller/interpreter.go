@@ -334,9 +334,8 @@ func (interpreter *Interpreter) processQuery(module *ivr.QueryModule) (ivr.Modul
 			default:
 				return nil, fmt.Errorf("Parsing method not understood: '%s'", responseInfo.ParsingMethod)
 			}
-
+			break
 		}
-		break
 	}
 	return getModuleByID(interpreter.Script, module.GetDescendant())
 }
