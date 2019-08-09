@@ -288,6 +288,14 @@ func (interpreter *Interpreter) processQuery(module *ivr.QueryModule) (ivr.Modul
 	if err != nil {
 		return nil, err
 	}
+	utils.LogWithoutNewlines(body)
+	expression := regexp.MustCompile("&&.+?&&")
+	f := func(s string) string {
+		varName := s[2 : len(s)-2]
+		variable := interpreter.Session.getParameter(varName)
+		return variable.Value
+	}
+	body = expression.ReplaceAllStringFunc(body, f)
 	request, err := http.NewRequest(module.Method, module.URL, bytes.NewReader([]byte(body)))
 	for _, h := range module.Headers {
 		variable := interpreter.Script.Variables[h.Value]
