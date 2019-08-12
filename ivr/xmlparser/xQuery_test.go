@@ -154,26 +154,22 @@ NgG542Tx6Z2iGf4vriZcoRXN60sIbaUo2p5M0fatdrN7eobHef0q/QNhcqWBvQEAAA==</base64>
 	}
 
 	var mq = (res.(xmlQueryModule)).m
+	contentType, _ := addStringConstant(s, "text/xml; charset=utf-8")
+
 	var expected = ivr.QueryModule{
 		VoicePromptIDs: ivr.ModulePrompts{{
 			LangPrArr: []ivr.LanguagePrompts{{PrArr: []ivr.PromptID{}, Language: "Default"}},
 			Count:     1,
 		}},
-		URL:                                  "https://api.five9.com/wsadmin/v11/AdminWebService",
-		Method:                               "POST",
-		FetchTimeout:                         0,
-		StoreNumberOfArrayElementsInVariable: false,
-		Parameters:                           nil,
-		ReturnValues:                         []ivr.KeyValue{{Key: "__BUFFER__", Value: "__BUFFER__"}},
-		URLParts:                             nil,
+		URL:          "https://api.five9.com/wsadmin/v11/AdminWebService",
+		Method:       "POST",
+		ReturnValues: []ivr.KeyValue{{Key: "__BUFFER__", Value: "__BUFFER__"}},
 		RequestInfo: ivr.RequestInfo{
 			Template:     "\u003csoapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:ser=\"http://service.admin.ws.five9.com/\"\u003e\n   \u003csoapenv:Header/\u003e\n   \u003csoapenv:Body\u003e\n      \u003cser:getContactRecords\u003e  \n          \u003clookupCriteria\u003e\n             \u003ccriteria\u003e\n                \u003cfield\u003esalesforce_id\u003c/field\u003e\n                \u003cvalue\u003e\u003c/value\u003e\n             \u003c/criteria\u003e\n          \u003c/lookupCriteria\u003e\n      \u003c/ser:getContactRecords\u003e\n   \u003c/soapenv:Body\u003e\n\u003c/soapenv:Envelope\u003e",
 			Replacements: []*ivr.Replacement{&ivr.Replacement{Position: 314, VariableName: "sergei.qwerty"}},
 		},
-		Headers:          []ivr.KeyValue{{Key: "Content-Type", Value: "c012293e-8c57-409d-8ebd-45b1db0ecd1f"}},
-		RequestBodyType:  "XML_JSON",
-		SaveStatusCode:   false,
-		SaveReasonPhrase: false,
+		Headers:         []ivr.KeyValue{{Key: "Content-Type", Value: contentType}},
+		RequestBodyType: "XML_JSON",
 		ResponseInfos: []*ivr.ResponseInfo{
 			&ivr.ResponseInfo{
 				HTTPCodeFrom:  200,
@@ -190,11 +186,7 @@ NgG542Tx6Z2iGf4vriZcoRXN60sIbaUo2p5M0fatdrN7eobHef0q/QNhcqWBvQEAAA==</base64>
 					Name       string
 					ReturnType string
 					Arguments  string
-				}{
-					Name:       "",
-					ReturnType: "",
-					Arguments:  "",
-				},
+				}{},
 				TargetVariables: []string{"__BUFFER__", "", "", "", "", ""},
 			},
 			&ivr.ResponseInfo{
@@ -204,19 +196,12 @@ NgG542Tx6Z2iGf4vriZcoRXN60sIbaUo2p5M0fatdrN7eobHef0q/QNhcqWBvQEAAA==</base64>
 				Regexp: struct {
 					RegexpBody  string
 					RegexpFlags int
-				}{
-					RegexpBody:  "(.+)",
-					RegexpFlags: 0,
-				},
+				}{"(.+)", 0},
 				Function: struct {
 					Name       string
 					ReturnType string
 					Arguments  string
-				}{
-					Name:       "",
-					ReturnType: "",
-					Arguments:  "",
-				},
+				}{},
 				TargetVariables: []string{"__BUFFER__"},
 			},
 		},
