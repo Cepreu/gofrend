@@ -284,10 +284,7 @@ func (interpreter *Interpreter) processSkillTransfer(module *ivr.SkillTransferMo
 
 func (interpreter *Interpreter) processQuery(module *ivr.QueryModule) (ivr.Module, error) {
 	interpreter.addResponseText(module.VoicePromptIDs)
-	body, err := utils.CmdUnzip(module.RequestInfo.Base64)
-	if err != nil {
-		return nil, err
-	}
+	body := module.RequestInfo.Template
 	utils.LogWithoutNewlines(body)
 	log.Printf("Number of replacements: %d", len(module.RequestInfo.Replacements))
 	for _, replacement := range module.RequestInfo.Replacements {
