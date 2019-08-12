@@ -178,9 +178,9 @@ aTuV9wcNmHfIFWS9IPiKfbS0SXD6AQLT2xmtAAAA</tcpaConsentText>
 		"", "false")
 
 	exp, err1 := json.MarshalIndent(expected, "", "  ")
-	setv, err2 := json.MarshalIndent(mhu, "", "  ")
+	stm, err2 := json.MarshalIndent(mhu, "", "  ")
 
-	if err1 != nil || err2 != nil || string(exp) != string(setv) {
-		t.Errorf("\nSkillTransfer module: \n%s \nwas expected, in reality: \n%s", string(exp), string(setv))
+	if err1 != nil || err2 != nil || string(exp) != string(stm) {
+		t.Errorf("\nSkillTransfer module: \n%s \nwas expected, in reality: \n%s", string(exp), string(stm))
 	}
 }

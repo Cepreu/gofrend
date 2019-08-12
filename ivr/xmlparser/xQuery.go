@@ -143,7 +143,8 @@ func parseRequestInfo(p *ivr.RequestInfo, decoder *xml.Decoder) error {
 
 		case xml.CharData:
 			if inTemplate {
-				p.Base64 = string(v)
+				//				p.Base64 = string(v)
+				p.Template, err = utils.CmdUnzip(string(v))
 			} else if inPosition && inReplacements {
 				tmp.Position, _ = strconv.Atoi(string(v))
 			} else if inVariableName && inReplacements {
@@ -299,6 +300,8 @@ func parseRegexpInfo(p *ivr.ResponseInfo, decoder *xml.Decoder) error {
 				inRegexpFlags = true
 			} else if v.Name.Local == "regexpParameters" {
 				inRegexpParameters = true
+				key = 0
+				value = ""
 			} else if v.Name.Local == "groupIndex" && inRegexpParameters {
 				inGroupIndex = true
 			} else if v.Name.Local == "variable" && inRegexpParameters {
@@ -398,7 +401,6 @@ func (module xmlQueryModule) normalize(s *ivr.IVRScript) error {
 	if err != nil {
 		return err
 	}
-	module.m.RequestInfo.Template, err = utils.CmdUnzip(module.m.RequestInfo.Base64)
 	s.Modules[module.m.ID] = module.m
 	return err
 }

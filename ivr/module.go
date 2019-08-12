@@ -253,7 +253,6 @@ type (
 	//RequestInfo - represents request info for Query module
 	RequestInfo struct {
 		Template     string
-		Base64       string
 		Replacements []*Replacement
 	}
 	//Replacement - response parsing info for Query module
