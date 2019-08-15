@@ -1,6 +1,7 @@
 package ivr
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"strings"
@@ -32,9 +33,18 @@ func (mp *ModulePrompts) TransformToAI(sp ScriptPrompts) (res []string) {
 	return
 }
 
+func PrettyLog(v interface{}) (err error) {
+	b, err := json.Marshal(v)
+	if err == nil {
+		log.Print(string(b))
+	}
+	return
+}
+
 // TransformToAI - Transforms to a form suitable for Dialogflow
 func (ap *AttemptPrompts) TransformToAI(sp ScriptPrompts) (txt string) {
 	for _, id := range ap.LangPrArr[0].PrArr {
+		PrettyLog(sp)
 		log.Printf("ID: %s", id)
 		log.Print(sp[id])
 		txt = txt + sp[id].TransformToAI()
