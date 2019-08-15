@@ -2,6 +2,7 @@ package ivr
 
 import (
 	"fmt"
+	"log"
 	"strings"
 )
 
@@ -34,6 +35,8 @@ func (mp *ModulePrompts) TransformToAI(sp ScriptPrompts) (res []string) {
 // TransformToAI - Transforms to a form suitable for Dialogflow
 func (ap *AttemptPrompts) TransformToAI(sp ScriptPrompts) (txt string) {
 	for _, id := range ap.LangPrArr[0].PrArr {
+		log.Printf("ID: %s", id)
+		log.Print(sp[id])
 		txt = txt + sp[id].TransformToAI()
 	}
 	return
