@@ -3,7 +3,7 @@ module webhook
 require (
 	cloud.google.com/go v0.44.3 // indirect
 	cloud.google.com/go/bigquery v1.0.1 // indirect
-	github.com/Cepreu/gofrend v0.0.0-20190815200003-4c5972563e6d
+	github.com/Cepreu/gofrend v0.0.0-20190816210339-3e59079a8bad
 	github.com/google/go-cmp v0.3.1 // indirect
 	github.com/hashicorp/golang-lru v0.5.3 // indirect
 	golang.org/x/exp v0.0.0-20190731235908-ec7cb31e5a56 // indirect
