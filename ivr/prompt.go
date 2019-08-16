@@ -44,9 +44,6 @@ func PrettyLog(v interface{}) (err error) {
 // TransformToAI - Transforms to a form suitable for Dialogflow
 func (ap *AttemptPrompts) TransformToAI(sp ScriptPrompts) (txt string) {
 	for _, id := range ap.LangPrArr[0].PrArr {
-		PrettyLog(sp)
-		log.Printf("ID: %s", id)
-		log.Print(sp[id])
 		txt = txt + sp[id].TransformToAI()
 	}
 	return

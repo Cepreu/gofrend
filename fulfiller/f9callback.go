@@ -206,10 +206,6 @@ func (c *client) newIVRSession(domainID, campaignID string, params map[string]st
 	if err != nil {
 		return "", err
 	}
-	utils.PrettyLog(c)
-	utils.PrettyLog(params)
-	log.Print(req.URL.String())
-	utils.PrettyLog(req.Header)
 	c.httpClient.CheckRedirect = func(req *http.Request, via []*http.Request) error { return http.ErrUseLastResponse }
 	resp, err := c.httpClient.Do(req)
 	if err != nil {
