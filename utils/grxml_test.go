@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"fmt"
+	"strings"
 	"testing"
 )
 
@@ -14,10 +14,18 @@ func TestGramGeneratorSimple(t *testing.T) {
                              http://www.w3.org/TR/speech-grammar/grammar.xsd"
          xmlns="http://www.w3.org/2001/06/grammar">
 	<rule id="town">
-		<item>Townsville</item>
-		<item>Beantown</item> 
+		<item repeat="0-4">Townsville</item>
+		<item repeat="1-">Beantown</item> 
+		<item repeat="2">Livermore</item> 
 	</rule>
 </grammar>
 `
-	fmt.Println(testxml)
+	pns, err := grammarParser(strings.NewReader(testxml))
+	if err != nil {
+		t.Errorf("\nGRXML parser error: %v", err)
+		return
+	}
+
+	err = pns[0].randomRun(40)
+	t.Errorf("\ngot: %v Result net: %v", err, pns)
 }
