@@ -27,3 +27,14 @@ func TestDirectory(t *testing.T) {
 		t.Fatal("directory was not created!!!!")
 	}
 }
+
+func TestStrempty(t *testing.T) {
+
+	s := `  
+	
+	
+	   `
+	if !Strempty(s) {
+		t.Fatal("TestStrempty: Should be true!!!!")
+	}
+}

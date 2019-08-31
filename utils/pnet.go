@@ -7,8 +7,9 @@ import (
 )
 
 type PPosition struct {
-	id     string
-	weight int
+	id         string
+	initWeight int
+	weight     int
 }
 type PArc struct {
 	p     *PPosition
@@ -26,9 +27,16 @@ type PNet struct {
 	transitions []*PTransition
 }
 
+func (pn *PNet) reset() {
+	for _, p := range pn.positions {
+		p.weight = p.initWeight
+	}
+}
+
 func (pn *PNet) run(limit int) (err error) {
 	var fired = true
 
+	pn.reset()
 	for n := 0; fired && n < limit; n++ {
 		fired = false
 		for _, t := range pn.transitions {
@@ -39,6 +47,7 @@ func (pn *PNet) run(limit int) (err error) {
 	return
 }
 func (pn *PNet) randomRun(limit int) (err error) {
+	pn.reset()
 	for n := 0; n < limit; n++ {
 		var canFire = []*PTransition{}
 		for _, tr := range pn.transitions {

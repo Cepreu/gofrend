@@ -6,7 +6,7 @@ import (
 )
 
 func TestPetri(t *testing.T) {
-	positions := []*PPosition{{"p1", 1}, {"p2", 0}, {"p3", 2}, {"p4", 1}}
+	positions := []*PPosition{{"p1", 1, 0}, {"p2", 0, 0}, {"p3", 2, 0}, {"p4", 1, 0}}
 	pn := &PNet{
 		positions: positions,
 		transitions: []*PTransition{

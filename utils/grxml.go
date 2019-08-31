@@ -4,11 +4,14 @@ import (
 	"encoding/xml"
 	"fmt"
 	"io"
+	"reflect"
 	"strconv"
 	"strings"
 
 	"golang.org/x/net/html/charset"
 )
+
+var pns = make(map[string]*PNet)
 
 /*
         (From <N-1> or Begin)  |
@@ -33,11 +36,10 @@ import (
               	             \___/
 
 */
-func (pn *PNet) itemGen(initPos *PPosition, ma, mp, M, n int, content string) *PPosition {
-	funcTxt := fmt.Sprintf("T1_%d, %s", n, content)
-	maxRepeatPos := &PPosition{fmt.Sprintf("maxrepeat%d", n), M}
-	minRepeatPos := &PPosition{fmt.Sprintf("minrepeat%d", n), mp}
-	statePos := &PPosition{fmt.Sprintf("state%d", n+1), 0}
+func (pn *PNet) itemGen(initPos *PPosition, ma, mp, M, n int, fu func()) *PPosition {
+	maxRepeatPos := &PPosition{id: fmt.Sprintf("maxrepeat%d", n), initWeight: M}
+	minRepeatPos := &PPosition{id: fmt.Sprintf("minrepeat%d", n), initWeight: mp}
+	statePos := &PPosition{id: fmt.Sprintf("state%d", n+1), initWeight: 0}
 	pn.positions = append(pn.positions, statePos, maxRepeatPos, minRepeatPos)
 	t1 := PTransition{
 		id: fmt.Sprintf("t1_%d", n),
@@ -49,7 +51,7 @@ func (pn *PNet) itemGen(initPos *PPosition, ma, mp, M, n int, content string) *P
 			PArc{initPos, 1},
 			PArc{minRepeatPos, 1},
 		},
-		f: func() { fmt.Println(funcTxt) },
+		f: fu,
 	}
 	t2 := PTransition{
 		id: fmt.Sprintf("t2_%d", n),
@@ -94,7 +96,7 @@ func mM(repeater string, limit4unlimited int) (ma, mp, M int) {
 	return ma, mp, M
 }
 
-func grammarParser(src io.Reader) (pns []*PNet, err error) {
+func grammarParser(src io.Reader) (err error) {
 	var (
 		decoder = xml.NewDecoder(src)
 	)
@@ -114,32 +116,55 @@ func grammarParser(src io.Reader) (pns []*PNet, err error) {
 		switch v := t.(type) {
 		case xml.StartElement:
 			if v.Name.Local == "rule" {
+				var ruleID string
+				for _, attr := range v.Attr {
+					if attr.Name.Local == "id" {
+						ruleID = attr.Value
+						break
+					}
+				}
+				if ruleID == "" {
+					return fmt.Errorf("Incorrect grammar: Rule with no ID")
+				}
 				if pn, err := ruleParser(decoder); err == nil {
-					pns = append(pns, pn)
+					pns[ruleID] = pn
 				}
 			}
 		}
 	}
-	return pns, nil
+	return err
 }
 
 func ruleParser(decoder *xml.Decoder) (*PNet, error) {
-	pn := &PNet{}
-	initPos := &PPosition{"state0", 1}
+	var (
+		pn           = &PNet{}
+		initPos      = &PPosition{id: "state0", initWeight: 1}
+		inRule       = true
+		ma, mp, M, n int
+	)
 	pn.positions = append(pn.positions, initPos)
-	inRule := true
-	n := 0
 
 	for inRule {
 		t, err := decoder.Token()
 		if err != nil {
-			fmt.Printf("decoder.Token() failed in itemParser with '%s'\n", err)
+			fmt.Printf("decoder.Token() failed in ruleParser  with '%s'\n", err)
 			return nil, err
 		}
 		switch v := t.(type) {
 		case xml.StartElement:
 			if v.Name.Local == "item" {
-				initPos, err = itemParser(decoder, v.Attr, pn, initPos, n+1)
+				for _, attr := range v.Attr {
+					if attr.Name.Local == "repeat" {
+						ma, mp, M = mM(attr.Value, 10)
+						break
+					}
+				}
+				if f, err := itemParser(decoder); err == nil {
+					initPos = pn.itemGen(initPos, ma, mp, M, n, f)
+					n++
+				} else {
+					return nil, err
+				}
 			}
 		case xml.EndElement:
 			if v.Name.Local == "rule" {
@@ -150,18 +175,16 @@ func ruleParser(decoder *xml.Decoder) (*PNet, error) {
 	return pn, nil
 }
 
-func itemParser(decoder *xml.Decoder, attrs []xml.Attr, pn *PNet, initPos *PPosition, n int) (*PPosition, error) {
+func itemParser(decoder *xml.Decoder) (func(), error) {
 	var (
-		inItem    = true
-		ma, mp, M int
+		firstToken   = true
+		inItem       = true
+		ma, mp, M, n int
+		f            func()
+		pn           = &PNet{}
+		initPos      = &PPosition{id: "state0", initWeight: 1}
 	)
-
-	for _, attr := range attrs {
-		if attr.Name.Local == "repeat" {
-			ma, mp, M = mM(attr.Value, 10)
-			break
-		}
-	}
+	pn.positions = append(pn.positions, initPos)
 
 	for inItem {
 		t, err := decoder.Token()
@@ -169,22 +192,53 @@ func itemParser(decoder *xml.Decoder, attrs []xml.Attr, pn *PNet, initPos *PPosi
 			fmt.Printf("decoder.Token() failed in itemParser with '%s'\n", err)
 			return nil, err
 		}
+		if firstToken {
+			fmt.Println(">>>>>>>>>>", reflect.TypeOf(t).String())
+			if reflect.TypeOf(t).String() == "xml.CharData" {
+				funcTxt := string(t.(xml.CharData))
+				if Strempty(funcTxt) {
+					continue
+				}
+				f = func() { fmt.Println(funcTxt) }
+				decoder.Token() // skip </item> before return
+				return f, nil
+			}
+			firstToken = false
+		}
 		switch v := t.(type) {
 		case xml.StartElement:
 			if v.Name.Local == "item" {
-				initPos, err = itemParser(decoder, v.Attr, pn, initPos, n+1)
+				for _, attr := range v.Attr {
+					if attr.Name.Local == "repeat" {
+						ma, mp, M = mM(attr.Value, 10)
+						fmt.Println("ma=", ma, "mp=", mp, "M=", M)
+						break
+					}
+				}
+				if f, err := itemParser(decoder); err == nil {
+					initPos = pn.itemGen(initPos, ma, mp, M, n, f)
+					n++
+				} else {
+					return nil, err
+				}
+				inItem = true
 			} else if v.Name.Local == "one-of" {
 				oneOfParser(decoder, pn)
 			}
 		case xml.CharData:
-			initPos = pn.itemGen(initPos, ma, mp, M, n, string(v))
+			if !inItem {
+				funcTxt := string(v)
+				f = func() { fmt.Println(funcTxt) }
+			}
 		case xml.EndElement:
 			if v.Name.Local == "item" {
 				inItem = false
 			}
 		}
 	}
-	return initPos, nil
+	f = func() { pn.randomRun(20) }
+
+	return f, nil
 }
 
 func oneOfParser(decoder *xml.Decoder, pn *PNet) error {

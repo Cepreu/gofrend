@@ -129,3 +129,20 @@ func StripSpaces(str string) string {
 		return r
 	}, str)
 }
+
+// Strempty - returns 'true' for empty or whitespace-containing strings
+func Strempty(s string) bool {
+	if len(s) == 0 {
+		return true
+	}
+	r := []rune(s)
+	l := len(r)
+
+	for l > 0 {
+		l--
+		if !unicode.IsSpace(r[l]) {
+			return false
+		}
+	}
+	return true
+}
